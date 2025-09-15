@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "311802383612",
+    "project_id": "gogo-app-6ef48",
+    "storage_bucket": "gogo-app-6ef48.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:311802383612:android:a6c4220c5d6c440eeb5b79",
+        "android_client_info": {
+          "package_name": "com.eyad.gogo"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAFBY26pIokzgXnpN5dMpPNu5Z_g-DfDdI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
