@@ -102,6 +102,7 @@ class _MapScreenState extends State<MapScreen> {
                           child: LocationErrorWidget(),
                         );
                       
+                      }
                       return const SizedBox.shrink();
                     },
                   ),
