@@ -14,7 +14,7 @@ import 'package:gogo/ui/auth_screens/user_screen/user_login_screen/ui/login_scre
 import 'package:gogo/ui/auth_screens/user_screen/phone_number_login_screen.dart/ui/phone_number_login_screen.dart';
 import 'package:gogo/ui/auth_screens/user_screen/phone_number_regiester_screen.dart/ui/phone_number_regiester_screen.dart';
 import 'package:gogo/ui/auth_screens/user_screen/reset_passoword_screen/ui/reset_password_screen.dart';
-import 'package:gogo/ui/auth_screens/user_screen/user_auth_screen/rider_auth_screen.dart.dart';
+import 'package:gogo/ui/auth_screens/user_screen/user_auth_screen/rider_auth_screen.dart';
 import 'package:gogo/ui/auth_screens/user_screen/user_register_screen/ui/register_user_screen.dart';
 import 'package:gogo/ui/developer_screens/clear_secure_storage_screen.dart';
 import 'package:gogo/ui/developer_screens/place_order_test_screen.dart';
