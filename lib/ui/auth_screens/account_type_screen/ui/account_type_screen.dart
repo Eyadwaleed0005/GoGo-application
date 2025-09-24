@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
@@ -32,33 +33,33 @@ class AccountTypeScreen extends StatelessWidget {
               SizedBox(height: 30.h),
               Center(
                 child: Text(
-                  'Choose Account Type',
+                  'choose_account_type'.tr(),
                   style: TextStyles.font19BlackBold(),
                 ),
               ),
               Center(
                 child: Text(
-                  'driver or a rider?',
+                  'driver_or_rider'.tr(),
                   style: TextStyles.font19BlackBold(),
                 ),
               ),
               SizedBox(height: 10.h),
               Center(
                 child: Text(
-                  'Please select the account type',
+                  'please_select_account'.tr(),
                   style: TextStyles.font11GrayRegular(),
                 ),
               ),
               Center(
                 child: Text(
-                  'that best suits your usage.',
+                  'that_best_suits_usage'.tr(),
                   style: TextStyles.font11GrayRegular(),
                 ),
               ),
               SizedBox(height: 20.h),
               Center(
                 child: CustomButton(
-                  text: 'Rider',
+                  text: 'rider'.tr(),
                   backgroundColor: ColorPalette.mainColor,
                   height: 30.h,
                   width: 222.w,
@@ -71,7 +72,7 @@ class AccountTypeScreen extends StatelessWidget {
               SizedBox(height: 15.h),
               Center(
                 child: CustomOutlinedButton(
-                  text: 'Driver',
+                  text: 'driver'.tr(),
                   height: 30.h,
                   width: 200.w,
                   borderRadius: 3.r,

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
@@ -13,13 +14,15 @@ class LocationErrorWidget extends StatelessWidget {
       left: 0,
       right: 0,
       child: Container(
-        height: 50.h, 
-        color: ColorPalette.starsBorder, 
+        height: 50.h,
+        color: ColorPalette.starsBorder,
         alignment: Alignment.center,
         padding: EdgeInsets.symmetric(horizontal: 16.w),
         child: Text(
-          "📍 Unable to detect location - Please enable GPS",
-          style: TextStyles.font10Blackbold().copyWith(color: ColorPalette.textColor3),
+          "unable_to_detect_location".tr(),
+          style: TextStyles.font10Blackbold().copyWith(
+            color: ColorPalette.textColor3,
+          ),
           textAlign: TextAlign.center,
         ),
       ),

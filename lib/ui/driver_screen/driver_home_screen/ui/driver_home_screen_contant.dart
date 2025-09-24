@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
@@ -13,7 +14,6 @@ class DriverHomeScreenContant extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            // الجزء العلوي (الكونتينر البرتقالي + Home + الصورة)
             Container(
               width: double.infinity,
               height: 290.h,
@@ -27,12 +27,9 @@ class DriverHomeScreenContant extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(
-                      left: 20.w,
-                      top: 28.h,
-                      bottom: 3.h,
-                    ),
-                    child: Text("Home", style: TextStyles.font25Blackbold()),
+                    padding: EdgeInsets.only(left: 20.w, top: 28.h, bottom: 3.h),
+                    child: Text("home_title".tr(),
+                        style: TextStyles.font25Blackbold()),
                   ),
                   Expanded(
                     child: Align(
@@ -57,30 +54,15 @@ class DriverHomeScreenContant extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    "Welcome to our driver community.",
-                    style: TextStyles.font15Blackbold(),
-                  ),
+                  Text("welcome_driver".tr(), style: TextStyles.font15Blackbold()),
                   SizedBox(height: 8.h),
-                  Text(
-                    "You can now earn more and more money through our app.",
-                    style: TextStyles.font15Blackbold(),
-                  ),
+                  Text("earn_money".tr(), style: TextStyles.font15Blackbold()),
                   SizedBox(height: 8.h),
-                  Text(
-                    "We strive to make rough roads easier for passengers and select the best drivers for safe and fast transportation.",
-                    style: TextStyles.font15Blackbold(),
-                  ),
+                  Text("safe_transport".tr(), style: TextStyles.font15Blackbold()),
                   SizedBox(height: 8.h),
-                  Text(
-                    "You can now collaborate with us in building our community.",
-                    style: TextStyles.font15Blackbold(),
-                  ),
+                  Text("collaborate".tr(), style: TextStyles.font15Blackbold()),
                   SizedBox(height: 8.h),
-                  Text(
-                    "We place our full trust in you to be a respectable face for us among the community.",
-                    style: TextStyles.font15Blackbold(),
-                  ),
+                  Text("our_trust".tr(), style: TextStyles.font15Blackbold()),
                 ],
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
@@ -32,15 +33,15 @@ class ActionButtonsWidget extends StatelessWidget {
             onPressed: () {
               ConfirmationDialog.show(
                 context: context,
-                title: "Confirm Accept",
-                confirmText: "Yes",
-                content: "Are you sure you want to accept this order?",
+                title: "confirm_accept".tr(),
+                confirmText: "yes".tr(),
+                content: "accept_order_message".tr(),
                 showCancel: true,
                 onConfirm: onAccept,
               );
             },
             child: Text(
-              "Accept",
+              "accept".tr(),
               style: TextStyles.font12BlackSemiBold(),
             ),
           ),

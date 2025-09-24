@@ -1,16 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:gogo/core/style/textstyles.dart';
 
 class FoodComingSoon extends StatelessWidget {
-  final String centerText;
-  final String rightText;
-
-  const FoodComingSoon({
-    super.key,
-    this.centerText = "Food and other services",
-    this.rightText = "Coming\nSoon",
-  });
+  const FoodComingSoon({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -24,15 +18,15 @@ class FoodComingSoon extends StatelessWidget {
         children: [
           Expanded(
             child: Text(
-              centerText,
+              "food_services".tr(),
               textAlign: TextAlign.center,
               style: TextStyles.font12Blackbold(),
             ),
           ),
           Text(
-            rightText,
+            "coming_soon".tr(),
             style: TextStyles.font10redSemiBold(),
-            textAlign: TextAlign.right, 
+            textAlign: TextAlign.right,
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +26,7 @@ class DriverRegisterScreen extends StatelessWidget {
           if (state is DriverRegisterLoading) {
             showBlockingAnimation(
               context: context,
-              message: "Loading",
+              message: "loading".tr(),
               animationAsset: AppImage().loading,
               autoClose: false,
             );
@@ -61,7 +62,7 @@ class DriverRegisterScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Driver Sign Up',
+                              'driver_sign_up'.tr(),
                               style: TextStyles.font21BlackBold(),
                             ),
                             SizedBox(width: 6.w),
@@ -77,7 +78,7 @@ class DriverRegisterScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'Please fill in driver registration info',
+                              'fill_driver_info'.tr(),
                               style: TextStyles.font11GrayRegular(),
                             ),
                           ],
@@ -88,8 +89,8 @@ class DriverRegisterScreen extends StatelessWidget {
                       SizedBox(height: 18.h),
                       Center(
                         child: ClickableTextSpan(
-                          normalText: 'Already have an account? ',
-                          clickableText: 'Sign in Here',
+                          normalText: 'already_have_account'.tr(),
+                          clickableText: 'sign_in_here'.tr(),
                           onTap: () {
                             Navigator.pushReplacementNamed(
                               context,

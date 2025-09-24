@@ -8,6 +8,7 @@ import 'package:lottie/lottie.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart'; // ✅ أضف الاستيراد
 
 class OnWaitingDriver extends StatelessWidget {
   const OnWaitingDriver({super.key});
@@ -15,13 +16,13 @@ class OnWaitingDriver extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          OnWatingDriverScreenCubit(DriverStatusRepository())..fetchDriverStatus(),
+      create: (_) => OnWatingDriverScreenCubit(DriverStatusRepository())
+        ..fetchDriverStatus(),
       child: BlocListener<OnWatingDriverScreenCubit, OnWatingDriverScreenState>(
         listener: (context, state) {
           if (state is OnWatingDriverScreenFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text("$state.errorMessage")),
+              SnackBar(content: Text(state.errorMessage)),
             );
           }
         },
@@ -40,13 +41,13 @@ class OnWaitingDriver extends StatelessWidget {
                     fit: BoxFit.contain,
                   ),
                   Text(
-                    "تم إرسال بياناتك بنجاح ",
+                    "driver_waiting_title".tr(),          // ✅ مفتاح ترجمة
                     style: TextStyles.font22Blackbold(),
                     textAlign: TextAlign.center,
                   ),
                   verticalSpace(10),
                   Text(
-                    "من فضلك انتظر حتى يتم مراجعة بياناتك والتحقق منها من قبل الإدارة.",
+                    "driver_waiting_message".tr(),        // ✅ مفتاح ترجمة
                     style: TextStyles.font12GreyDarkSemiBold(),
                     textAlign: TextAlign.center,
                   ),

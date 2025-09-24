@@ -8,12 +8,13 @@ class LocationCubit extends Cubit<LocationState> {
   LocationCubit() : super(LocationInitial());
 
   Future<void> getCurrentLocation() async {
+    if (isClosed) return; // لو الكيوبت اتقفل خلاص مانعملش حاجة
     emit(LocationLoading());
 
     try {
       bool serviceEnabled = await geo.Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
-        emit(LocationError("خدمة تحديد الموقع غير مفعلة"));
+        if (!isClosed) emit(LocationError("خدمة تحديد الموقع غير مفعلة"));
         return;
       }
 
@@ -21,13 +22,13 @@ class LocationCubit extends Cubit<LocationState> {
       if (permission == geo.LocationPermission.denied) {
         permission = await geo.Geolocator.requestPermission();
         if (permission == geo.LocationPermission.denied) {
-          emit(LocationError("تم رفض إذن الموقع"));
+          if (!isClosed) emit(LocationError("تم رفض إذن الموقع"));
           return;
         }
       }
 
       if (permission == geo.LocationPermission.deniedForever) {
-        emit(LocationError("إذن الموقع مرفوض بشكل دائم"));
+        if (!isClosed) emit(LocationError("إذن الموقع مرفوض بشكل دائم"));
         return;
       }
 
@@ -54,14 +55,16 @@ class LocationCubit extends Cubit<LocationState> {
         placeName = "موقعي الحالي";
       }
 
-      emit(LocationLoaded(
-        currentLocation: currentPoint,
-        address: placeName,
-        latitude: position.latitude,
-        longitude: position.longitude,
-      ));
+      if (!isClosed) {
+        emit(LocationLoaded(
+          currentLocation: currentPoint,
+          address: placeName,
+          latitude: position.latitude,
+          longitude: position.longitude,
+        ));
+      }
     } catch (e) {
-      emit(LocationError("خطأ في تحديد الموقع: $e"));
+      if (!isClosed) emit(LocationError("خطأ في تحديد الموقع: $e"));
     }
   }
 }

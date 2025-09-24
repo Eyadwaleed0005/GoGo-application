@@ -15,7 +15,7 @@ class DriverModel {
   final DateTime licenseExpiryDate;
   final String userId;
   final String status;
-  final double review; // ✅ خليه double
+  final double review; 
   final int wallet;
 
   DriverModel({

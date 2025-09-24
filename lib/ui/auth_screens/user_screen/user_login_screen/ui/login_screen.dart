@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -13,6 +14,7 @@ import 'package:gogo/ui/auth_screens/user_screen/user_login_screen/logic/login_s
 import 'package:gogo/ui/auth_screens/user_screen/user_login_screen/logic/login_screen_state.dart.dart';
 import 'package:gogo/ui/auth_screens/user_screen/user_login_screen/ui/widgets/login_form_fields.dart';
 
+
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -25,7 +27,7 @@ class LoginScreen extends StatelessWidget {
           if (state is LoginLoading) {
             showBlockingAnimation(
               context: context,
-              message: "Loading",
+              message: "loading".tr(),
               animationAsset: AppImage().loading,
               autoClose: false,
             );
@@ -39,11 +41,13 @@ class LoginScreen extends StatelessWidget {
               duration: const Duration(seconds: 3),
             );
             Future.delayed(const Duration(seconds: 3), () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.homeScreen,
-                (route) => false,
-              );
+              if (context.mounted) {
+                Navigator.pushNamedAndRemoveUntil(
+                  context,
+                  AppRoutes.homeScreen,
+                  (route) => false,
+                );
+              }
             });
           } else if (state is LoginFailure) {
             hideBlockingAnimation(context);
@@ -70,12 +74,9 @@ class LoginScreen extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('Sign In', style: TextStyles.font21BlackBold()),
+                            Text('sign_in'.tr(), style: TextStyles.font21BlackBold()),
                             SizedBox(width: 6.w),
-                            Transform.translate(
-                              offset: Offset(0, 6.h),
-                              child: const OrangeDot(),
-                            ),
+                            const OrangeDot(),
                           ],
                         ),
                       ),
@@ -83,14 +84,8 @@ class LoginScreen extends StatelessWidget {
                       Center(
                         child: Column(
                           children: [
-                            Text(
-                              'Lorem ipsum dolor sit amet a ',
-                              style: TextStyles.font11GrayRegular(),
-                            ),
-                            Text(
-                              'aconsectetur ut',
-                              style: TextStyles.font11GrayRegular(),
-                            ),
+                            Text('login_description_line2'.tr(), style: TextStyles.font11GrayRegular()),
+                            Text('login_description_line1'.tr(), style: TextStyles.font11GrayRegular()),
                           ],
                         ),
                       ),
@@ -99,8 +94,8 @@ class LoginScreen extends StatelessWidget {
                       SizedBox(height: 18.h),
                       Center(
                         child: ClickableTextSpan(
-                          normalText: 'Don’t Have An Account? ',
-                          clickableText: 'Sign Up Here',
+                          normalText: 'dont_have_account'.tr(),
+                          clickableText: 'sign_up_here'.tr(),
                           onTap: () {
                             Navigator.pushReplacementNamed(
                               context,

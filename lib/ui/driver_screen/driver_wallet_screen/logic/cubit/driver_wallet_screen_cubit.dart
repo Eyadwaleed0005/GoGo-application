@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/data/repo/driver_pay_repository.dart';
@@ -9,10 +10,10 @@ import 'package:gogo/ui/driver_screen/driver_wallet_screen/data/model/driver_pay
 part 'driver_wallet_screen_state.dart';
 
 class DriverWalletScreenCubit extends Cubit<DriverWalletScreenState> {
-  DriverWalletScreenCubit(
-    this._payRepository,
-    this._walletRepository,
-  ) : super(const DriverWalletScreenState(wallet: 0, images: [null, null, null]));
+  DriverWalletScreenCubit(this._payRepository, this._walletRepository)
+    : super(
+        const DriverWalletScreenState(wallet: 0, images: [null, null, null]),
+      );
 
   final DriverPayRepository _payRepository;
   final DriverWalletRepository _walletRepository;
@@ -40,7 +41,11 @@ class DriverWalletScreenCubit extends Cubit<DriverWalletScreenState> {
     final file = state.images[index];
     if (file == null) {
       if (isClosed) return;
-      emit(state.copyWith(error: "Please select an image first."));
+      emit(
+        state.copyWith(
+          error: "wallet_select_image_first".tr(), // استدعاء الترجمة
+        ),
+      );
       return;
     }
 
@@ -49,15 +54,19 @@ class DriverWalletScreenCubit extends Cubit<DriverWalletScreenState> {
 
     try {
       final imageUrl = await _payRepository.uploadImage(File(file.path));
-      final driverPay = await _payRepository.submitDriverPay(imageUrl: imageUrl!);
+      final driverPay = await _payRepository.submitDriverPay(
+        imageUrl: imageUrl!,
+      );
 
       if (isClosed) return;
-      emit(state.copyWith(
-        isLoading: false,
-        images: [null, null, null],
-        driverPay: driverPay,
-        showSuccessAnimation: true,
-      ));
+      emit(
+        state.copyWith(
+          isLoading: false,
+          images: [null, null, null],
+          driverPay: driverPay,
+          showSuccessAnimation: true,
+        ),
+      );
     } catch (e) {
       if (isClosed) return;
       emit(state.copyWith(isLoading: false, error: e.toString()));
@@ -84,6 +93,6 @@ class DriverWalletScreenCubit extends Cubit<DriverWalletScreenState> {
 
   void clearError() {
     if (isClosed) return;
-    emit(state.copyWith(error: null)); 
+    emit(state.copyWith(error: null));
   }
 }

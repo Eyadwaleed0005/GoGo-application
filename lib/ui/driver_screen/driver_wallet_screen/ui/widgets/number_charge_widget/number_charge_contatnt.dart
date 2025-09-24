@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -5,7 +6,6 @@ import 'package:gogo/core/const/const_things_of_admin.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
-
 
 class NumberChargeContatnt extends StatelessWidget {
   const NumberChargeContatnt({super.key});
@@ -15,7 +15,7 @@ class NumberChargeContatnt extends StatelessWidget {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         backgroundColor: ColorPalette.textDark,
-        content: Text("Copied: $text",style:TextStyles.font10whitebold(),),
+        content: Text("Copied: $text", style: TextStyles.font10whitebold()),
         duration: const Duration(seconds: 1),
       ),
     );
@@ -29,15 +29,16 @@ class NumberChargeContatnt extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Recharge money",
+            "wallet_recharge_money".tr(),
             style: TextStyles.font15whitebold(),
           ),
+
           verticalSpace(20),
           Padding(
-            padding: EdgeInsetsGeometry.only(left: 45.w,top: 3.h),
+            padding: EdgeInsetsGeometry.only(left: 45.w, top: 3.h),
             child: SizedBox(
-              width: 150.w, 
-              height: 40.h,  
+              width: 150.w,
+              height: 40.h,
               child: TextField(
                 readOnly: true,
                 controller: TextEditingController(

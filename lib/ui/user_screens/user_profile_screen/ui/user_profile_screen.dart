@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -6,6 +7,7 @@ import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:gogo/core/widgets/language_dropdown_widget.dart';
 import 'package:gogo/ui/user_screens/user_profile_screen/data/model/local_user_model.dart';
 import 'package:gogo/ui/user_screens/user_profile_screen/data/repo/user_profile_repository.dart';
 import 'package:gogo/ui/user_screens/user_profile_screen/ui/widget/image_user_profile.dart';
@@ -38,12 +40,12 @@ class UserProfileScreen extends StatelessWidget {
                 size: 18.sp,
                 color: ColorPalette.textDark,
               ),
-              title: Text('Camera', style: TextStyles.font12Blackbold()),
+              title: Text('camera'.tr(), style: TextStyles.font12Blackbold()),
               onTap: () {
                 Navigator.pop(ctx);
                 context.read<UserProfileScreenCubit>().pickImage(
-                  ImageSource.camera,
-                );
+                      ImageSource.camera,
+                    );
               },
             ),
             ListTile(
@@ -52,12 +54,12 @@ class UserProfileScreen extends StatelessWidget {
                 size: 18.sp,
                 color: ColorPalette.textDark,
               ),
-              title: Text('Gallery', style: TextStyles.font12Blackbold()),
+              title: Text('gallery'.tr(), style: TextStyles.font12Blackbold()),
               onTap: () {
                 Navigator.pop(ctx);
                 context.read<UserProfileScreenCubit>().pickImage(
-                  ImageSource.gallery,
-                );
+                      ImageSource.gallery,
+                    );
               },
             ),
           ],
@@ -77,14 +79,14 @@ class UserProfileScreen extends StatelessWidget {
           if (state is UserProfileScreenUpdating) {
             showBlockingAnimation(
               context: context,
-              message: "Uploading profile image...",
+              message: 'uploading_profile'.tr(),
               animationAsset: AppImage().loading,
             );
           } else if (state is UserProfileScreenUpdateSuccess) {
             hideBlockingAnimation(context);
             showBlockingAnimation(
               context: context,
-              message: "Image Profile Update",
+              message: 'profile_updated'.tr(),
               animationAsset: AppImage().sucsses,
               autoClose: true,
               duration: const Duration(seconds: 3),
@@ -126,7 +128,7 @@ class UserProfileScreen extends StatelessWidget {
                     Center(
                       child: ImageUserProfile(
                         imageUrl: finalImage,
-                        userName: user?.name ?? "Loading...",
+                        userName: user?.name ?? "loading".tr(),
                         onCameraTap: () => _showImageSourceDialog(context),
                         onEditTap: () => _showImageSourceDialog(context),
                       ),
@@ -136,9 +138,14 @@ class UserProfileScreen extends StatelessWidget {
                   ],
                 ),
                 Positioned(
-                  top: 25.h,
+                  top: 28.h,
                   right: 18.w,
                   child: const UserLogoutButtom(),
+                ),
+                 Positioned(
+                  top: 28.h,
+                  left: 18.w,
+                  child: const LanguageDropdownWidget(),
                 ),
               ],
             ),

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,13 +56,10 @@ class ChooseFromMapButton extends StatelessWidget {
       },
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        children:  [
+        children: [
           Icon(Icons.location_on, color: ColorPalette.red),
           SizedBox(width: 6.w),
-          Text(
-            "Choose from map",
-            style:TextStyles.font10Blackbold()
-          ),
+          Text("choose_from_map".tr(), style: TextStyles.font10Blackbold()),
         ],
       ),
     );

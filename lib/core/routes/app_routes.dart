@@ -38,6 +38,7 @@ import 'package:gogo/ui/user_screens/privacy_policy_screen/ui/privacy_policy_scr
 import 'package:gogo/ui/user_screens/services_screen/ui/services_screen.dart';
 import 'package:gogo/ui/user_screens/user_history_screen.dart/ui/user_history_screen.dart';
 import 'package:gogo/ui/user_screens/user_profile_screen/ui/user_profile_screen.dart';
+import 'package:gogo/ui/user_screens/waiting_order_status_screen/ui/waiting_order_status_screen.dart';
 
 class AppRoutes {
   ////  user screens
@@ -63,6 +64,7 @@ class AppRoutes {
   static const String servicesScreen = '/servicesScreen';
   static const String userHistoryScreen = '/userHistoryScreen';
   static const String comingSoonScreen = '/comingSoonScreen';
+  static const String waitingOrderStatusScreen = '/waitingOrderStatusScreen';
   static const String splashScreen = '/splashScreen';
   //////////// Driver Screens //////////
   static const String carDriverInformationScreen =
@@ -91,6 +93,8 @@ class AppRoutes {
     switch (settings.name) {
       case clearSecureStorageScreen:
         return MaterialPageRoute(builder: (_) => ClearSecureStorageScreen());
+       case waitingOrderStatusScreen:
+        return MaterialPageRoute(builder: (_) => WaitingOrderStatusScreen());
       case comingSoonScreen:
         return MaterialPageRoute(builder: (_) => ComingSoonScreen());
       case userProfileScreen:

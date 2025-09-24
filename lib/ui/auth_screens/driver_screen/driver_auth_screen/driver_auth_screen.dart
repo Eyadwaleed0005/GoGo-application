@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
@@ -35,7 +36,7 @@ class DriverAuthScreen extends StatelessWidget {
               SizedBox(height: 30.h),
               Center(
                 child: Text(
-                  'Drive Smarter with gogo',
+                  'drive_smarter'.tr(),
                   style: TextStyles.font21BlackBold(),
                   textAlign: TextAlign.center,
                 ),
@@ -43,14 +44,14 @@ class DriverAuthScreen extends StatelessWidget {
               SizedBox(height: 10.h),
               Center(
                 child: Text(
-                  'Join our drivers to start earning',
+                  'join_drivers_start_earning'.tr(),
                   style: TextStyles.font11GrayRegular(),
                   textAlign: TextAlign.center,
                 ),
               ),
               Center(
                 child: Text(
-                  'while providing safe and reliable rides.',
+                  'while_providing_safe_rides'.tr(),
                   style: TextStyles.font11GrayRegular(),
                   textAlign: TextAlign.center,
                 ),
@@ -58,7 +59,7 @@ class DriverAuthScreen extends StatelessWidget {
               SizedBox(height: 20.h),
               Center(
                 child: CustomButton(
-                  text: 'Become a Driver',
+                  text: 'become_driver'.tr(),
                   backgroundColor: ColorPalette.mainColor,
                   height: 30.h,
                   width: 222.w,
@@ -74,7 +75,7 @@ class DriverAuthScreen extends StatelessWidget {
               SizedBox(height: 15.h),
               Center(
                 child: CustomOutlinedButton(
-                  text: 'Log in as Driver',
+                  text: 'login_as_driver'.tr(),
                   height: 30.h,
                   width: 200.w,
                   borderRadius: 3.r,

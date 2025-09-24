@@ -9,6 +9,7 @@ import 'package:gogo/ui/user_screens/home_screen/ui/widgets/pickup_point_widget.
 import 'package:gogo/ui/user_screens/home_screen/ui/widgets/suggestions_icons.dart';
 import 'package:gogo/ui/user_screens/services_screen/ui/services_screen.dart';
 import 'package:gogo/ui/user_screens/user_profile_screen/ui/user_profile_screen.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -57,7 +58,7 @@ class HomeContent extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text("GoGo", style: TextStyles.font25MainColorbold()),
+                Text("GoGo".tr(), style: TextStyles.font25MainColorbold()),
                 verticalSpace(10),
                 PickupPointWidget(
                   onTap: () {
@@ -80,54 +81,61 @@ class HomeContent extends StatelessWidget {
                   ),
                 ),
                 verticalSpace(20),
-                Text("Suggestions", style: TextStyles.font15Blackbold()),
+                Text("Suggestions".tr(), style: TextStyles.font15Blackbold()),
                 verticalSpace(13),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     SuggestionsIcons(
                       imagePath: AppImage().taxiIcon,
-                      label: 'Car',
+                      label: 'Car'.tr(),
                       onTap: () {
                         Navigator.pushNamed(context, AppRoutes.mapScreen);
                       },
                     ),
                     SuggestionsIcons(
                       imagePath: AppImage().delivery,
-                      label: 'Delivery',
+                      label: 'Delivery'.tr(),
                       onTap: () {
                         Navigator.pushNamed(context, AppRoutes.mapScreen);
                       },
                     ),
                     SuggestionsIcons(
                       imagePath: AppImage().busIcon,
-                      label: 'Bus',
+                      label: 'Bus'.tr(),
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.comingSoonScreen);
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.comingSoonScreen,
+                        );
                       },
                     ),
                     SuggestionsIcons(
                       imagePath: AppImage().calendar,
-                      label: 'Reserve',
+                      label: 'Reserve'.tr(),
                       onTap: () {
-                        Navigator.pushNamed(context, AppRoutes.comingSoonScreen);
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.comingSoonScreen,
+                        );
                       },
                     ),
                   ],
                 ),
                 verticalSpace(30),
                 Text(
-                  "What do we offer you?",
+                  "What do we offer you?".tr(),
                   style: TextStyles.font20whitebold(),
                 ),
                 verticalSpace(20),
                 Column(
                   children: [
-                    buildTimelineItem("Safe trip from start to finish."),
-                    buildTimelineItem("Quick access to your destination."),
-                    buildTimelineItem("Fast and efficient service."),
+                    buildTimelineItem("Safe trip from start to finish.".tr()),
+                    buildTimelineItem("Quick access to your destination.".tr()),
+                    buildTimelineItem("Fast and efficient service.".tr()),
                     buildTimelineItem(
-                      "Ease of communication betweenthe driver and the customer.",
+                      "Ease of communication between the driver and the customer."
+                          .tr(),
                       isLast: true,
                     ),
                   ],

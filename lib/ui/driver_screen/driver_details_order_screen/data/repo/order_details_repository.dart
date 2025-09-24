@@ -21,12 +21,19 @@ class OrderDetailsRepository {
     }
   }
 
-  Future<bool> deleteOrder(int orderId) async {
+  Future<GetAllOrdersModel?> updateOrder(Map<String, dynamic> orderData) async {
     try {
-      await DioHelper.deleteData(
-        url: EndPoints.deleteOrder(orderId),
+      final response = await DioHelper.putData(
+        url: EndPoints.updateOrder,
+        data: orderData, 
       );
-      return true; 
+
+      final data = response.data;
+      if (data is Map<String, dynamic>) {
+        return GetAllOrdersModel.fromJson(data);
+      } else {
+        return null;
+      }
     } on DioException catch (error) {
       throw DioExceptionHandler.handleDioError(error);
     }

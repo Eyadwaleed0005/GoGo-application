@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/routes/app_routes.dart';
@@ -33,7 +34,7 @@ class ServicesScreen extends StatelessWidget {
                   ),
                   horizontalSpace(35),
                   Text(
-                    'Services',
+                    'services'.tr(),
                     textAlign: TextAlign.center,
                     style: TextStyles.font20Blackbold(),
                   ),
@@ -45,28 +46,28 @@ class ServicesScreen extends StatelessWidget {
                 children: [
                   SuggestionsIcons(
                     imagePath: AppImage().taxiIcon,
-                    label: 'Car',
+                    label: 'car'.tr(),
                     onTap: () {
                       Navigator.pushNamed(context, AppRoutes.mapScreen);
                     },
                   ),
                   SuggestionsIcons(
                     imagePath: AppImage().delivery,
-                    label: 'Delivery',
+                    label: 'delivery'.tr(),
                     onTap: () {
                       Navigator.pushNamed(context, AppRoutes.mapScreen);
                     },
                   ),
                   SuggestionsIcons(
                     imagePath: AppImage().busIcon,
-                    label: 'Bus',
+                    label: 'bus'.tr(),
                     onTap: () {
                       Navigator.pushNamed(context, AppRoutes.comingSoonScreen);
                     },
                   ),
                   SuggestionsIcons(
                     imagePath: AppImage().calendar,
-                    label: 'Reserve',
+                    label: 'reserve'.tr(),
                     onTap: () {
                       Navigator.pushNamed(context, AppRoutes.comingSoonScreen);
                     },
@@ -91,14 +92,14 @@ class ServicesScreen extends StatelessWidget {
                       text: TextSpan(
                         style: TextStyles.font15whitebold(),
                         children: [
-                          const TextSpan(text: "Get the best\n"),
+                          TextSpan(text: 'get_best'.tr()),
                           TextSpan(
-                            text: "bus rides\n",
+                            text: 'bus_rides'.tr(),
                             style: TextStyles.font12Blackbold().copyWith(
                               color: Colors.red,
                             ),
                           ),
-                          const TextSpan(text: "to your\ndestination."),
+                          TextSpan(text: 'to_destination'.tr()),
                         ],
                       ),
                     ),

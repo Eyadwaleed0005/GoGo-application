@@ -1,6 +1,9 @@
+// ==================== MapView ====================
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/model/map_suggestion_model.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit.dart';
@@ -37,12 +40,18 @@ class _MapViewState extends State<MapView> {
   bool _firstCheckDone = false;
   bool isMapMoving = false;
   String placeName = "";
-  Map<String, num>? routeSummary;
+  Map<String, dynamic>? routeSummary;
 
   @override
   void dispose() {
     _debounce?.cancel();
     super.dispose();
+  }
+
+  void _safeSetState(VoidCallback fn) {
+    if (mounted) {
+      setState(fn);
+    }
   }
 
   @override
@@ -71,32 +80,40 @@ class _MapViewState extends State<MapView> {
             ),
             BlocListener<RouteCubit, RouteState>(
               listener: (context, state) async {
-                if (state is RouteLoaded) {
-                  _debounce?.cancel();
-                  _debounce = Timer(
-                    const Duration(milliseconds: 100),
-                    () async {
-                      final from = state.routePoints.first;
-                      final to = state.routePoints.last;
-                      await mapCubit.drawRoute(state.routePoints);
-                      await mapCubit.fitCameraToBounds(from, to);
+                final routeCubit = context.read<RouteCubit>();
+                final mapCubit = context.read<MapCubit>();
 
-                      final summary = await mapCubit.calculateDistanceAndTime(
-                        from,
-                        to,
-                      );
-
-                      print("📍 Summary from MapCubit: $summary");
-
-                      setState(() {
-                        routeSummary = summary;
-                      });
-                    },
+                if (routeCubit.savedRoutePoints != null &&
+                    routeCubit.savedRoutePoints!.isNotEmpty) {
+                  await mapCubit.drawRoute(routeCubit.savedRoutePoints!);
+                  await mapCubit.fitCameraToBounds(
+                    routeCubit.savedRoutePoints!.first,
+                    routeCubit.savedRoutePoints!.last,
                   );
+                  _safeSetState(() {
+                    routeSummary = {
+                      "distance": routeCubit.savedDistance,
+                      "timeText":
+                          "${routeCubit.savedDuration?.toStringAsFixed(0)} min",
+                    };
+                  });
+                }
+                if (state is RouteLoaded) {
+                  await mapCubit.drawRoute(state.routePoints);
+                  await mapCubit.fitCameraToBounds(
+                    state.routePoints.first,
+                    state.routePoints.last,
+                  );
+                  final summary = await mapCubit.calculateDistanceAndTime(
+                    state.routePoints.first,
+                    state.routePoints.last,
+                  );
+                  _safeSetState(() {
+                    routeSummary = summary;
+                  });
                 }
               },
             ),
-
             BlocListener<LocationServiceCubit, LocationServiceState>(
               listener: (context, state) async {
                 if (state is LocationServiceDisabled) {
@@ -124,113 +141,100 @@ class _MapViewState extends State<MapView> {
                       pitch: 30,
                     );
                     context.read<LocationCubit>().getCurrentLocation();
-                  } catch (e) {
-                    debugPrint("Error getting current location: $e");
-                  }
+                  } catch (e) {}
                 }
               },
             ),
           ],
-          child: // داخل Stack:
-Stack(
-  alignment: Alignment.center,
-  children: [
-    // 🔹 الخريطة
-    MapWidget(
-      styleUri: "mapbox://styles/mapbox/streets-v12",
-      cameraOptions: CameraOptions(zoom: 14.0),
-      textureView: true,
-      onMapCreated: (mapboxMap) async {
-        debugPrint("🗺️ Map Created");
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
+              MapWidget(
+                styleUri: "mapbox://styles/mapbox/streets-v12",
+                cameraOptions: CameraOptions(zoom: 14.0),
+                textureView: true,
+                onMapCreated: (mapboxMap) async {
+                  await mapCubit.initMap(mapboxMap);
+                  try {
+                    await mapboxMap.compass.updateSettings(
+                      CompassSettings(enabled: false),
+                    );
+                    await mapboxMap.scaleBar.updateSettings(
+                      ScaleBarSettings(enabled: false),
+                    );
+                    await mapboxMap.location.updateSettings(
+                      LocationComponentSettings(
+                        enabled: true,
+                        pulsingEnabled: true,
+                        puckBearingEnabled: true,
+                        showAccuracyRing: false,
+                      ),
+                    );
+                  } catch (e) {}
+                },
+                onCameraChangeListener: (event) async {
+                  if (!isMapMoving) _safeSetState(() => isMapMoving = true);
 
-        await mapCubit.initMap(mapboxMap); // ✅ لازم await
+                  _debounce?.cancel();
+                  _debounce = Timer(
+                    const Duration(milliseconds: 500),
+                    () async {
+                      if (mapCubit.mapboxMap == null) return;
+                      final cameraState = await mapCubit.mapboxMap!
+                          .getCameraState();
+                      final lat = cameraState.center.coordinates.lat.toDouble();
+                      final lng = cameraState.center.coordinates.lng.toDouble();
 
-        await mapboxMap.compass.updateSettings(
-          CompassSettings(enabled: false),
-        );
-        await mapboxMap.scaleBar.updateSettings(
-          ScaleBarSettings(enabled: false),
-        );
-
-        await mapboxMap.location.updateSettings(
-          LocationComponentSettings(
-            enabled: true,
-            pulsingEnabled: true,
-            puckBearingEnabled: true,
-            showAccuracyRing: false,
+                      _safeSetState(() => isMapMoving = false);
+                      mapCubit.getPlaceName(lat, lng);
+                    },
+                  );
+                },
+              ),
+              DriverMarkersOverlay(),
+              AnimatedPinWidget(placeName: placeName, isMoving: isMapMoving),
+              if (widget.isSelecting)
+                Positioned(
+                  bottom: 40.h,
+                  left: 20.w,
+                  right: 20.w,
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: ColorPalette.mainColor,
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                    ),
+                    child: Text(
+                      "done".tr(),
+                      style: const TextStyle(color: ColorPalette.textColor1),
+                    ),
+                    onPressed: () async {
+                      final camera = await mapCubit.mapboxMap!.getCameraState();
+                      final picked = MapSuggestion(
+                        id: "manual_pick",
+                        name: placeName.isNotEmpty
+                            ? placeName
+                            : "no_name_now".tr(),
+                        latitude: camera.center.coordinates.lat.toDouble(),
+                        longitude: camera.center.coordinates.lng.toDouble(),
+                      );
+                      Navigator.pop(context, picked);
+                    },
+                  ),
+                ),
+              if (routeSummary != null)
+                Positioned(
+                  top: 150,
+                  left: 20,
+                  right: 20,
+                  child: TripSummaryCard(
+                    distanceKm: double.parse(
+                      routeSummary!["distance"].toStringAsFixed(1),
+                    ),
+                    timeText: routeSummary!["timeText"],
+                  ),
+                ),
+            ],
           ),
-        );
-      },
-      onCameraChangeListener: (event) async {
-        if (!isMapMoving) setState(() => isMapMoving = true);
-
-        _debounce?.cancel();
-        _debounce = Timer(
-          const Duration(milliseconds: 500),
-          () async {
-            if (mapCubit.mapboxMap == null) return;
-            final cameraState = await mapCubit.mapboxMap!.getCameraState();
-            final lat = cameraState.center.coordinates.lat.toDouble();
-            final lng = cameraState.center.coordinates.lng.toDouble();
-
-            debugPrint("📷 Camera moved to lat=$lat, lng=$lng");
-
-            setState(() => isMapMoving = false);
-            mapCubit.getPlaceName(lat, lng);
-          },
-        );
-      },
-    ),
-
-    // 🔹 أيقونات السواقين
-     DriverMarkersOverlay(), // ✅ خليتها const
-
-    // 🔹 أيقونة المكان المختار (Pin)
-    AnimatedPinWidget(placeName: placeName, isMoving: isMapMoving),
-
-    // 🔹 زر الـ Done
-    if (widget.isSelecting)
-      Positioned(
-        bottom: 40,
-        left: 20,
-        right: 20,
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            backgroundColor: ColorPalette.mainColor,
-            padding: const EdgeInsets.symmetric(vertical: 14),
-          ),
-          child: const Text(
-            "Done",
-            style: TextStyle(color: ColorPalette.textColor1),
-          ),
-          onPressed: () async {
-            final camera = await mapCubit.mapboxMap!.getCameraState();
-            final picked = MapSuggestion(
-              id: "manual_pick",
-              name: placeName.isNotEmpty ? placeName : "No Name Now",
-              latitude: camera.center.coordinates.lat.toDouble(),
-              longitude: camera.center.coordinates.lng.toDouble(),
-            );
-            debugPrint("✅ Picked location: $picked");
-            Navigator.pop(context, picked);
-          },
-        ),
-      ),
-
-    // 🔹 كارت ملخص الرحلة
-    if (routeSummary != null)
-      Positioned(
-        top: 150,
-        left: 20,
-        right: 20,
-        child: TripSummaryCard(
-          distanceKm: (routeSummary!["distance"] ?? 0).toDouble(),
-          durationMin: (routeSummary!["time"] ?? 0).toDouble(),
-        ),
-      ),
-  ],
-)
-,
         );
       },
     );

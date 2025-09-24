@@ -1,19 +1,20 @@
 import 'package:dio/dio.dart';
 import 'package:gogo/core/dio_helper/model/error_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class DioExceptionHandler {
   static String handleDioError(DioException error) {
     switch (error.type) {
       case DioExceptionType.cancel:
-        return "Request to the server was cancelled.";
+        return "request_cancelled".tr();
       case DioExceptionType.connectionTimeout:
-        return "Connection timeout with the server.";
+        return "connection_timeout".tr();
       case DioExceptionType.sendTimeout:
-        return "Send timeout in connection with the server.";
+        return "send_timeout".tr();
       case DioExceptionType.receiveTimeout:
-        return "Receive timeout in connection with the server.";
+        return "receive_timeout".tr();
       case DioExceptionType.connectionError:
-        return "⚠️ Connection Error. Please check your internet connection.";
+        return "connection_error".tr();
 
       case DioExceptionType.badResponse:
         {
@@ -31,37 +32,37 @@ class DioExceptionHandler {
             }
             switch (response.statusCode) {
               case 400:
-                return "Bad request.";
+                return "bad_request".tr();
               case 401:
-                return "Unauthorized. Please login again.";
+                return "unauthorized".tr();
               case 403:
-                return "Forbidden request.";
+                return "forbidden".tr();
               case 404:
-                return "Not found.";
+                return "not_found".tr();
               case 405:
-                return "Method not allowed.";
+                return "method_not_allowed".tr();
               case 408:
-                return "Request timeout.";
+                return "request_timeout_error".tr();
               case 500:
-                return "Internal server error.";
+                return "internal_server_error".tr();
               case 502:
-                return "Bad gateway.";
+                return "bad_gateway".tr();
               case 503:
-                return "Service unavailable.";
+                return "service_unavailable".tr();
               case 504:
-                return "Gateway timeout.";
+                return "gateway_timeout".tr();
               default:
-                return "Cannot find this error.";
+                return "unknown_error".tr();
             }
           }
-          return "Bad response error: ${error.message}";
+          return "${"bad_response_error".tr()}: ${error.message}";
         }
 
       case DioExceptionType.unknown:
-        return "Unexpected error occurred: ${error.message}";
+        return "${"unexpected_error".tr()}: ${error.message}";
 
       default:
-        return "Something went wrong.";
+        return "something_went_wrong".tr();
     }
   }
 }

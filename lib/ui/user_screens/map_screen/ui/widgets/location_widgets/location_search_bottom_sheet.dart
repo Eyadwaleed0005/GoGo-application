@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,6 +9,7 @@ import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repository.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit.dart';
 import 'choose_from_map_button.dart';
 import '../suggestions_list.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class LocationSearchBottomSheet {
   static Future<MapSuggestion?> show({
@@ -32,6 +34,32 @@ class LocationSearchBottomSheet {
           create: (_) => SearchCubit(MapRepository()),
           child: StatefulBuilder(
             builder: (context, setState) {
+              final stt.SpeechToText speech = stt.SpeechToText();
+              bool isListening = false;
+
+              Future<void> startListening() async {
+                bool available = await speech.initialize();
+                if (available) {
+                  setState(() => isListening = true);
+                  speech.listen(
+                    onResult: (result) async {
+                      controller.text = result.recognizedWords;
+                      if (controller.text.isNotEmpty) {
+                        await context.read<SearchCubit>().searchPlaces(
+                          controller.text,
+                        );
+                      }
+                      setState(() {});
+                    },
+                  );
+                }
+              }
+
+              void stopListening() {
+                speech.stop();
+                setState(() => isListening = false);
+              }
+
               return SizedBox(
                 height: MediaQuery.of(context).size.height * 0.9,
                 child: Padding(
@@ -41,34 +69,54 @@ class LocationSearchBottomSheet {
                     children: [
                       Text(label, style: TextStyles.font10BlackMedium()),
                       SizedBox(height: 20.h),
+
                       TextField(
                         controller: controller,
                         decoration: InputDecoration(
-                          hintText: "Search for a place...",
+                          hintText: "search_for_place".tr(),
                           fillColor: ColorPalette.mainColor,
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(8.r),
                           ),
                           prefixIcon: const Icon(Icons.search),
-                          suffixIcon: controller.text.isNotEmpty
-                              ? IconButton(
-                                  icon: const Icon(Icons.clear,
-                                      color: ColorPalette.textColor1),
+                          suffixIcon: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (controller.text.isNotEmpty)
+                                IconButton(
+                                  icon: const Icon(
+                                    Icons.clear,
+                                    color: ColorPalette.textColor1,
+                                  ),
                                   onPressed: () {
                                     controller.clear();
-                                    setState(() {}); 
+                                    setState(() {});
                                   },
-                                )
-                              : null,
+                                ),
+                              IconButton(
+                                icon: Icon(
+                                  isListening ? Icons.mic : Icons.mic_none,
+                                  color: isListening ? Colors.red : Colors.grey,
+                                ),
+                                onPressed: () {
+                                  if (isListening) {
+                                    stopListening();
+                                  } else {
+                                    startListening();
+                                  }
+                                },
+                              ),
+                            ],
+                          ),
                         ),
                         onChanged: (pattern) async {
                           if (pattern.trim().isEmpty) {
-                            setState(() {}); 
+                            setState(() {});
                             return;
                           }
-                          await context
-                              .read<SearchCubit>()
-                              .searchPlaces(pattern);
+                          await context.read<SearchCubit>().searchPlaces(
+                            pattern,
+                          );
                           setState(() {});
                         },
                       ),
@@ -110,7 +158,7 @@ class LocationSearchBottomSheet {
                             Navigator.pop(context, selected);
                           },
                           child: Text(
-                            "Done",
+                            "done".tr(), // استخدام المفتاح في ملفات الترجمة
                             style: TextStyles.font11blackSemiBold(),
                           ),
                         ),

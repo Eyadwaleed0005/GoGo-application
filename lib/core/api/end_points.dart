@@ -15,13 +15,18 @@ class EndPoints {
   static const String updateDriverLocation = "$baseurl/api/Location/update";
   static const String addDriverHistory = "$baseurl/api/TripsHistory";
   static const String getDriverPlaces = "$baseurl/api/Location/drivers";
+  static String getDriverPlace(int driverId) => "$baseurl/api/Location/driver/$driverId";
+  static String driverReview(int driverId) => "$baseurl/api/Driver/$driverId/review";
 
+  static String getDriverById(int driverId) => "$baseurl/api/Driver/DriverId/$driverId";
 
   // ---------------- ORDERS ----------------
   static const String getAllOrders = "$baseurl/api/Orders";
   static String getOrderDetails(int orderId) => "$baseurl/api/Orders/$orderId"; 
+  static const String createOrder = "$baseurl/api/Orders";
+  static const String updateOrder = "$baseurl/api/Orders/driver";
+  static String getOrderById(int orderId) => "$baseurl/api/Orders/$orderId";
   static String deleteOrder(int orderId) => "$baseurl/api/Orders/$orderId";
-
 
   // ---------------- CAR ----------------
   static const String sendDataCar = "$baseurl/api/CarData";
@@ -38,7 +43,7 @@ class EndPoints {
   static const String directions = "$mapboxBase/directions/v5/mapbox/driving";
 
   static const String accessToken =
-      "pk.eyJ1IjoiZXlhZHdhbGVlZDIzMzIiLCJhIjoiY21lN3JuZnRvMDZlOTJrcGdldXZzODh6YiJ9.xee3Qn8oGLQkBldduDQYhA";
+      "pk.eyJ1IjoiZXlhZHdhbGVlZDIzMzIiLCJhIjoiY21mcTN2YXU1MDF2eDJpc2NrbG5hZzA0ZiJ9.jdNWpKUpVSJh7f0yDQobSg";
 
   // ---------------- FCM ----------------
   static String sendFcmMessage(String projectId) =>
@@ -52,10 +57,20 @@ class EndPoints {
 
   static String telUrl(String phone) => "tel:$phone";
 
-// ---------------- USER ----------------
-static String updateUserImage(String userId) =>
-    "$baseurl/api/UsersIdentity/UpdateImage/$userId";
-static String getUserImage(String userId) =>
-    "$baseurl/api/UsersIdentity/GetImage/$userId";
+  // ---------------- USER ----------------
+  static String updateUserImage(String userId) =>
+      "$baseurl/api/UsersIdentity/UpdateImage/$userId";
+  static String getUserImage(String userId) =>
+      "$baseurl/api/UsersIdentity/GetImage/$userId";
   static String getUserHistory(String userId) => "$baseurl/api/UserHistory/user/$userId";
+    static const String savePassengerHistory = "$baseurl/api/UserHistory"; 
+
+  // ===== Cloudinary Config =====
+  static const String cloudinaryCloudName = 'docvppjyh';
+  static const String cloudinaryUploadPreset = 'gogo_unsigned';
+  static const String cloudinaryFolder = 'gogo_app';
+
+  static String get cloudinaryUploadUrl =>
+      'https://api.cloudinary.com/v1_1/$cloudinaryCloudName/image/upload';
+
 }

@@ -1,10 +1,11 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 
 class DetailsOrderButton extends StatelessWidget {
-  final VoidCallback? onTap; 
+  final VoidCallback? onTap;
 
   const DetailsOrderButton({super.key, this.onTap});
 
@@ -19,9 +20,9 @@ class DetailsOrderButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(30.r),
         ),
         child: Text(
-          "Details",
+          "details".tr(),
           style: TextStyles.font12Blackbold().copyWith(
-            color:ColorPalette.textDark,
+            color: ColorPalette.textDark,
           ),
         ),
       ),

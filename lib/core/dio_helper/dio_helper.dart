@@ -44,12 +44,19 @@ class DioHelper {
   }
 
   static Future<Response> postData({
-    required String url,
-    Map<String, dynamic>? data,
-    Map<String, dynamic>? query,
-  }) async {
-    return await dio.post(url, data: data, queryParameters: query);
-  }
+  required String url,
+  dynamic data, // 👈 بدل Map
+  Map<String, dynamic>? query,
+  Map<String, dynamic>? headers,
+}) async {
+  return await dio.post(
+    url,
+    data: data,
+    queryParameters: query,
+    options: Options(headers: headers),
+  );
+}
+
 
   static Future<Response> putData({
     required String url,

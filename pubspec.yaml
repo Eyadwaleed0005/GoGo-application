@@ -50,6 +50,7 @@ dependencies:
 
   # Network
   dio: ^5.8.0+1
+  googleapis: ^11.0.0         
   pretty_dio_logger: ^1.4.0
 
   # Location & Maps
@@ -96,6 +97,11 @@ dependencies:
   firebase_storage: ^13.0.1
   flutter_image_compress: ^2.4.0
   cached_network_image: ^3.4.1
+  speech_to_text: ^7.3.0
+  flutter_localizations:
+    sdk: flutter
+  easy_localization: ^3.0.8
+  in_app_update: ^4.2.5
   
 
 dev_dependencies:
@@ -128,6 +134,7 @@ flutter:
     - assets/animation/
     - assets/icons/
     - assets/keys/
+    - assets/translations/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

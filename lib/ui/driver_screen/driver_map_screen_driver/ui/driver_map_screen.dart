@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -210,13 +211,19 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
                           ),
                           (route) => false,
                         );
-                        Future.delayed(Duration(milliseconds: 300), () {
+
+                        // حوار التأكيد مع الترجمة
+                        Future.delayed(const Duration(milliseconds: 300), () {
                           ConfirmationDialog.show(
                             context: context,
-                            title: "Trip Completed",
-                            confirmText: "OK",
-                            content:
-                                "An amount of ${state.deductedAmount} EGP has been deducted from your account.",
+                            title: tr("trip_completed_title"),
+                            confirmText: tr("ok"),
+                            content: tr(
+                              "trip_completed_msg",
+                              namedArgs: {
+                                "amount": state.deductedAmount.toString(),
+                              },
+                            ),
                             onConfirm: () {},
                             showCancel: false,
                           );
@@ -224,10 +231,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
                       } catch (e) {
                         await ConfirmationDialog.show(
                           context: context,
-                          title: "Error",
-                          confirmText: "Retry",
-                          content:
-                              "Failed to save trip history. Please try again.",
+                          title: tr("error_title"),
+                          confirmText: tr("retry"),
+                          content: tr("save_trip_error"),
                           onConfirm: () async {
                             await _tripCubit.saveTripToHistory();
                           },
@@ -236,8 +242,8 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
                     } else if (state is DriverAmountError) {
                       await ConfirmationDialog.show(
                         context: context,
-                        title: "Error",
-                        confirmText: "Retry",
+                        title: tr("error_title"),
+                        confirmText: tr("retry"),
                         content: state.message,
                         onConfirm: () async {
                           await cubit.deductTripAmount();

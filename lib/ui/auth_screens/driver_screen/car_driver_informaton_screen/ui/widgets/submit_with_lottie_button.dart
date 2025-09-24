@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/widgets/custom_button.dart';
 import 'package:gogo/ui/auth_screens/driver_screen/car_driver_informaton_screen/logic/cubit/car_driver_information_cubit.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SubmitButton extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -18,14 +19,14 @@ class SubmitButton extends StatelessWidget {
 
     return CustomButton(
       borderRadius: 8.r,
-      text: "Submit",
+      text: "submit".tr(),
       onPressed: () {
         final missingFields = cubit.validateCarInfo();
         if (formKey.currentState!.validate() && missingFields.isEmpty) {
           cubit.submitData();
         } else {
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text("❌ يرجى إدخال جميع الحقول المطلوبة")),
+            SnackBar(content: Text("please_fill_required_fields".tr())),
           );
         }
       },

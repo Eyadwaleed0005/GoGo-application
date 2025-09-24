@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/textstyles.dart';
@@ -32,8 +33,8 @@ class UserDataWidget extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Center(child: Text('Personal',style: TextStyles.font10Blackbold(),)),
-          Center(child: Text('Information',style: TextStyles.font10Blackbold(),)),
+          Center(child: Text('personal'.tr(), style: TextStyles.font10Blackbold())),
+          Center(child: Text('information'.tr(), style: TextStyles.font10Blackbold())),
           Container(
             width: double.infinity,
             padding: EdgeInsets.symmetric(vertical: 10.h, horizontal: 5.w),
@@ -42,10 +43,7 @@ class UserDataWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Center(
-              child: Text(
-                userName,
-                style: TextStyles.font10Blackbold(),
-              ),
+              child: Text(userName, style: TextStyles.font10Blackbold()),
             ),
           ),
           Container(
@@ -56,10 +54,7 @@ class UserDataWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Center(
-              child: Text(
-                userEmail,
-                style: TextStyles.font8Blackbold(),
-              ),
+              child: Text(userEmail, style: TextStyles.font8Blackbold()),
             ),
           ),
           Container(
@@ -70,10 +65,7 @@ class UserDataWidget extends StatelessWidget {
               borderRadius: BorderRadius.circular(12.r),
             ),
             child: Center(
-              child: Text(
-                userPhone,
-                style: TextStyles.font10Blackbold(),
-              ),
+              child: Text(userPhone, style: TextStyles.font10Blackbold()),
             ),
           ),
         ],

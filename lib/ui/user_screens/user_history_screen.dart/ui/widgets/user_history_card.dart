@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class UserHistoryCard extends StatelessWidget {
   final String from;
@@ -35,7 +36,15 @@ class UserHistoryCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("From: $from", style: TextStyles.font12Blackbold()),
+                Expanded( // ✅ عشان النص ياخد المساحة ويختصر لو طويل
+                  child: Text(
+                    "${'from'.tr()}: $from",
+                    style: TextStyles.font12Blackbold(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(width: 8.w),
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
                   decoration: BoxDecoration(
@@ -50,7 +59,15 @@ class UserHistoryCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text("to: $to", style: TextStyles.font12Blackbold()),
+                Expanded( // ✅ برضه هنا
+                  child: Text(
+                    "${'to'.tr()}: $to",
+                    style: TextStyles.font12Blackbold(),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                SizedBox(width: 8.w),
                 Container(
                   padding: EdgeInsets.symmetric(
                     vertical: 4.h,

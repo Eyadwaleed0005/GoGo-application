@@ -10,7 +10,7 @@ class AnimationBox extends StatelessWidget {
   final bool autoClose;
   final TextStyle? textStyle;
   final Duration? duration;
-  final VoidCallback? onClosed; // 👈 إضافة دعم onClosed
+  final VoidCallback? onClosed; 
 
   const AnimationBox({
     super.key,

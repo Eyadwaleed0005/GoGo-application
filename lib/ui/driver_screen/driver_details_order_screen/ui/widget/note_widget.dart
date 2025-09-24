@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
@@ -34,7 +35,7 @@ class NoteWidget extends StatelessWidget {
                 color: ColorPalette.textDark,
                 shape: const StadiumBorder(),
               ),
-              child: Text("Note", style: TextStyles.font10whitebold()),
+              child: Text("note".tr(), style: TextStyles.font10whitebold()),
             ),
             verticalSpace(15),
             Text(note, style: TextStyles.font12Blackbold()),

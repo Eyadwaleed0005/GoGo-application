@@ -11,27 +11,24 @@ class SearchCubit extends Cubit<SearchState> {
 
   Future<void> searchPlaces(String query) async {
     if (query.trim().isEmpty) {
-      emit(SearchInitial());
+      if (!isClosed) emit(SearchInitial());
       return;
     }
 
-    emit(SearchLoading());
+    if (!isClosed) emit(SearchLoading());
 
     try {
       final mapboxSuggestions = await repository.getPlaceSuggestions(query);
-      final customSuggestions = CustomLocationService.searchCustomLocations(
-        query,
-      );
+      final customSuggestions = CustomLocationService.searchCustomLocations(query);
 
       final allSuggestions = [...customSuggestions, ...mapboxSuggestions];
 
-      emit(SearchLoaded(allSuggestions));
+      if (!isClosed) emit(SearchLoaded(allSuggestions));
     } catch (e) {
-      emit(SearchError("فشل في جلب الاقتراحات: $e"));
+      if (!isClosed) emit(SearchError("فشل في جلب الاقتراحات: $e"));
     }
   }
 
-  /// 🟢 تجيب أول مكان مطابق للنص مباشرة
   Future<MapSuggestion?> searchFirstMatch(String query) async {
     try {
       final suggestions = await repository.getPlaceSuggestions(query);

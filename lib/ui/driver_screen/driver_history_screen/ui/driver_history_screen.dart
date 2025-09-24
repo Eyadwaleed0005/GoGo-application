@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,33 +19,40 @@ class DriverHistoryScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => DriverHistoryScreenCubit(DriverHistoryRepository())
-        ..fetchDriverHistory(),
+      create: (_) =>
+          DriverHistoryScreenCubit(DriverHistoryRepository())
+            ..fetchDriverHistory(),
       child: Scaffold(
         body: SafeArea(
-          child: BlocBuilder<DriverHistoryScreenCubit, DriverHistoryScreenState>(
-            builder: (context, state) {
-              return CustomRefreshWidget(
-                onReload: () async {
-                  context.read<DriverHistoryScreenCubit>().fetchDriverHistory();
+          child:
+              BlocBuilder<DriverHistoryScreenCubit, DriverHistoryScreenState>(
+                builder: (context, state) {
+                  return CustomRefreshWidget(
+                    onReload: () async {
+                      context
+                          .read<DriverHistoryScreenCubit>()
+                          .fetchDriverHistory();
+                    },
+                    // هنا نخلي الشاشة كلها Scroll
+                    child: SingleChildScrollView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 5.w,
+                        vertical: 6.h,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          verticalSpace(10),
+                          const Center(child: TitleHistoryWidget()),
+                          verticalSpace(12),
+                          _buildContent(context, state),
+                        ],
+                      ),
+                    ),
+                  );
                 },
-                // هنا نخلي الشاشة كلها Scroll
-                child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 6.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      verticalSpace(10),
-                      const Center(child: TitleHistoryWidget()),
-                      verticalSpace(12),
-                      _buildContent(context, state),
-                    ],
-                  ),
-                ),
-              );
-            },
-          ),
+              ),
         ),
       ),
     );
@@ -66,7 +74,7 @@ class DriverHistoryScreen extends StatelessWidget {
         return Padding(
           padding: EdgeInsets.only(top: 70.h),
           child: AnimationBox(
-            message: "No Trips In History Now",
+            message: "no_trips_history".tr(),
             animationAsset: AppImage().emptyBox,
             textStyle: TextStyles.font12Blackbold(),
           ),

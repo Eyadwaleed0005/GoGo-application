@@ -1,5 +1,5 @@
-
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -41,8 +41,10 @@ class _DriverStatusButtonState extends State<DriverStatusButton> {
 
   Future<void> _loadStatusAndDriverId() async {
     final savedStatus = await SharedPreferencesHelper.getBool(
-        key: SharedPreferenceKeys.driverActive);
-    final id = await SecureStorageHelper.getdata(key: SecureStorageKeys.driverId);
+      key: SharedPreferenceKeys.driverActive,
+    );
+    final id =
+        await SecureStorageHelper.getdata(key: SecureStorageKeys.driverId);
 
     if (!mounted) return;
     setState(() {
@@ -97,16 +99,17 @@ class _DriverStatusButtonState extends State<DriverStatusButton> {
   Future<void> _promptEnableLocation() async {
   await ConfirmationDialog.show(
     context: context,
-    title: "Enable Location",
-    content: "Location is disabled. Please enable location to activate status.",
-    confirmText: "Open Settings",
-    showCancel: true, 
+    title: "enable_location".tr(),   // ✅ مفتاح الترجمة
+    content: "enable_location_message".tr(),
+    confirmText: "open_settings".tr(),
+    showCancel: true,
     onConfirm: () async {
-      await Geolocator.openLocationSettings(); 
-      _checkLocationService(); 
+      await Geolocator.openLocationSettings();
+      _checkLocationService();
     },
   );
 }
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -135,7 +138,9 @@ class _DriverStatusButtonState extends State<DriverStatusButton> {
 
                   if (driverId != null) {
                     if (value) {
-                      context.read<DriverLocationCubit>().startTracking(driverId!);
+                      context
+                          .read<DriverLocationCubit>()
+                          .startTracking(driverId!);
                     } else {
                       context.read<DriverLocationCubit>().stopTracking();
                     }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
@@ -7,10 +8,7 @@ import 'package:gogo/core/style/textstyles.dart';
 class TripPriceWidget extends StatelessWidget {
   final String price;
 
-  const TripPriceWidget({
-    super.key,
-    required this.price,
-  });
+  const TripPriceWidget({super.key, required this.price});
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +21,12 @@ class TripPriceWidget extends StatelessWidget {
         border: Border.all(color: ColorPalette.fieldStroke),
       ),
       child: Row(
-        mainAxisSize: MainAxisSize.min, 
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            price,
-            style: TextStyles.font10Blackbold(),
-          ),
+          Text(price, style: TextStyles.font10Blackbold()),
           horizontalSpace(4),
-          Text(
-            "EGP", 
-            style: TextStyles.font10Blackbold(),
-          ),
+          Text("currency_egp".tr(), style: TextStyles.font10Blackbold()),
         ],
       ),
     );

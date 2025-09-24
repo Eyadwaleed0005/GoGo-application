@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
@@ -22,31 +23,31 @@ class CustomNavBar extends StatelessWidget {
       items: [
         BottomBarItem(
           icon: const FaIcon(FontAwesomeIcons.house),
-          title: Text('Home', style: TextStyles.font10Blackbold()),
+          title: Text('home'.tr(), style: TextStyles.font10Blackbold()),
           selectedColor: ColorPalette.textDark,
           unSelectedColor: ColorPalette.textDark,
         ),
         BottomBarItem(
-          icon: const FaIcon(FontAwesomeIcons.bell), 
-          title: Text('Order', style: TextStyles.font10Blackbold()),
+          icon: const FaIcon(FontAwesomeIcons.bell),
+          title: Text('order'.tr(), style: TextStyles.font10Blackbold()),
           selectedColor: ColorPalette.textDark,
           unSelectedColor: ColorPalette.textDark,
         ),
         BottomBarItem(
           icon: const FaIcon(FontAwesomeIcons.clockRotateLeft),
-          title: Text('History', style: TextStyles.font10Blackbold()),
+          title: Text('history'.tr(), style: TextStyles.font10Blackbold()),
           selectedColor: ColorPalette.textDark,
           unSelectedColor: ColorPalette.textDark,
         ),
         BottomBarItem(
           icon: const FaIcon(FontAwesomeIcons.wallet),
-          title: Text('Wallet', style: TextStyles.font10Blackbold()),
+          title: Text('wallet'.tr(), style: TextStyles.font10Blackbold()),
           selectedColor: ColorPalette.textDark,
           unSelectedColor: ColorPalette.textDark,
         ),
         BottomBarItem(
           icon: const FaIcon(FontAwesomeIcons.user),
-          title: Text('Profile', style: TextStyles.font10Blackbold()),
+          title: Text('profile'.tr(), style: TextStyles.font10Blackbold()),
           selectedColor: ColorPalette.textDark,
           unSelectedColor: ColorPalette.textDark,
         ),

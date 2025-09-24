@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class SectionSwitcher extends StatefulWidget {
   final List<Widget> sections;
@@ -37,7 +38,6 @@ class _SectionSwitcherState extends State<SectionSwitcher> {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           widget.sections[currentSection],
-
           const SizedBox(height: 20),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -57,7 +57,7 @@ class _SectionSwitcherState extends State<SectionSwitcher> {
                     ),
                   ),
                   child: Text(
-                    'Previous',
+                    'previous'.tr(),
                     style: TextStyles.font10blackMedium(),
                   ),
                 )
@@ -78,7 +78,7 @@ class _SectionSwitcherState extends State<SectionSwitcher> {
                       borderRadius: BorderRadius.circular(25.r),
                     ),
                   ),
-                  child: Text('Next', style: TextStyles.font10blackMedium()),
+                  child: Text('next'.tr(), style: TextStyles.font10blackMedium()),
                 )
               else
                 SizedBox(width: 90.w),

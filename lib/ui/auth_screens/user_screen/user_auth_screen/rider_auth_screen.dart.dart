@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
@@ -39,7 +40,7 @@ class RiderAuthScreen extends StatelessWidget {
               SizedBox(height: 30.h),
               Center(
                 child: Text(
-                  'Move Smarter with gogo',
+                  'move_smarter'.tr(),
                   style: TextStyles.font21BlackBold(),
                   textAlign: TextAlign.center,
                 ),
@@ -47,14 +48,14 @@ class RiderAuthScreen extends StatelessWidget {
               SizedBox(height: 10.h),
               Center(
                 child: Text(
-                  'Register now and enjoy safe, fast rides',
+                  'register_now_enjoy'.tr(),
                   style: TextStyles.font11GrayRegular(),
                   textAlign: TextAlign.center,
                 ),
               ),
               Center(
                 child: Text(
-                  'whenever and wherever you need.',
+                  'whenever_wherever'.tr(),
                   style: TextStyles.font11GrayRegular(),
                   textAlign: TextAlign.center,
                 ),
@@ -62,7 +63,7 @@ class RiderAuthScreen extends StatelessWidget {
               SizedBox(height: 20.h),
               Center(
                 child: CustomButton(
-                  text: 'Register',
+                  text: 'register'.tr(),
                   backgroundColor: ColorPalette.mainColor,
                   height: 30.h,
                   width: 222.w,
@@ -75,7 +76,7 @@ class RiderAuthScreen extends StatelessWidget {
               SizedBox(height: 15.h),
               Center(
                 child: CustomOutlinedButton(
-                  text: 'Log in',
+                  text: 'login'.tr(),
                   height: 30.h,
                   width: 200.w,
                   borderRadius: 3.r,

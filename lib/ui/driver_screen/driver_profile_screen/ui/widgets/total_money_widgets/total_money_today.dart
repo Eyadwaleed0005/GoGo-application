@@ -4,6 +4,7 @@ import 'package:gogo/core/helper/driver_daily_amount-helper.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart'; // للترجمة
 import 'total_money_background.dart';
 
 class TotalMoneyToday extends StatelessWidget {
@@ -14,17 +15,20 @@ class TotalMoneyToday extends StatelessWidget {
     return TotalMoneyBackground(
       child: Stack(
         children: [
-          Positioned(
+          // عنوان "Today Income"
+          PositionedDirectional(
             top: 7.h,
-            left: 6.w,
+            start: 6.w, // بدل left
             child: Text(
-              "Today's income",
+              "today_income".tr(),
               style: TextStyles.font15whitebold(),
             ),
           ),
-          Positioned(
+
+          // حاوية المجموع
+          PositionedDirectional(
             bottom: 8.h,
-            right: 4.w,
+            end: 4.w, // بدل right
             child: Container(
               padding: EdgeInsets.symmetric(horizontal: 3.w),
               decoration: BoxDecoration(
@@ -35,26 +39,32 @@ class TotalMoneyToday extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Padding(
-                    padding: EdgeInsets.only(bottom: 20.h, left: 7.w),
+                    padding: EdgeInsetsDirectional.only(
+                      bottom: 20.h,
+                      start: 7.w, // بدل left
+                    ),
                     child: Text(
-                      "Total",
+                      "total".tr(),
                       style: TextStyles.font12blackBold(),
                     ),
                   ),
                   horizontalSpace(8),
                   Padding(
-                    padding:  EdgeInsets.only(top: 35.h, right: 4.w),
+                    padding: EdgeInsetsDirectional.only(
+                      top: 35.h,
+                      end: 4.w, // بدل right
+                    ),
                     child: FutureBuilder<int>(
                       future: DriverDailyAmountHelper.getDailyAmount(),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState == ConnectionState.waiting) {
                           return Text(
-                            "Loading...",
+                            "loading".tr(),
                             style: TextStyles.font12blackBold(),
                           );
                         } else if (snapshot.hasError) {
                           return Text(
-                            "Error",
+                            "error".tr(),
                             style: TextStyles.font12blackBold(),
                           );
                         } else {

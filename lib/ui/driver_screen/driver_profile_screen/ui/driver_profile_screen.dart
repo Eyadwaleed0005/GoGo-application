@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gogo/ui/driver_screen/driver_profile_screen/logic/cubit/driver_location_cubit.dart';
 import 'package:gogo/ui/driver_screen/driver_profile_screen/logic/cubit/driver_profile_screen_cubit.dart';
 import 'package:gogo/ui/driver_screen/driver_profile_screen/ui/widgets/driver_information_widget/driver_information_widget.dart';
 import 'package:gogo/ui/driver_screen/driver_profile_screen/ui/widgets/driver_profile_header_widget/driver_profile_header_widget.dart';
@@ -18,19 +17,12 @@ class DriverProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-          create: (_) {
-            final cubit = DriverProfileScreenCubit(DriverRepository());
-            cubit.fetchDriverProfile();
-            return cubit;
-          },
-        ),
-        BlocProvider(
-          create: (_) => DriverLocationCubit(),
-        ),
-      ],
+    return BlocProvider(
+      create: (_) {
+        final cubit = DriverProfileScreenCubit(DriverRepository());
+        cubit.fetchDriverProfile();
+        return cubit;
+      },
       child: SafeArea(
         child: Scaffold(
           body: BlocBuilder<DriverProfileScreenCubit, DriverProfileScreenState>(
@@ -40,7 +32,6 @@ class DriverProfileScreen extends StatelessWidget {
                   context.read<DriverProfileScreenCubit>().fetchDriverProfile();
                 },
                 child: SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
                   padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 25.h),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

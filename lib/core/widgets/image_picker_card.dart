@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -34,20 +35,22 @@ class ImagePickerCard extends StatelessWidget {
             children: [
               ListTile(
                 leading: const Icon(Icons.camera_alt, color: Colors.blueAccent),
-                title: Text("Take a photo", style: TextStyles.font10Blackbold()),
+                title: Text(
+                  "take_photo".tr(),
+                  style: TextStyles.font10Blackbold(),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   onPick(ImageSource.camera);
                 },
               ),
-              Divider(
-                thickness: 1,
-                height: 1,
-                color: ColorPalette.fieldStroke,
-              ),
+              Divider(thickness: 1, height: 1, color: ColorPalette.fieldStroke),
               ListTile(
                 leading: const Icon(Icons.photo_library, color: Colors.green),
-                title: Text("Choose from gallery", style: TextStyles.font10Blackbold()),
+                title: Text(
+                  "choose_from_gallery".tr(),
+                  style: TextStyles.font10Blackbold(),
+                ),
                 onTap: () {
                   Navigator.pop(context);
                   onPick(ImageSource.gallery);

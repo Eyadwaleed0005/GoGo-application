@@ -5,6 +5,7 @@ import 'package:gogo/core/local/secure_storage.dart';
 import 'package:gogo/core/local/secure_storage_keys.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart'; // ✅ إضافة
 import 'driver_information_text_field.dart';
 
 class DriverInformationWidget extends StatefulWidget {
@@ -51,25 +52,25 @@ class _DriverInformationWidgetState extends State<DriverInformationWidget> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              "Driver Information",
+              "driver_information".tr(), // ✅ عنوان قابل للترجمة
               style: TextStyles.font12Blackbold(),
             ),
             verticalSpace(14),
 
             DriverInformationTextField(
-              title: "Name",
+              title: "name".tr(), // ✅ قابل للترجمة
               value: name ?? "...",
             ),
             verticalSpace(12),
 
             DriverInformationTextField(
-              title: "Email",
+              title: "email".tr(), // ✅ قابل للترجمة
               value: email ?? "...",
             ),
             verticalSpace(12),
 
             DriverInformationTextField(
-              title: "Phone Number",
+              title: "phone_number".tr(), // ✅ قابل للترجمة
               value: phone ?? "...",
             ),
           ],

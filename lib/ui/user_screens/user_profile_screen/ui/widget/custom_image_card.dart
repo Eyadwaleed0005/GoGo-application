@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CustomImageCard extends StatelessWidget {
   final double width;
@@ -11,7 +12,7 @@ class CustomImageCard extends StatelessWidget {
   final double imageHeight;
   final double spaceBetweenImageAndPhoto;
   final String assetImage;
-  final String title;
+  final String title; // يمكن استخدام مفتاح ترجمة
   final bool isComingSoon;
   final VoidCallback? onTap;
 
@@ -52,8 +53,8 @@ class CustomImageCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text("Coming", style: TextStyles.font8redSemiBold()),
-                      Text("Soon", style: TextStyles.font8redSemiBold()),
+                      Text("coming".tr(), style: TextStyles.font8redSemiBold()),
+                      Text("soon".tr(), style: TextStyles.font8redSemiBold()),
                     ],
                   ),
                 ),
@@ -66,7 +67,7 @@ class CustomImageCard extends StatelessWidget {
               ),
             ),
             verticalSpace(spaceBetweenImageAndPhoto),
-            Text(title, style: TextStyles.font8Blackbold()),
+            Text(title.tr(), style: TextStyles.font8Blackbold()), // يمكن ترجمته
           ],
         ),
       ),

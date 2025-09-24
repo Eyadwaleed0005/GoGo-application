@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart'; // ✅ استيراد الترجمة
 
 class CurrentBalanceContent extends StatelessWidget {
   final int? wallet; 
@@ -16,7 +17,7 @@ class CurrentBalanceContent extends StatelessWidget {
         children: [
           verticalSpace(30),
           Text(
-            "Current Balance",
+            "wallet_current_balance".tr(),          // ✅ مفتاح الترجمة
             style: TextStyles.font18whitebold(),
           ),
           verticalSpace(5),
@@ -25,7 +26,9 @@ class CurrentBalanceContent extends StatelessWidget {
             children: [
               horizontalSpace(40),
               Text(
-                wallet != null ? "$wallet EGP" : "0 EGP", 
+                wallet != null
+                    ? "$wallet ${"wallet_currency".tr()}"   // ✅ العملة قابلة للترجمة
+                    : "0 ${"wallet_currency".tr()}",
                 style: TextStyles.font15whitebold(),
               ),
               horizontalSpace(12),

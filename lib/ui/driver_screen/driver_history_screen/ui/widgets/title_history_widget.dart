@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
@@ -23,7 +24,10 @@ class TitleHistoryWidget extends StatelessWidget {
             child: Row(
               children: [
                 horizontalSpace(12),
-                Text("Trip History", style: TextStyles.font13whitesemiBold()),
+                Text(
+                  "trip_history".tr(),
+                  style: TextStyles.font13whitesemiBold(),
+                ),
                 horizontalSpace(5),
                 const UpDownArrowsWidget(),
               ],

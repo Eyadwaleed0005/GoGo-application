@@ -6,6 +6,7 @@ import 'package:lottie/lottie.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart'; 
 
 class RejectDriverScreen extends StatelessWidget {
   const RejectDriverScreen({super.key});
@@ -27,13 +28,13 @@ class RejectDriverScreen extends StatelessWidget {
                 fit: BoxFit.contain,
               ),
               Text(
-                "تم رفض بياناتك",
+                "driver_rejected_title".tr(),         
                 style: TextStyles.font22Blackbold(),
                 textAlign: TextAlign.center,
               ),
               verticalSpace(10),
               Text(
-                "نأسف، لقد تم رفض بياناتك بعد المراجعة. يرجى التواصل مع الدعم لمزيد من التفاصيل.",
+                "driver_rejected_message".tr(),        
                 style: TextStyles.font12GreyDarkSemiBold(),
                 textAlign: TextAlign.center,
               ),
@@ -43,7 +44,7 @@ class RejectDriverScreen extends StatelessWidget {
                 height: 48.h,
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor:ColorPalette.mainColor,
+                    backgroundColor: ColorPalette.mainColor,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -51,12 +52,12 @@ class RejectDriverScreen extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamedAndRemoveUntil(
                       context,
-                      AppRoutes.accountTypeScreen, 
-                      (route) => false, 
+                      AppRoutes.accountTypeScreen,
+                      (route) => false,
                     );
                   },
                   child: Text(
-                    "إعادة التسجيل مرة أخرى",
+                    "driver_rejected_retry".tr(),        
                     style: TextStyles.font15Blackbold(),
                   ),
                 ),

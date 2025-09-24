@@ -13,40 +13,33 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
   final GetAllOrdersRepository repository;
 
   DriverOrderListScreenCubit({required this.repository})
-      : super(DriverOrderListScreenInitial());
+    : super(DriverOrderListScreenInitial());
 
   Future<void> fetchOrders() async {
-    if (isClosed) return; 
-    emit(DriverOrderListScreenLoading());
+  if (isClosed) return;
+  emit(DriverOrderListScreenLoading());
 
-    final isActive = await SharedPreferencesHelper.getBool(
-      key: SharedPreferenceKeys.driverActive,
-    );
+  final isActive = await SharedPreferencesHelper.getBool(
+    key: SharedPreferenceKeys.driverActive,
+  );
 
-    if (isActive != true) {
-      if (isClosed) return;
-      emit(DriverOrderListScreenInactive());
-      return;
-    }
-
-    try {
-      final orders = await repository.getAllOrders();
-      if (isClosed) return;
-      emit(DriverOrderListScreenSuccess(List.unmodifiable(orders))); // ✅
-    } catch (error) {
-      if (isClosed) return;
-      emit(DriverOrderListScreenError(error.toString()));
-    }
+  if (isActive != true) {
+    if (isClosed) return;
+    emit(DriverOrderListScreenInactive());
+    return;
   }
 
-  void removeOrderLocally(int orderId) {
-    if (state is DriverOrderListScreenSuccess) {
-      final currentState = state as DriverOrderListScreenSuccess;
-      final updatedList =
-          currentState.orders.where((order) => order.id != orderId).toList();
+  try {
+    final orders = await repository.getAllOrders();
+    final pendingOrders = orders
+        .where((order) => (order.status ?? '').toLowerCase() == 'pending')
+        .toList();
 
-      if (isClosed) return;
-      emit(DriverOrderListScreenSuccess(List.unmodifiable(updatedList))); // ✅
-    }
+    if (isClosed) return;
+    emit(DriverOrderListScreenSuccess(List.unmodifiable(pendingOrders)));
+  } catch (error) {
+    if (isClosed) return;
+    emit(DriverOrderListScreenError(error.toString()));
   }
+}
 }

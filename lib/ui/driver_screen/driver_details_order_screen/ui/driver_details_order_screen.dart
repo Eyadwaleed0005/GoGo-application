@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/data/repo/order_details_repository.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/logic/cubit/driver_details_order_screen_cubit.dart';
@@ -53,7 +54,7 @@ class DriverDetailsOrderScreen extends StatelessWidget {
                             name: order.userName,
                             time: order.formattedTime,
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 18.h),
                           FromToCard(
                             fromPlace: order.from,
                             toPlace: order.to,
@@ -62,10 +63,10 @@ class DriverDetailsOrderScreen extends StatelessWidget {
                             tripType: order.type,
                             passengers: order.noPassengers.toString(),
                           ),
-                          const SizedBox(height: 20),
+                          SizedBox(height: 18.h),
                           if (order.notes.isNotEmpty)
                             NoteWidget(note: order.notes),
-                          const SizedBox(height: 25),
+                          SizedBox(height: 18.h),
                           ActionButtonsWidget(
                             onAccept: () async {
                               final cubit = context
@@ -73,6 +74,7 @@ class DriverDetailsOrderScreen extends StatelessWidget {
                               final orderTime = order.date;
                               await cubit.acceptOrder(context, order.id);
                               final currentState = cubit.state;
+
                               if (currentState
                                   is DriverDetailsOrderScreenSuccess) {
                                 await SharedPreferencesHelperTrips.saveTripData(
@@ -89,7 +91,8 @@ class DriverDetailsOrderScreen extends StatelessWidget {
                                   fromPlace: order.from,
                                   toPlace: order.to,
                                 );
-                                await cubit.deleteOrder(order.id);
+                                await cubit.approveOrder(order.id);
+
                                 if (context.mounted) {
                                   Navigator.pushReplacementNamed(
                                     context,

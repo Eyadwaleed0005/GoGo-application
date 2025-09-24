@@ -10,6 +10,7 @@ import 'package:gogo/ui/user_screens/user_profile_screen/logic/cubit/user_profil
 import 'custom_image_card.dart';
 import 'user_data_widget.dart';
 import '../../data/model/local_user_model.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ProfileContentWidget extends StatelessWidget {
   final LocalUserModel user;
@@ -44,8 +45,8 @@ class ProfileContentWidget extends StatelessWidget {
                         imageWidth: 40,
                         imageHeight: 40,
                         assetImage: AppImage().masterCard,
-                        title: 'payments methods',
-                        onTap: () => print('Card tapped!'),
+                        title: 'payments_methods'.tr(), // مفتاح الترجمة
+                        onTap: () {},
                         spaceBetweenImageAndPhoto: 0,
                         isComingSoon: true,
                       ),
@@ -56,11 +57,11 @@ class ProfileContentWidget extends StatelessWidget {
                         imageWidth: 40,
                         imageHeight: 40,
                         assetImage: AppImage().privacyPolicy,
-                        title: 'Privacy policy',
+                        title: 'privacy_policy'.tr(),
                         onTap: () {
-                           Navigator.pushNamed(
+                          Navigator.pushNamed(
                             context,
-                            AppRoutes.privacyPolicyScreen
+                            AppRoutes.privacyPolicyScreen,
                           );
                         },
                         spaceBetweenImageAndPhoto: 10,
@@ -77,11 +78,11 @@ class ProfileContentWidget extends StatelessWidget {
                         width: 100,
                         height: 50,
                         assetImage: AppImage().activity,
-                        title: 'activity',
+                        title: 'activity'.tr(),
                         onTap: () {
                           final cubit = context.read<UserProfileScreenCubit>();
                           final String? profilePhotoUrl =
-                              cubit.userProfileImageUrl; 
+                              cubit.userProfileImageUrl;
                           Navigator.pushNamed(
                             context,
                             AppRoutes.userHistoryScreen,

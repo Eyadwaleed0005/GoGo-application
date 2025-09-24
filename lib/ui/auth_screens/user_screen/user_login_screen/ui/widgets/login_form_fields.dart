@@ -1,7 +1,7 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/core/widgets/app_text_field.dart';
 import 'package:gogo/core/widgets/custom_button.dart';
@@ -19,39 +19,39 @@ class LoginFormFields extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Email Here', style: TextStyles.font10BlackSemiBold()),
+          Text('email_here'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 7.h),
           AppTextField(
-            hint: 'your@gmail.com',
+            hint: 'your_email'.tr(),
             controller: cubit.emailController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '* Email is required';
+                return '* ${'email_required'.tr()}';
               }
               if (!value.contains('@')) {
-                return '* Enter a valid email';
+                return '* ${'email_invalid'.tr()}';
               }
               return null;
             },
           ),
           SizedBox(height: 8.h),
-          Text('Password', style: TextStyles.font10BlackSemiBold()),
+          Text('password'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 8.h),
           AppTextField(
-            hint: 'Enter your password',
+            hint: 'enter_password'.tr(),
             isPassword: true,
             controller: cubit.passwordController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '* Password is required';
+                return '* ${'password_required'.tr()}';
               }
               if (value.length < 6) {
-                return '* Password must be at least 6 characters';
+                return '* ${'password_min'.tr()}';
               }
               return null;
             },
           ),
-          SizedBox(height: 10.h),
+          /* SizedBox(height: 10.h),
           Align(
             alignment: Alignment.centerRight,
             child: GestureDetector(
@@ -62,17 +62,17 @@ class LoginFormFields extends StatelessWidget {
                 );
               },
               child: Text(
-                'Forgot Password?',
+                'forgot_password'.tr(),
                 style: TextStyles.font10GreyDarkSemiBold(),
               ),
             ),
-          ),
+          ),*/
           SizedBox(height: 21.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: Center(
               child: CustomButton(
-                text: 'SIGN IN',
+                text: 'sign_in'.tr(),
                 borderRadius: 3.r,
                 onPressed: () {
                   if (cubit.validateForm()) {

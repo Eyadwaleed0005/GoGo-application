@@ -1,5 +1,5 @@
 class ConstThingsOfUser {
-  static const String numberOfOwner = "0102312345678";
+  static const String numberOfOwner = "01090846073";
   static const String defaultWhatsAppMessage =
       "عزيزنا العميل 🌹\n"
       "العربية اللي طلبتها من تطبيق جوجو وصلت 🚖\n"
@@ -9,4 +9,6 @@ class ConstThingsOfUser {
   static const String projectId ="gogo-app-6ef48";
   static const String notificationBody = "شكرا لاستعمالك GoGo";
   static const double  percentageOfProfit = 0.15;
+  static const double  priceOfOneKelo = 7;
+
 }

@@ -5,6 +5,7 @@ import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ImageUserProfile extends StatelessWidget {
   final String imageUrl;
@@ -23,7 +24,7 @@ class ImageUserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget _buildImage() {
-      // صورة محلية (assets)
+      // صورة من الأصول (assets)
       if (imageUrl.startsWith("assets/")) {
         return Image.asset(
           imageUrl,
@@ -106,7 +107,7 @@ class ImageUserProfile extends StatelessWidget {
                   color: ColorPalette.mainColor,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Text('Edit', style: TextStyles.font8Blackbold()),
+                child: Text('edit'.tr(), style: TextStyles.font8Blackbold()), // استدعاء الترجمة
               ),
             ),
             horizontalSpace(8.w),

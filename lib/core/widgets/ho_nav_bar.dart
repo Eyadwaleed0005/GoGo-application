@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:salomon_bottom_bar/salomon_bottom_bar.dart';
@@ -35,17 +36,17 @@ class HoNavBar extends StatelessWidget {
         items: [
           SalomonBottomBarItem(
             icon: Icon(Icons.home, size: 18.sp),
-            title: Text("Home"),
+            title: Text("home".tr()),
             selectedColor: ColorPalette.mainColor,
           ),
           SalomonBottomBarItem(
             icon: Icon(Icons.grid_view, size: 18.sp),
-            title: Text("Service"),
+            title: Text("service".tr()),
             selectedColor: ColorPalette.mainColor,
           ),
           SalomonBottomBarItem(
             icon: Icon(Icons.person, size: 18.sp),
-            title: Text("Profile"),
+            title: Text("profile".tr()),
             selectedColor: ColorPalette.mainColor,
           ),
         ],

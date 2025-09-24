@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/ui/auth_screens/driver_screen/car_driver_informaton_screen/logic/cubit/car_driver_information_cubit.dart';
 import 'package:gogo/core/widgets/image_picker_card.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CarInfoImages extends StatelessWidget {
   final List<String> missingFields;
@@ -16,7 +17,7 @@ class CarInfoImages extends StatelessWidget {
       children: [
         Expanded(
           child: ImagePickerCard(
-            label: "Car Photo",
+            label: "car_photo".tr(),
             image: cubit.carImage,
             onPick: cubit.pickCarImage,
             isError: missingFields.contains("Car Photo"),
@@ -25,7 +26,7 @@ class CarInfoImages extends StatelessWidget {
         verticalSpace(12),
         Expanded(
           child: ImagePickerCard(
-            label: "License (Front)",
+            label: "license_front".tr(),
             image: cubit.licenseFrontImage,
             onPick: cubit.pickLicenseFrontImage,
             isError: missingFields.contains("License (Front)"),
@@ -34,7 +35,7 @@ class CarInfoImages extends StatelessWidget {
         verticalSpace(12),
         Expanded(
           child: ImagePickerCard(
-            label: "License (Back)",
+            label: "license_back".tr(),
             image: cubit.licenseBackImage,
             onPick: cubit.pickLicenseBackImage,
             isError: missingFields.contains("License (Back)"),

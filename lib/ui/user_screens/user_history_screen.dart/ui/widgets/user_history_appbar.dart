@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class UserHistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String? profileImageUrl; 
@@ -13,7 +14,7 @@ class UserHistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final ImageProvider imageProvider = (profileImageUrl != null && profileImageUrl!.isNotEmpty)
         ? NetworkImage(profileImageUrl!)
-        :  AssetImage(AppImage().defultProfileAccount);
+        : AssetImage(AppImage().defultProfileAccount);
 
     return AppBar(
       backgroundColor: ColorPalette.mainColor,
@@ -23,12 +24,12 @@ class UserHistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
         onPressed: () => Navigator.pop(context),
       ),
       title: Text(
-        'Activity',
+        'activity'.tr(), 
         style: TextStyles.font10Blackbold(),
       ),
       actions: [
         Padding(
-          padding: const EdgeInsets.only(right: 16.0),
+          padding:  EdgeInsets.only(left: 20.0.h),
           child: CircleAvatar(
             backgroundImage: imageProvider,
             radius: 15.r,

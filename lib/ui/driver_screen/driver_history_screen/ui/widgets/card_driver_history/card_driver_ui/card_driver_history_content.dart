@@ -64,18 +64,20 @@ class CardDriverHistoryContent extends StatelessWidget {
                   secondLocation: secondLocation,
                 ),
                 verticalSpace(25),
-                DateTimeRow(
-                  date: date,
-                  time: time,
-                  textStyle: textStyle,
-                ),
+                DateTimeRow(date: date, time: time, textStyle: textStyle),
               ],
             ),
           ),
           Positioned(
             bottom: 40.h,
+            left: 2.w,
             right: 5.w,
-            child: TripPriceWidget(price: price),
+            child: Align(
+              alignment: Directionality.of(context) == TextDirection.rtl
+                  ? Alignment.centerLeft
+                  : Alignment.centerRight,
+              child: TripPriceWidget(price: price),
+            ),
           ),
         ],
       ),

@@ -7,6 +7,7 @@ import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/core/widgets/background_widget.dart';
 import 'package:gogo/ui/user_screens/user_history_screen.dart/ui/widgets/user_history_list.dart';
 import 'package:lottie/lottie.dart';
+import 'package:easy_localization/easy_localization.dart';
 import '../data/repo/user_history_repository.dart';
 import '../logic/cubit/user_history_screen_cubit.dart';
 import 'widgets/user_history_appbar.dart';
@@ -35,7 +36,7 @@ class UserHistoryScreen extends StatelessWidget {
                     children: [
                       Lottie.asset(AppImage().loading, width: 200.w, height: 200.h),
                       verticalSpace(6),
-                      Text("Loading...", style: TextStyles.font12whitebold()),
+                      Text("loading".tr(), style: TextStyles.font12whitebold()),
                     ],
                   ),
                 );
@@ -53,7 +54,7 @@ class UserHistoryScreen extends StatelessWidget {
                       ),
                       verticalSpace(6),
                       Text(
-                        "No history found yet!",
+                        "no_history_found".tr(),
                         style: TextStyles.font12whitebold(),
                       ),
                     ],

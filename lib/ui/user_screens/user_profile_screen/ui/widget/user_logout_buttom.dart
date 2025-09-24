@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -31,12 +32,12 @@ class UserLogoutButtom extends StatelessWidget {
       builder: (context) {
         return AlertDialog(
           backgroundColor: ColorPalette.backgroundColor,
-          title: Text("Confirm Logout", style: TextStyles.font10Blackbold()),
-          content: Text("Are you sure you want to log out?", style: TextStyles.font10BlackMedium()),
+          title: Text("confirm_logout".tr(), style: TextStyles.font10Blackbold()),
+          content: Text("logout_confirmation".tr(), style: TextStyles.font10BlackMedium()),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context),
-              child: Text("Cancel", style: TextStyles.font8Blackbold()),
+              child: Text("cancel".tr(), style: TextStyles.font8Blackbold()),
             ),
             ElevatedButton(
               onPressed: () {
@@ -46,7 +47,7 @@ class UserLogoutButtom extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: ColorPalette.moreRed,
               ),
-              child: Text("Yes", style: TextStyles.font8whiteSemiBold()),
+              child: Text("yes".tr(), style: TextStyles.font8whiteSemiBold()),
             ),
           ],
         );
@@ -67,7 +68,7 @@ class UserLogoutButtom extends StatelessWidget {
             size: 22.sp,
           ),
           Text(
-            "Log Out",
+            "log_out".tr(),
             style: TextStyles.font8redSemiBold(), 
           ),
         ],

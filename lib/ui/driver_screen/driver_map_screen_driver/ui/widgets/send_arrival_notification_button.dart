@@ -6,6 +6,7 @@ import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/ui/driver_screen/driver_map_screen_driver/data/repo/send_message_repo.dart';
 import 'package:gogo/ui/driver_screen/driver_map_screen_driver/logic/send_arrival_notification_button_cubit.dart';
+import 'package:easy_localization/easy_localization.dart'; // ✅ للترجمة
 
 class SendArrivalNotificationButton extends StatelessWidget {
   final String projectId;
@@ -20,7 +21,8 @@ class SendArrivalNotificationButton extends StatelessWidget {
       child: Builder(
         builder: (context) {
           final messenger = ScaffoldMessenger.of(context); // cache instance
-          return BlocConsumer<SendArrivalNotificationButtonCubit, SendArrivalNotificationButtonState>(
+          return BlocConsumer<SendArrivalNotificationButtonCubit,
+              SendArrivalNotificationButtonState>(
             listener: (context, state) {
               if (!context.mounted) return;
 
@@ -29,12 +31,18 @@ class SendArrivalNotificationButton extends StatelessWidget {
               if (state is SendArrivalNotificationButtonFailure) {
                 messenger.showMaterialBanner(
                   MaterialBanner(
-                    content: Text(state.message, style: TextStyles.font10whitebold()),
+                    content: Text(
+                      state.message,
+                      style: TextStyles.font10whitebold(),
+                    ),
                     backgroundColor: Colors.red,
                     actions: [
                       TextButton(
                         onPressed: messenger.hideCurrentMaterialBanner,
-                        child: Text("DISMISS", style: TextStyles.font10whitebold()),
+                        child: Text(
+                          "dismiss".tr(), // ✅ قابل للترجمة
+                          style: TextStyles.font10whitebold(),
+                        ),
                       ),
                     ],
                   ),
@@ -44,12 +52,18 @@ class SendArrivalNotificationButton extends StatelessWidget {
               if (state is SendArrivalNotificationButtonSuccess) {
                 messenger.showMaterialBanner(
                   MaterialBanner(
-                    content: Text("Notification sent successfully", style: TextStyles.font10whitebold()),
+                    content: Text(
+                      "notification_sent".tr(), // ✅ قابل للترجمة
+                      style: TextStyles.font10whitebold(),
+                    ),
                     backgroundColor: Colors.green,
                     actions: [
                       TextButton(
                         onPressed: messenger.hideCurrentMaterialBanner,
-                        child: Text("DISMISS", style: TextStyles.font10whitebold()),
+                        child: Text(
+                          "dismiss".tr(), // ✅ قابل للترجمة
+                          style: TextStyles.font10whitebold(),
+                        ),
                       ),
                     ],
                   ),
@@ -64,7 +78,8 @@ class SendArrivalNotificationButton extends StatelessWidget {
                     onTap: isLoading
                         ? null
                         : () {
-                            final cubit = context.read<SendArrivalNotificationButtonCubit>();
+                            final cubit =
+                                context.read<SendArrivalNotificationButtonCubit>();
                             cubit.sendArrivalNotification();
                           },
                     borderRadius: BorderRadius.circular(50.r),
@@ -80,11 +95,15 @@ class SendArrivalNotificationButton extends StatelessWidget {
                                 color: Colors.orange,
                               ),
                             )
-                          : Icon(Icons.directions_car, color: Colors.orange, size: 22.sp),
+                          : Icon(Icons.directions_car,
+                              color: Colors.orange, size: 22.sp),
                     ),
                   ),
                   verticalSpace(8),
-                  const Text("Arrived", style: TextStyle(color: ColorPalette.textDark)),
+                  Text(
+                    "arrived".tr(), // ✅ قابل للترجمة
+                    style: const TextStyle(color: ColorPalette.textDark),
+                  ),
                 ],
               );
             },

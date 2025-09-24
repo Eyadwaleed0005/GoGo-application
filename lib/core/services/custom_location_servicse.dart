@@ -87,19 +87,20 @@ class CustomLocationService {
       address: "مدينة العريش، شمال سيناء، مصر",
     ),
     MapSuggestion(
-      id: "north_13",
-      name: "جامعة العريش",
-      latitude: 31.1343,
-      longitude: 33.7854,
-      address: "جامعة العريش، شمال سيناء، مصر",
-    ),
-    MapSuggestion(
-      id: "north_uni_arish_private",
-      name: "جامعة العريش الخاصة",
-      latitude: 31.136965323617,
-      longitude: 33.8289294,
-      address: "جامعة العريش الخاصة، شمال سيناء، مصر",
-    ),
+  id: "north_arish_university",
+  name: "جامعة العريش",
+  latitude: 31.136953494141135,
+  longitude: 33.828530158141426,
+  address: "جامعة العريش، شمال سيناء، مصر",
+),
+
+   MapSuggestion(
+  id: "north_sinai_university_arish",
+  name: "جامعة سيناء العريش ",
+  latitude: 31.115064100826658,
+  longitude: 33.690733093594154,
+  address: "جامعة سيناء - العريش، شمال سيناء، مصر",
+),
     MapSuggestion(
       id: "north_14",
       name: "بئر العبد",
@@ -135,6 +136,7 @@ class CustomLocationService {
       longitude: 33.9000,
       address: "الميدان، شمال سيناء، مصر",
     ),
+    //////////////////////////////
     MapSuggestion(
       id: "north_19",
       name: "المساعيد",
@@ -142,6 +144,72 @@ class CustomLocationService {
       longitude: 33.8200,
       address: "المساعيد، العريش، شمال سيناء، مصر",
     ),
+    MapSuggestion(
+  id: "north_19_4",
+  name: "سوق السمك (سوق المحاسنة) - المساعيد",
+  latitude: 31.13039094367837,
+  longitude: 33.803946303836995,
+  address: "سوق السمك (سوق المحاسنة)، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_5",
+  name: "مستشفى سيناء التخصصي - المساعيد",
+  latitude: 31.12716257630867,
+  longitude: 33.801677789595956,
+  address: "مستشفى سيناء التخصصي، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_6",
+  name: "منتدى شباب العريش - المساعيد",
+  latitude: 31.132064672718197,
+  longitude: 33.79853312692597,
+  address: "منتدى شباب العريش، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_7",
+  name: "جامع القرماني - المساعيد",
+  latitude: 31.129718612822586,
+  longitude: 33.8070871864165,
+  address: "جامع القرماني (Mosque of Al-Qurmani)، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_8",
+  name: "ملعب نادي نجمة سيناء - المساعيد",
+  latitude: 31.133052470030695,
+  longitude: 33.808255616132776,
+  address: "ملعب نادي نجمة سيناء، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_9",
+  name: "مستشفى العريش العام - المساعيد",
+  latitude: 31.135991106321843,
+  longitude: 33.80991449776073,
+  address: "مستشفى العريش العام، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_10",
+  name: "استقبال مستشفى العريش للطوارئ - المساعيد",
+  latitude: 31.137411572371413,
+  longitude: 33.808926107427155,
+  address: "استقبال مستشفى العريش للطوارئ، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_11",
+  name: "سوق العريش للجديد والمستعمل - المساعيد",
+  latitude: 31.13930327795958,
+  longitude: 33.80641555982616,
+  address: "سوق العريش للجديد والمستعمل، المساعيد، العريش، شمال سيناء، مصر",
+),
+MapSuggestion(
+  id: "north_19_12",
+  name: "مكتب بريد العريش - المساعيد",
+  latitude: 31.12704325340172,
+  longitude: 33.80787468119179,
+  address: "مكتب بريد العريش، المساعيد، العريش، شمال سيناء، مصر",
+),
+
+
+    //////////////////////////////
     MapSuggestion(
       id: "north_20",
       name: "زرزارة",
@@ -360,9 +428,7 @@ class CustomLocationService {
       address: "السكادرة، الشيخ زويد، شمال سيناء، مصر",
     ),
   ];
-
   static List<MapSuggestion> getCustomLocations() => _customLocations;
-
   static List<MapSuggestion> searchCustomLocations(String query) {
     final lower = query.toLowerCase();
     return _customLocations.where((loc) {

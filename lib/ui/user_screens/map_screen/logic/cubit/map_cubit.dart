@@ -1,5 +1,6 @@
-import 'dart:math' show sin, cos, atan2, sqrt, pi, min, max;
+import 'dart:math' show min, max;
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gogo/ui/driver_screen/driver_map_screen_driver/data/repo/driver_ride_repository.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
 
 import 'map_state.dart';
@@ -43,43 +44,52 @@ class MapCubit extends Cubit<MapState> {
     safeEmit(MapMoved(point));
   }
 
- 
-
   Future<void> drawRoute(List<mb.Point> points) async {
     if (mapboxMap == null || points.isEmpty) return;
-    final style = mapboxMap!.style;
-    await style.removeStyleLayer("route_layer").catchError((_) {});
-    await style.removeStyleSource("route_source").catchError((_) {});
 
-    final coords = points
-        .map((p) => [p.coordinates.lng, p.coordinates.lat])
-        .toList();
-    final geoJson =
-        '''
-{
-  "type": "FeatureCollection",
-  "features": [
-    { "type": "Feature","geometry": {"type": "LineString","coordinates": $coords}}
-  ]
-}
-''';
+    try {
+      final style = mapboxMap!.style;
 
-    await style.addSource(mb.GeoJsonSource(id: "route_source", data: geoJson));
-    await style.addLayer(
-      mb.LineLayer(
-        id: "route_layer",
-        sourceId: "route_source",
-        lineColor: 0xFF0066FF,
-        lineWidth: 6.0,
-        lineJoin: mb.LineJoin.ROUND,
-        lineCap: mb.LineCap.ROUND,
-      ),
-    );
+      if (await style.styleLayerExists("route_layer")) {
+        await style.removeStyleLayer("route_layer");
+      }
+      if (await style.styleSourceExists("route_source")) {
+        await style.removeStyleSource("route_source");
+      }
 
-    safeEmit(MapRouteDrawn(points));
+      final coords = points
+          .map((p) => [p.coordinates.lng, p.coordinates.lat])
+          .toList();
+
+      final geoJson =
+          '''
+    {
+      "type": "FeatureCollection",
+      "features": [
+        { "type": "Feature","geometry": {"type": "LineString","coordinates": $coords}}
+      ]
+    }
+    ''';
+
+      await style.addSource(
+        mb.GeoJsonSource(id: "route_source", data: geoJson),
+      );
+
+      await style.addLayer(
+        mb.LineLayer(
+          id: "route_layer",
+          sourceId: "route_source",
+          lineColor: 0xFF0066FF,
+          lineWidth: 6.0,
+          lineJoin: mb.LineJoin.ROUND,
+          lineCap: mb.LineCap.ROUND,
+        ),
+      );
+
+      safeEmit(MapRouteDrawn(points));
+    } catch (e) {}
   }
-
-  Future<void> drawStraightLine(mb.Point from, mb.Point to) async {
+  /*Future<void> drawStraightLine(mb.Point from, mb.Point to) async {
     if (mapboxMap == null) return;
     final style = mapboxMap!.style;
     await style.removeStyleLayer("straight_line_layer").catchError((_) {});
@@ -113,7 +123,7 @@ class MapCubit extends Cubit<MapState> {
         lineCap: mb.LineCap.ROUND,
       ),
     );
-  }
+  }*/
 
   Future<void> fitCameraToBounds(mb.Point from, mb.Point to) async {
     if (mapboxMap == null) return;
@@ -146,34 +156,37 @@ class MapCubit extends Cubit<MapState> {
     await mapboxMap!.flyTo(cameraOptions, null);
   }
 
-  Future<Map<String, num>> calculateDistanceAndTime(
+  Future<Map<String, dynamic>> calculateDistanceAndTime(
     mb.Point from,
     mb.Point to,
   ) async {
-    const earthRadius = 6371; // نصف قطر الأرض بالكيلومتر
+    final repo = DriverRideRepository();
 
-    double dLat = (to.coordinates.lat - from.coordinates.lat) * (pi / 180);
-    double dLon = (to.coordinates.lng - from.coordinates.lng) * (pi / 180);
+    try {
+      final ride = await repo.getRoute(
+        fromLat: from.coordinates.lat.toDouble(),
+        fromLng: from.coordinates.lng.toDouble(),
+        toLat: to.coordinates.lat.toDouble(),
+        toLng: to.coordinates.lng.toDouble(),
+        userPhone: "",
+      );
 
-    double a =
-        sin(dLat / 2) * sin(dLat / 2) +
-        cos(from.coordinates.lat * (pi / 180)) *
-            cos(to.coordinates.lat * (pi / 180)) *
-            sin(dLon / 2) *
-            sin(dLon / 2);
+      final distanceKm = ride.distanceKm ?? 0.0;
+      final durationMin = ride.durationMin ?? 0.0;
 
-    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
-    double distance = earthRadius * c; // المسافة بالكيلومتر
+      final timeText = durationMin >= 60
+          ? "${(durationMin / 60).toStringAsFixed(1)} h"
+          : "${durationMin.toStringAsFixed(0)} min";
 
-    double avgSpeed = 60; // متوسط السرعة كم/س
-    double timeHours = distance / avgSpeed;
-    double timeMinutes = timeHours * 60;
-
-    return {
-      "distance": double.parse(distance.toStringAsFixed(2)), // كم
-      "time": double.parse(timeMinutes.toStringAsFixed(0)), // دقائق
-      "direct_distance": distance, // مسافة مستقيمة (ممكن تعرضها أو لا)
-    };
+      return {
+        "distance": distanceKm,
+        "timeText": timeText, // دايمًا نص جاهز للعرض
+        "durationMin": durationMin, // القيمة الأصلية
+      };
+    } catch (e) {
+      print("Error calculating distance and time: $e");
+      return {"distance": 0.0, "timeText": "0 min", "durationMin": 0.0};
+    }
   }
 
   Future<void> getPlaceName(num lat, num lng) async {

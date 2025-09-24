@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
@@ -26,7 +27,7 @@ class DriverInfoForm extends StatelessWidget {
 
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
-      labelText: label,
+      labelText: label.tr(),
       labelStyle: TextStyles.font10Blackbold(),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
@@ -45,10 +46,10 @@ class DriverInfoForm extends StatelessWidget {
       children: [
         TextFormField(
           controller: fullNameController,
-          decoration: _inputDecoration("Driver Full Name"),
+          decoration: _inputDecoration("driver_full_name"),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the full name";
+              return "enter_full_name".tr();
             }
             return null;
           },
@@ -56,11 +57,11 @@ class DriverInfoForm extends StatelessWidget {
         verticalSpace(12),
         TextFormField(
           controller: nationalIdController,
-          decoration: _inputDecoration("National ID"),
+          decoration: _inputDecoration("national_id"),
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the national ID";
+              return "enter_national_id".tr();
             }
             return null;
           },
@@ -68,11 +69,11 @@ class DriverInfoForm extends StatelessWidget {
         verticalSpace(12),
         TextFormField(
           controller: ageController,
-          decoration: _inputDecoration("Age"),
+          decoration: _inputDecoration("age"),
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the age";
+              return "enter_age".tr();
             }
             return null;
           },
@@ -80,10 +81,11 @@ class DriverInfoForm extends StatelessWidget {
         verticalSpace(12),
         TextFormField(
           controller: licenseNumberController,
-          decoration: _inputDecoration("License Number"),
+          decoration: _inputDecoration("license_number"),
+          keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the license number";
+              return "enter_license_number".tr();
             }
             return null;
           },
@@ -91,8 +93,8 @@ class DriverInfoForm extends StatelessWidget {
         verticalSpace(12),
         TextFormField(
           controller: licenseExpiryController,
-          decoration: _inputDecoration("License Expiry Date"),
-          readOnly: true, // عشان ما يكتبش التاريخ بإيده
+          decoration: _inputDecoration("license_expiry_date"),
+          readOnly: true,
           onTap: () async {
             DateTime? pickedDate = await showDatePicker(
               context: context,
@@ -102,14 +104,12 @@ class DriverInfoForm extends StatelessWidget {
             );
 
             if (pickedDate != null) {
-              // نخزن التاريخ بصيغة ISO 8601
-              licenseExpiryController.text = pickedDate
-                  .toIso8601String(); // مثال: 2025-08-15T00:00:00
+              licenseExpiryController.text = pickedDate.toIso8601String();
             }
           },
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please select the license expiry date";
+              return "select_license_expiry".tr();
             }
             return null;
           },

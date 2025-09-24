@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,7 +26,7 @@ class DriverLoginScreen extends StatelessWidget {
           if (state is DriverLoginLoading) {
             showBlockingAnimation(
               context: context,
-              message: "Loading",
+              message: "loading".tr(),
               animationAsset: AppImage().loading,
               autoClose: false,
             );
@@ -73,14 +74,11 @@ class DriverLoginScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Driver Sign In',
+                              'driver_sign_in'.tr(),
                               style: TextStyles.font21BlackBold(),
                             ),
                             SizedBox(width: 6.w),
-                            Transform.translate(
-                              offset: Offset(0, 6.h),
-                              child: const OrangeDot(),
-                            ),
+                            const OrangeDot(),
                           ],
                         ),
                       ),
@@ -89,11 +87,11 @@ class DriverLoginScreen extends StatelessWidget {
                         child: Column(
                           children: [
                             Text(
-                              'Welcome back, driver!',
+                              'welcome_back_driver'.tr(),
                               style: TextStyles.font11GrayRegular(),
                             ),
                             Text(
-                              'Please login to continue',
+                              'please_login_to_continue'.tr(),
                               style: TextStyles.font11GrayRegular(),
                             ),
                           ],
@@ -104,8 +102,8 @@ class DriverLoginScreen extends StatelessWidget {
                       SizedBox(height: 18.h),
                       Center(
                         child: ClickableTextSpan(
-                          normalText: 'Don’t Have An Account? ',
-                          clickableText: 'Sign Up Here',
+                          normalText: 'dont_have_account'.tr(),
+                          clickableText: 'sign_up_here'.tr(),
                           onTap: () {
                             Navigator.pushReplacementNamed(
                               context,

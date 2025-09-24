@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -44,7 +45,7 @@ class DriverOrderListScreen extends StatelessWidget {
           return Scaffold(
             body: Center(
               child: Text(
-                "Go to profile and activate your status",
+                "go_to_profile_activate_status".tr(), // ✅ مفتاح الترجمة
                 style: TextStyles.font18BlackBold(),
                 textAlign: TextAlign.center,
               ),
@@ -74,19 +75,22 @@ class DriverOrderListScreen extends StatelessWidget {
                       children: [
                         verticalSpace(15),
                         Expanded(
-                          child: BlocBuilder<DriverOrderListScreenCubit,
-                              DriverOrderListScreenState>(
-                            builder: (context, state) {
-                              return CustomRefreshWidget(
-                                onReload: () async {
-                                  context
-                                      .read<DriverOrderListScreenCubit>()
-                                      .fetchOrders();
+                          child:
+                              BlocBuilder<
+                                DriverOrderListScreenCubit,
+                                DriverOrderListScreenState
+                              >(
+                                builder: (context, state) {
+                                  return CustomRefreshWidget(
+                                    onReload: () async {
+                                      context
+                                          .read<DriverOrderListScreenCubit>()
+                                          .fetchOrders();
+                                    },
+                                    child: _buildContent(context, state),
+                                  );
                                 },
-                                child: _buildContent(context, state),
-                              );
-                            },
-                          ),
+                              ),
                         ),
                       ],
                     ),
@@ -100,8 +104,7 @@ class DriverOrderListScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildContent(
-      BuildContext context, DriverOrderListScreenState state) {
+  Widget _buildContent(BuildContext context, DriverOrderListScreenState state) {
     if (state is DriverOrderListScreenLoading) {
       return const Center(
         child: CircularProgressIndicator(
@@ -117,8 +120,9 @@ class DriverOrderListScreen extends StatelessWidget {
           child: Center(
             child: Text(
               state.message,
-              style: TextStyles.font12Blackbold()
-                  .copyWith(color: ColorPalette.red),
+              style: TextStyles.font12Blackbold().copyWith(
+                color: ColorPalette.red,
+              ),
               textAlign: TextAlign.center,
             ),
           ),
@@ -132,7 +136,7 @@ class DriverOrderListScreen extends StatelessWidget {
             height: 500.h,
             child: Center(
               child: Text(
-                "No orders available",
+                "no_orders_available".tr(),
                 style: TextStyles.font12Blackbold(),
               ),
             ),

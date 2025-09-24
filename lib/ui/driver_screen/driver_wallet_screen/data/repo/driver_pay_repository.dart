@@ -8,20 +8,22 @@ import 'package:gogo/core/local/secure_storage_keys.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/data/model/driver_pay_model.dart';
 
 class DriverPayRepository {
-  final String imgbbApiKey = "1355d1f1fc6f9f68ebec37534efdcb61";
   Future<String?> uploadImage(File file) async {
     try {
-      String fileName = file.path.split('/').last;
-      FormData formData = FormData.fromMap({
-        "image": await MultipartFile.fromFile(file.path, filename: fileName),
+      final fileName = file.path.split('/').last;
+
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path, filename: fileName),
+        'upload_preset': EndPoints.cloudinaryUploadPreset,
+        'folder': EndPoints.cloudinaryFolder,
       });
 
       final response = await Dio().post(
-        "https://api.imgbb.com/1/upload?key=$imgbbApiKey",
+        EndPoints.cloudinaryUploadUrl,
         data: formData,
       );
 
-      return response.data["data"]["display_url"];
+      return response.data['secure_url'];
     } on DioException catch (error) {
       throw DioExceptionHandler.handleDioError(error);
     }

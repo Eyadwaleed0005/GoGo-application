@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 
@@ -22,44 +23,48 @@ class SuggestionsList extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
         if (state is SearchLoading) {
-          return const Center(child: CircularProgressIndicator());
+          return Center(
+            child: CircularProgressIndicator(
+              color: ColorPalette.mainColor,
+              strokeWidth: 2.w,
+            ),
+          );
         } else if (state is SearchLoaded) {
           return ListView.separated(
             itemCount: state.suggestions.length,
-            separatorBuilder: (context, index) => const Divider(
-              color: Colors.grey,
-              thickness: 0.5,
-              height: 0, 
-            ),
+            separatorBuilder: (context, index) =>
+                const Divider(color: Colors.grey, thickness: 0.5, height: 0),
             itemBuilder: (context, index) {
               final suggestion = state.suggestions[index];
               return InkWell(
                 onTap: () {
-                  controller.text = suggestion.name;
+                  controller.text = _cleanSuggestionName(suggestion.name);
                   onSelected(suggestion);
+                  Navigator.pop(context, suggestion); 
                 },
                 child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding: EdgeInsets.symmetric(
+                    vertical: 8.h,
+                  ),
                   child: Row(
                     children: [
                       Container(
-                        width: 40,
-                        height: 40,
+                        width: 25.w,
+                        height: 25.w,
                         decoration: BoxDecoration(
                           color: ColorPalette.mainColor.withOpacity(0.1),
                           shape: BoxShape.circle,
                         ),
-                        child: const Icon(
+                        child: Icon(
                           Icons.place,
                           color: ColorPalette.red,
-                          size: 22,
+                          size: 18.sp,
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      SizedBox(width: 12.w),
                       Expanded(
                         child: Text(
-                          suggestion.name,
+                          _cleanSuggestionName(suggestion.name),
                           style: TextStyles.font10BlackMedium(),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -75,5 +80,9 @@ class SuggestionsList extends StatelessWidget {
         return const SizedBox();
       },
     );
+  }
+
+  String _cleanSuggestionName(String name) {
+    return name.replaceAll(RegExp(r'\d+'), '').trim();
   }
 }

@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,9 +27,12 @@ class CarInfoSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Car Info',style: TextStyles.font20Blackbold(),),
+              Text(
+                'car_info'.tr(), // المفتاح من ملفات الترجمة
+                style: TextStyles.font20Blackbold(),
+              ),
               verticalSpace(10),
-              CarInfoImages(missingFields: missing), 
+              CarInfoImages(missingFields: missing),
               SizedBox(height: 20.h),
               CarInfoForm(
                 brandController: cubit.brandController,

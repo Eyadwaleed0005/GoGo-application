@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -41,6 +42,7 @@ class _ConnectionStatusBarState extends State<ConnectionStatusBar> {
       }
     });
   }
+
   Future<void> _checkStatus() async {
     final connectivity = await Connectivity().checkConnectivity();
     final locationEnabled = await Geolocator.isLocationServiceEnabled();
@@ -61,17 +63,18 @@ class _ConnectionStatusBarState extends State<ConnectionStatusBar> {
   Widget build(BuildContext context) {
     if (!_noInternet && !_noLocation) return const SizedBox.shrink();
     String message = "";
+
     if (_noInternet && _noLocation) {
-      message = "⚠️ الإنترنت وخدمة الموقع غير متاحين";
+      message = 'warning_internet_location'.tr();
     } else if (_noInternet) {
-      message = "⚠️ الإنترنت غير متصل";
+      message = 'warning_internet'.tr();
     } else if (_noLocation) {
-      message = "⚠️ خدمة الموقع غير مفعلة";
+      message = 'warning_location'.tr();
     }
     return Container(
       width: double.infinity,
       color: ColorPalette.red,
-      padding:  EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
+      padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 16.w),
       child: SafeArea(
         bottom: false,
         child: Text(

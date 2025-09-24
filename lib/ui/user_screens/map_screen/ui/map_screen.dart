@@ -1,6 +1,11 @@
+// map_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gogo/ui/user_screens/map_screen/data/repo/user_order_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:gogo/core/local/shared_preference_keys.dart';
+import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repository.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit.dart';
@@ -9,11 +14,13 @@ import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_state.dart'
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/review_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/location_widgets/location_button.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/location_widgets/location_error_widget.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/network_banner.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/route_input_panel.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/map_veiw.dart';
+import 'package:gogo/ui/user_screens/map_screen/ui/widgets/rating_widgets/approved_trip_panel.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -26,10 +33,58 @@ class _MapScreenState extends State<MapScreen> {
   final fromController = TextEditingController();
   final toController = TextEditingController();
 
+  late final RouteCubit _routeCubit;
+  late final MapCubit _mapCubit;
+  late final SearchCubit _searchCubit;
+  late final LocationCubit _locationCubit;
+  late final LocationServiceCubit _locationServiceCubit;
+  late final ReviewCubit _reviewCubit;
+
+  String? _orderStatus;
+
+  @override
+  void initState() {
+    super.initState();
+    _routeCubit = RouteCubit(MapRepository());
+    _mapCubit = MapCubit(MapRepository());
+    _searchCubit = SearchCubit(MapRepository());
+    _locationCubit = LocationCubit();
+    _locationServiceCubit = LocationServiceCubit()..checkLocationService();
+    _reviewCubit = ReviewCubit(UserOrderRepository());
+
+    _checkOrderStatus();
+
+    Future.delayed(const Duration(milliseconds: 300), () {
+      _routeCubit.loadSavedRoutes();
+    });
+  }
+
+  Future<void> _checkOrderStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final orderStatus = prefs.getString(SharedPreferenceKeys.orderStatus);
+    setState(() {
+      _orderStatus = orderStatus;
+    });
+
+    if (orderStatus == "pending") {
+      if (!mounted) return;
+      Navigator.pushReplacementNamed(
+        context,
+        AppRoutes.waitingOrderStatusScreen,
+      );
+    }
+  }
+
   @override
   void dispose() {
     fromController.dispose();
     toController.dispose();
+    _routeCubit.close();
+    _mapCubit.close();
+    _searchCubit.close();
+    _locationCubit.close();
+    _locationServiceCubit.close();
+    _reviewCubit.close();
     super.dispose();
   }
 
@@ -37,13 +92,12 @@ class _MapScreenState extends State<MapScreen> {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => LocationCubit()),
-        BlocProvider(create: (_) => RouteCubit(MapRepository())),
-        BlocProvider(create: (_) => MapCubit(MapRepository())),
-        BlocProvider(create: (_) => SearchCubit(MapRepository())),
-        BlocProvider(
-          create: (_) => LocationServiceCubit()..checkLocationService(),
-        ),
+        BlocProvider.value(value: _locationCubit),
+        BlocProvider.value(value: _routeCubit),
+        BlocProvider.value(value: _mapCubit),
+        BlocProvider.value(value: _searchCubit),
+        BlocProvider.value(value: _locationServiceCubit),
+        BlocProvider.value(value: _reviewCubit),
       ],
       child: Builder(
         builder: (context) {
@@ -56,9 +110,7 @@ class _MapScreenState extends State<MapScreen> {
                     top: 10.h,
                     left: 5.w,
                     child: GestureDetector(
-                      onTap: () {
-                        Navigator.pop(context); 
-                      },
+                      onTap: () => Navigator.pop(context),
                       child: Icon(
                         Icons.arrow_back_ios_new,
                         size: 18.sp,
@@ -66,10 +118,13 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                     ),
                   ),
-                  RouteInputPanel(
-                    fromController: fromController,
-                    toController: toController,
-                  ),
+                  if (_orderStatus == null || _orderStatus == "cancel")
+                    RouteInputPanel(
+                      fromController: fromController,
+                      toController: toController,
+                    ),
+                  if (_orderStatus == "approved" || _orderStatus == "approve")
+                    const ApprovedTripPanel(),
                   const NetworkBanner(),
                   Positioned(
                     bottom: 205.h,
@@ -101,7 +156,7 @@ class _MapScreenState extends State<MapScreen> {
                           right: 0,
                           child: LocationErrorWidget(),
                         );
-                      
+                      }
                       return const SizedBox.shrink();
                     },
                   ),

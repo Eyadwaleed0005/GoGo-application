@@ -7,6 +7,7 @@ import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/core/widgets/confirmation_dialog.dart';
 import 'package:gogo/ui/driver_screen/driver_map_screen_driver/ui/widgets/send_arrival_notification_button.dart';
+import 'package:easy_localization/easy_localization.dart'; // ✅ للترجمة
 
 class TripActionCard extends StatelessWidget {
   final bool isTripStarted;
@@ -87,14 +88,14 @@ class TripActionCard extends StatelessWidget {
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text("Distance"),
+                        Text("distance_label".tr()),
                         Text(distance, style: TextStyles.font12Blackbold()),
                       ],
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        const Text("Time"),
+                        Text("time_label".tr()),
                         Text(time, style: TextStyles.font12Blackbold()),
                       ],
                     ),
@@ -120,9 +121,9 @@ class TripActionCard extends StatelessWidget {
                           ),
                         ),
                         verticalSpace(8),
-                        const Text(
-                          "Call",
-                          style: TextStyle(color: ColorPalette.textDark),
+                        Text(
+                          "call".tr(),
+                          style: const TextStyle(color: ColorPalette.textDark),
                         ),
                       ],
                     ),
@@ -145,9 +146,9 @@ class TripActionCard extends StatelessWidget {
                           ),
                         ),
                         verticalSpace(10),
-                        const Text(
-                          "WhatsApp",
-                          style: TextStyle(color: ColorPalette.textDark),
+                        Text(
+                          "whatsapp".tr(),
+                          style: const TextStyle(color: ColorPalette.textDark),
                         ),
                       ],
                     ),
@@ -158,39 +159,28 @@ class TripActionCard extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      if (isTripStarted) {
-                        ConfirmationDialog.show(
-                          context: context,
-                          title: isTripStarted
-                              ? "Are you sure you want to end the trip now?"
-                              : "Are you sure you want to start the trip now?",
-                          confirmText: isTripStarted ? "End" : "Start",
-                          onConfirm: isTripStarted ? onEndTrip : onStartTrip,
-                          showCancel: true, // ✅ هيظهر زرار Cance
-                        );
-                      } else {
-                        ConfirmationDialog.show(
-                          context: context,
-                          title: isTripStarted
-                              ? "Are you sure you want to end the trip now?"
-                              : "Are you sure you want to start the trip now?",
-                          confirmText: isTripStarted ? "End" : "Start",
-                          onConfirm: isTripStarted ? onEndTrip : onStartTrip,
-                          showCancel: true, // ✅ هيظهر زرار Cance
-                        );
-                      }
+                      ConfirmationDialog.show(
+                        context: context,
+                        title: isTripStarted
+                            ? "end_trip_confirm".tr()
+                            : "start_trip_confirm".tr(),
+                        confirmText: isTripStarted
+                            ? "end".tr()
+                            : "start".tr(),
+                        onConfirm: isTripStarted ? onEndTrip : onStartTrip,
+                        showCancel: true,
+                      );
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: isTripStarted
-                          ? Colors.red
-                          : Colors.green,
+                      backgroundColor:
+                          isTripStarted ? Colors.red : Colors.green,
                       padding: EdgeInsets.symmetric(vertical: 12.h),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12.r),
                       ),
                     ),
                     child: Text(
-                      isTripStarted ? "End Trip" : "Start Trip",
+                      isTripStarted ? "end_trip".tr() : "start_trip".tr(),
                       style: TextStyles.font15Blackbold(),
                     ),
                   ),

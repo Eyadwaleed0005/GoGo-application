@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -27,7 +28,7 @@ class DriverInfoSection extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Driver Info', style: TextStyles.font20Blackbold()),
+              Text('driver_info'.tr(), style: TextStyles.font20Blackbold()),
               verticalSpace(10),
               DriverImages(missingFields: missing),
               SizedBox(height: 20.h),

@@ -5,7 +5,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:http/http.dart' as http;
-
+import 'package:easy_localization/easy_localization.dart';
 
 class NetworkBanner extends StatefulWidget {
   const NetworkBanner({Key? key}) : super(key: key);
@@ -76,7 +76,7 @@ class _NetworkBannerState extends State<NetworkBanner> {
           padding: EdgeInsets.symmetric(vertical: 12.h, horizontal: 16.w),
           color: ColorPalette.starsBorder,
           child: Text(
-            "⚠ No internet connection or connection is weak",
+            "no_internet_warning".tr(),
             style: TextStyles.font10Blackbold().copyWith(
               color: Colors.white,
               fontSize: 13.sp,

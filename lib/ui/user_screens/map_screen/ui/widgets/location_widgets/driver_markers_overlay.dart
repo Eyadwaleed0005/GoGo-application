@@ -8,55 +8,64 @@ import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
 class DriverMarkersOverlay extends StatelessWidget {
   const DriverMarkersOverlay({super.key});
 
+  Future<void> _addSingleDriverMarker(
+    MapCubit mapCubit,
+    DriverPlace driver,
+  ) async {
+    if (mapCubit.mapboxMap == null) return;
+
+    mapCubit.driverAnnotationManager ??=
+        await mapCubit.mapboxMap!.annotations.createPointAnnotationManager();
+
+    await mapCubit.driverAnnotationManager!.deleteAll();
+
+    final annotationOptions = mb.PointAnnotationOptions(
+      geometry: mb.Point(coordinates: mb.Position(driver.lng, driver.lat)),
+      iconImage: "car-15",
+      iconSize: 3.5,
+      textField: driver.driverName,
+      textSize: 12.0,
+      textOffset: [0, 2.0],
+    );
+    await mapCubit.driverAnnotationManager!.create(annotationOptions);
+  }
+
   Future<void> _addDriverMarkers(
     MapCubit mapCubit,
     List<DriverPlace> drivers,
   ) async {
-    if (mapCubit.mapboxMap == null) {
-      debugPrint("❌ MapboxMap is NULL");
-      return;
-    }
+    if (mapCubit.mapboxMap == null) return;
 
-    // إنشاء مدير الماركرات لو مش موجود
-    mapCubit.driverAnnotationManager ??= await mapCubit.mapboxMap!.annotations
-        .createPointAnnotationManager();
+    mapCubit.driverAnnotationManager ??=
+        await mapCubit.mapboxMap!.annotations.createPointAnnotationManager();
 
-    // مسح القديم
     await mapCubit.driverAnnotationManager!.deleteAll();
 
-    debugPrint("🟢 عندنا ${drivers.length} سواق");
-
     for (var driver in drivers) {
-      try {
-        final annotationOptions = mb.PointAnnotationOptions(
-          geometry: mb.Point(coordinates: mb.Position(driver.lng, driver.lat)),
-          iconImage: "airport-15", // أيقونة موجودة في style
-          iconSize: 4.0, // حجم الماركر
-          textField: driver.driverName,
-          textSize: 12.0,
-          textOffset: [0, 2.0], // يحرك الاسم فوق الماركر
-        );
-        await mapCubit.driverAnnotationManager!.create(annotationOptions);
-
-        await mapCubit.driverAnnotationManager!.create(annotationOptions);
-        debugPrint("✅ اتضاف الماركر بتاع ${driver.driverName}");
-      } catch (e) {
-        debugPrint("❌ Failed to add marker: $e");
-      }
+      final annotationOptions = mb.PointAnnotationOptions(
+        geometry: mb.Point(coordinates: mb.Position(driver.lng, driver.lat)),
+        iconImage: "car-15",
+        iconSize: 3.5,
+        textField: driver.driverName,
+        textSize: 12.0,
+        textOffset: [0, 2.0],
+      );
+      await mapCubit.driverAnnotationManager!.create(annotationOptions);
     }
   }
-
   @override
   Widget build(BuildContext context) {
     final mapCubit = context.read<MapCubit>();
 
     return BlocBuilder<LocationServiceCubit, LocationServiceState>(
       builder: (context, state) {
-        if (state is LocationServiceWithDrivers) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _addDriverMarkers(mapCubit, state.drivers);
-          });
-        }
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          if (state is LocationServiceWithDrivers) {
+            await _addDriverMarkers(mapCubit, state.drivers);
+          } else if (state is LocationServiceWithSingleDriver) {
+            await _addSingleDriverMarker(mapCubit, state.driver);
+          }
+        });
         return const SizedBox.shrink();
       },
     );

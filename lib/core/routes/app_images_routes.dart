@@ -25,7 +25,6 @@ class AppImage {
   String get error                 => '${baseAnimation}Error.json';
   String get searching             => '${baseAnimation}searching.json';
 
-  // 🖼 Onboarding & Banners
   String get onboard1 => '${base}onboard1.jpg';
   String get business => '${base}business-man-car.png';
   String get onboard2 => '${base}onboard2.jpg';
@@ -37,20 +36,20 @@ class AppImage {
   String get commingSoon => '${base}commingsoon.png';
   String get bannar => '${base}bannar1.png';
   String get bannar2 => '${base}bannar2.png';
+  String get carOrder => '${base}car order.png';
+  String get backCar => '${base}back car.png';
+  String get frontCar => '${base}front car.png';
 
-  // 🔑 Auth Screens
   String get auth1  => '${base}auth.webp';
   String get driver => '${base}driver.jpg';
   
 
-  // 🍔 Categories
   String get food => '${base}food.png';
   String get box  => '${base}box.png';
   String get taxi   => '${base}taxi.png';
   String get bus  => '${base}bus.png';
   
   
-  // 🌍 Social Media Icons
   String get facebook => '${base}Facebook.png';
   String get google   => '${base}Google.png';
   String get defultProfileAccount  => '${base}defult_profile_account.png';

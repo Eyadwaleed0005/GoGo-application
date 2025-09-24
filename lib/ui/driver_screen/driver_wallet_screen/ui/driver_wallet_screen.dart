@@ -14,6 +14,7 @@ import 'package:gogo/ui/driver_screen/driver_wallet_screen/ui/widgets/current_ba
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/ui/widgets/number_charge_widget/number_charge_widget.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/ui/widgets/proof_of_payment_widget.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/ui/widgets/send_screen_buttom.dart';
+import 'package:easy_localization/easy_localization.dart'; 
 
 class DriverWalletScreen extends StatelessWidget {
   const DriverWalletScreen({super.key});
@@ -30,7 +31,7 @@ class DriverWalletScreen extends StatelessWidget {
           if (state.isLoading) {
             showBlockingAnimation(
               context: context,
-              message: "Uploading payment...",
+              message: "wallet_uploading".tr(), // ✅
               animationAsset: AppImage().loading,
             );
           } else {
@@ -40,8 +41,7 @@ class DriverWalletScreen extends StatelessWidget {
           if (state.showSuccessAnimation) {
             showBlockingAnimation(
               context: context,
-              message:
-                  "Payment submitted successfully! Your request is under review.",
+              message: "wallet_success".tr(),   // ✅
               animationAsset: AppImage().sucsses,
               autoClose: true,
               duration: const Duration(seconds: 4),
@@ -68,60 +68,60 @@ class DriverWalletScreen extends StatelessWidget {
           body: SafeArea(
             child:
                 BlocBuilder<DriverWalletScreenCubit, DriverWalletScreenState>(
-                  builder: (context, state) {
-                    return CustomRefreshWidget(
-                      onReload: () async {
-                        context.read<DriverWalletScreenCubit>().fetchWallet();
-                      },
-                      child: SingleChildScrollView(
-                        physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 15.w,
-                          vertical: 10.h,
-                        ),
-                        child: Column(
-                          children: [
-                            const CurrentBalanceWidget(),
-                            verticalSpace(10),
-                            Container(
-                              padding: EdgeInsets.symmetric(
-                                vertical: 2.h,
-                                horizontal: 5.w,
-                              ),
-                              decoration: BoxDecoration(
-                                color: ColorPalette.mainColor,
-                                borderRadius: BorderRadius.circular(6.r),
-                              ),
-                              child: Text(
-                                "Recharge",
-                                style: TextStyles.font15Blackbold(),
-                              ),
-                            ),
-                            verticalSpace(10),
-                            const NumberChargeWidget(),
-                            verticalSpace(10),
-                            const ProofOfPaymentWidget(),
-                            verticalSpace(30),
-                            Align(
-                              alignment: Alignment.centerRight,
-                              child: Builder(
-                                builder: (context) {
-                                  return SendScreenButton(
-                                    onConfirm: () {
-                                      context
-                                          .read<DriverWalletScreenCubit>()
-                                          .submitPayment(0);
-                                    },
-                                  );
-                                },
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    );
+              builder: (context, state) {
+                return CustomRefreshWidget(
+                  onReload: () async {
+                    context.read<DriverWalletScreenCubit>().fetchWallet();
                   },
-                ),
+                  child: SingleChildScrollView(
+                    physics: const AlwaysScrollableScrollPhysics(),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 15.w,
+                      vertical: 10.h,
+                    ),
+                    child: Column(
+                      children: [
+                        const CurrentBalanceWidget(),
+                        verticalSpace(10),
+                        Container(
+                          padding: EdgeInsets.symmetric(
+                            vertical: 2.h,
+                            horizontal: 5.w,
+                          ),
+                          decoration: BoxDecoration(
+                            color: ColorPalette.mainColor,
+                            borderRadius: BorderRadius.circular(6.r),
+                          ),
+                          child: Text(
+                            "wallet_recharge".tr(),     // ✅
+                            style: TextStyles.font15Blackbold(),
+                          ),
+                        ),
+                        verticalSpace(10),
+                        const NumberChargeWidget(),
+                        verticalSpace(10),
+                        const ProofOfPaymentWidget(),
+                        verticalSpace(30),
+                        Align(
+                          alignment: Alignment.centerRight,
+                          child: Builder(
+                            builder: (context) {
+                              return SendScreenButton(
+                                onConfirm: () {
+                                  context
+                                      .read<DriverWalletScreenCubit>()
+                                      .submitPayment(0);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
           ),
         ),
       ),

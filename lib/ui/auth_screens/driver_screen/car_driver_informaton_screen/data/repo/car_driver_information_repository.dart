@@ -12,27 +12,27 @@ import 'package:gogo/ui/auth_screens/driver_screen/car_driver_informaton_screen/
 import 'package:gogo/ui/driver_screen/on_wating_driver_screen/data/model/driver-status-model.dart';
 
 class CarDriverInformationRepository {
-  final String imgbbApiKey = "1355d1f1fc6f9f68ebec37534efdcb61";
   Future<String?> uploadImage(File file) async {
     try {
-      String fileName = file.path.split('/').last;
-      FormData formData = FormData.fromMap({
-        "image": await MultipartFile.fromFile(file.path, filename: fileName),
+      final fileName = file.path.split('/').last;
+
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path, filename: fileName),
+        'upload_preset': EndPoints.cloudinaryUploadPreset,
+        'folder': EndPoints.cloudinaryFolder,
       });
 
       final response = await Dio().post(
-        "https://api.imgbb.com/1/upload?key=$imgbbApiKey",
+        EndPoints.cloudinaryUploadUrl,
         data: formData,
       );
 
-      if (response.statusCode == 200) {
-        return response.data["data"]["display_url"];
-      }
+      return response.data['secure_url'];
     } on DioException catch (error) {
       throw DioExceptionHandler.handleDioError(error);
     }
-    return null;
   }
+
   Future<void> submitCarData(CarModel car) async {
     try {
       await DioHelper.postData(
@@ -43,14 +43,11 @@ class CarDriverInformationRepository {
         key: SharedPreferenceKeys.driverCompleteRegister,
         value: true,
       );
-      final savedValue = await SharedPreferencesHelper.getBool(
-        key: SharedPreferenceKeys.driverCompleteRegister,
-      );
-      print("🚗 Car data submitted, driverCompleteRegister = $savedValue");
     } on DioException catch (error) {
       throw DioExceptionHandler.handleDioError(error);
     }
   }
+
   Future<DriverAuthModel> submitDriverData(DriverAuthModel driver) async {
     try {
       final response = await DioHelper.postData(
@@ -63,14 +60,10 @@ class CarDriverInformationRepository {
         value: true,
       );
 
-      final savedValue = await SharedPreferencesHelper.getBool(
-        key: SharedPreferenceKeys.driverCompleteRegister,
-      );
-      print("🧑‍✈️ Driver data submitted, driverCompleteRegister = $savedValue");
-
       final userId = await SecureStorageHelper.getdata(
         key: SecureStorageKeys.userId,
       );
+
       final driverResponse = await DioHelper.getData(
         url: EndPoints.getDriverData(userId!),
       );
@@ -80,8 +73,6 @@ class CarDriverInformationRepository {
         key: SecureStorageKeys.driverId,
         value: driverStatus.id.toString(),
       );
-
-      print("DriverId saved after register: ${driverStatus.id}");
 
       return DriverAuthModel.fromJson(response.data);
     } on DioException catch (error) {

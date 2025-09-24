@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:gogo/core/api/end_points.dart';
@@ -89,7 +90,7 @@ class TripActionCardCubit extends Cubit<TripActionCardState> {
     } else {
       emit(
         TripActionCardError(
-          message: "لا يمكن فتح تطبيق الاتصال",
+          message: "cannot_open_dialer".tr(),
           isDestination: false,
         ),
       );
@@ -108,7 +109,7 @@ class TripActionCardCubit extends Cubit<TripActionCardState> {
     } catch (e) {
       emit(
         TripActionCardError(
-          message: "لا يمكن فتح تطبيق واتساب",
+          message: "cannot_open_whatsapp".tr(),
           isDestination: false,
         ),
       );

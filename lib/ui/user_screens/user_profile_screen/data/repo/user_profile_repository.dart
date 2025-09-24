@@ -8,27 +8,25 @@ import 'package:gogo/core/local/secure_storage_keys.dart';
 import 'package:gogo/ui/user_screens/user_profile_screen/data/model/user_profile_photo_model.dart';
 
 class UserProfileRepository {
-  final String imgbbApiKey = "1355d1f1fc6f9f68ebec37534efdcb61";
-
   Future<String?> uploadImage(File file) async {
     try {
-      String fileName = file.path.split('/').last;
-      FormData formData = FormData.fromMap({
-        "image": await MultipartFile.fromFile(file.path, filename: fileName),
+      final fileName = file.path.split('/').last;
+
+      final formData = FormData.fromMap({
+        'file': await MultipartFile.fromFile(file.path, filename: fileName),
+        'upload_preset': EndPoints.cloudinaryUploadPreset,
+        'folder': EndPoints.cloudinaryFolder,
       });
 
       final response = await Dio().post(
-        "https://api.imgbb.com/1/upload?key=$imgbbApiKey",
+        EndPoints.cloudinaryUploadUrl,
         data: formData,
       );
 
-      if (response.statusCode == 200) {
-        return response.data["data"]["display_url"];
-      }
+      return response.data['secure_url'];
     } on DioException catch (error) {
       throw DioExceptionHandler.handleDioError(error);
     }
-    return null;
   }
 
   Future<void> updateUserProfile(File profileImage) async {

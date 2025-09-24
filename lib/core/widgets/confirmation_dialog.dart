@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/textstyles.dart';
@@ -16,36 +17,28 @@ class ConfirmationDialog extends StatelessWidget {
     required this.confirmText,
     required this.onConfirm,
     this.content,
-    this.showCancel = false, // ✅ الافتراضي مفيش زرار إلغاء
+    this.showCancel = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
       backgroundColor: ColorPalette.backgroundColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(16.r),
-      ),
-      title: Text(
-        title,
-        style: TextStyles.font12Blackbold(),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16.r)),
+      title: Text(title, style: TextStyles.font12Blackbold()),
       content: content != null
           ? Text(content!, style: TextStyles.font10Blackbold())
           : SizedBox(height: 10.h),
       actionsPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       actions: [
-        if (showCancel) 
+        if (showCancel)
           TextButton(
             style: TextButton.styleFrom(
               foregroundColor: ColorPalette.textDark,
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
             ),
             onPressed: () => Navigator.pop(context, false),
-            child: Text(
-              "cancel",
-              style: TextStyles.font12BlackSemiBold(),
-            ),
+            child: Text('cancel'.tr(), style: TextStyles.font12BlackSemiBold()),
           ),
         ElevatedButton(
           style: ElevatedButton.styleFrom(
@@ -71,7 +64,7 @@ class ConfirmationDialog extends StatelessWidget {
     required String confirmText,
     required VoidCallback onConfirm,
     String? content,
-    bool showCancel = false, 
+    bool showCancel = false,
   }) async {
     final result = await showDialog<bool>(
       context: context,

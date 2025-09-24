@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,97 +19,102 @@ class RegisterFormFields extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Full Name', style: TextStyles.font10BlackSemiBold()),
+          Text('full_name'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 8.h),
           AppTextField(
-            hint: 'Your Name',
+            hint: 'enter_name'.tr(),
             controller: cubit.nameController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '* Name is required';
+                return '* ${'name_required'.tr()}';
               }
               return null;
             },
           ),
           SizedBox(height: 8.h),
 
-          Text('Email Here', style: TextStyles.font10BlackSemiBold()),
+          Text('email'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 8.h),
           AppTextField(
-            hint: 'your@gmail.com',
+            hint: 'enter_email'.tr(),
             controller: cubit.emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '* Email is required';
+                return '* ${'email_required'.tr()}';
               }
               if (!value.contains('@')) {
-                return '* Enter a valid email';
+                return '* ${'valid_email'.tr()}';
               }
               return null;
             },
           ),
           SizedBox(height: 8.h),
 
-          // ✅ حقل التليفون
-          Text('Phone Number', style: TextStyles.font10BlackSemiBold()),
+          Text('phone_number'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 8.h),
           AppTextField(
-            hint: '01xxxxxxxxx',
+            hint: 'enter_phone'.tr(),
             controller: cubit.phoneController,
             keyboardType: TextInputType.phone,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '* Phone number is required';
+                return '* ${'phone_required'.tr()}';
               }
-              if (value.length < 10) {
-                return '* Enter a valid phone number';
+              final isNumeric = RegExp(r'^[0-9]+$').hasMatch(value);
+              if (!isNumeric) {
+                return '* ${'digits_only'.tr()}';
+              }
+              if (value.length != 11) {
+                return '* ${'exact_11_digits'.tr()}';
+              }
+              if (!value.startsWith('01')) {
+                return '* ${'start_with_01'.tr()}';
               }
               return null;
             },
           ),
           SizedBox(height: 8.h),
 
-          Text('Password', style: TextStyles.font10BlackSemiBold()),
+          Text('password'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 8.h),
           AppTextField(
-            hint: '*****************',
+            hint: 'enter_password'.tr(),
             isPassword: true,
             controller: cubit.passwordController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '* Password is required';
+                return '* ${'password_required'.tr()}';
               }
               if (value.length < 6 || value.length > 20) {
-                return '* Password must be 6-20 characters';
+                return '* ${'password_length'.tr()}';
               }
               if (!RegExp(r'[A-Z]').hasMatch(value)) {
-                return '* Must contain at least 1 uppercase letter';
+                return '* ${'password_uppercase'.tr()}';
               }
               if (!RegExp(r'\d').hasMatch(value)) {
-                return '* Must contain at least 1 number';
+                return '* ${'password_number'.tr()}';
               }
               if (!RegExp(r'[!@#$%^&*(),.?":{}|<>_\-]').hasMatch(value)) {
-                return '* Must contain at least 1 special character';
+                return '* ${'password_special'.tr()}';
               }
               return null;
             },
           ),
-
           SizedBox(height: 8.h),
 
-          Text('Confirm Password', style: TextStyles.font10BlackSemiBold()),
+          Text('confirm_password'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 8.h),
           AppTextField(
-            hint: '*****************',
+            hint: 'confirm_password_hint'.tr(),
             isPassword: true,
             controller: cubit.confirmPasswordController,
             validator: (value) {
               if (value == null || value.isEmpty) {
-                return '* Please confirm your password';
+                return '* ${'confirm_password_required'.tr()}';
               }
               if (value != cubit.passwordController.text) {
-                return '* Passwords do not match';
+                return '* ${'passwords_do_not_match'.tr()}';
               }
               return null;
             },
@@ -119,7 +125,7 @@ class RegisterFormFields extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 2.w),
             child: Center(
               child: CustomButton(
-                text: 'SIGN UP',
+                text: 'sign_up'.tr(),
                 borderRadius: 4.r,
                 onPressed: () {
                   final isValid = cubit.validateForm();

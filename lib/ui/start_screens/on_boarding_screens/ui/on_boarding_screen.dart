@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -9,7 +10,6 @@ import 'package:gogo/ui/start_screens/on_boarding_screens/logic/on_boarding_cubi
 import 'package:gogo/ui/start_screens/on_boarding_screens/logic/on_boarding_state.dart';
 import 'package:gogo/ui/start_screens/on_boarding_screens/ui/widgets/skip_button.dart';
 
-
 class OnboardingScreen extends StatelessWidget {
   OnboardingScreen({super.key});
 
@@ -17,25 +17,23 @@ class OnboardingScreen extends StatelessWidget {
 
   final List<Map<String, String>> onboardingData = [
     {
-      'title': 'Wherever You Go',
-      'description': 'gogo just a tap away ready when you are.',
+      'title': 'onboarding1_title'.tr(),
+      'description': 'onboarding1_description'.tr(),
       'image': AppImage().onboard1,
     },
     {
-      'title': 'Drive or Ride',
-      'description': 'Join gogoa driver or rider and move freely.',
+      'title': 'onboarding2_title'.tr(),
+      'description': 'onboarding2_description'.tr(),
       'image': AppImage().onboard2,
     },
     {
-      'title': 'Safe & Affordable',
-      'description':
-          'gogonects you with trusted drivers at fair prices.',
+      'title': 'onboarding3_title'.tr(),
+      'description': 'onboarding3_description'.tr(),
       'image': AppImage().onboard3,
     },
-   {
-      'title': 'Safe & Affordable',
-      'description':
-          'gogonects you with trusted drivers at fair prices.',
+    {
+      'title': 'onboarding4_title'.tr(),
+      'description': 'onboarding4_description'.tr(),
       'image': AppImage().onboard5,
     },
   ];
@@ -166,7 +164,7 @@ class OnboardingScreen extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'CONTINUE',
+                        'continue'.tr(),
                         style: TextStyles.font11blackMediam(),
                       ),
                     ),

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
+import 'package:gogo/core/services/trip_type_translator.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class FromToCard extends StatelessWidget {
   final String fromPlace;
@@ -44,16 +46,19 @@ class FromToCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(Icons.location_on,
-                      color: ColorPalette.textColor1, size: 25.sp),
+                  Icon(
+                    Icons.location_on,
+                    color: ColorPalette.textColor1,
+                    size: 25.sp,
+                  ),
                   horizontalSpace(8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("From :", style: TextStyles.font10Blackbold()),
+                        Text("from".tr(), style: TextStyles.font10Blackbold()),
                         Text(fromPlace, style: TextStyles.font12Blackbold()),
-                        verticalSpace(3)
+                        verticalSpace(3),
                       ],
                     ),
                   ),
@@ -71,16 +76,19 @@ class FromToCard extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(Icons.location_on,
-                      color: ColorPalette.textColor1, size: 25.sp),
+                  Icon(
+                    Icons.location_on,
+                    color: ColorPalette.textColor1,
+                    size: 25.sp,
+                  ),
                   horizontalSpace(8),
                   Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("To :", style: TextStyles.font10Blackbold()),
+                        Text("to".tr(), style: TextStyles.font10Blackbold()),
                         Text(toPlace, style: TextStyles.font12Blackbold()),
-                        verticalSpace(3)
+                        verticalSpace(3),
                       ],
                     ),
                   ),
@@ -92,8 +100,10 @@ class FromToCard extends StatelessWidget {
               children: [
                 Expanded(
                   child: Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8.h,
+                      horizontal: 10.w,
+                    ),
                     decoration: ShapeDecoration(
                       color: ColorPalette.backgroundColor,
                       shape: const StadiumBorder(),
@@ -101,14 +111,11 @@ class FromToCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "Trip Price",
+                          "trip_price".tr(),
                           style: TextStyles.font9GreyDarkSemiBold(),
                         ),
                         verticalSpace(4),
-                        Text(
-                          "$price EGP",
-                          style: TextStyles.font12Blackbold(),
-                        ),
+                        Text("$price EGP", style: TextStyles.font12Blackbold()),
                       ],
                     ),
                   ),
@@ -116,8 +123,10 @@ class FromToCard extends StatelessWidget {
                 horizontalSpace(8),
                 Expanded(
                   child: Container(
-                    padding:
-                        EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+                    padding: EdgeInsets.symmetric(
+                      vertical: 8.h,
+                      horizontal: 10.w,
+                    ),
                     decoration: ShapeDecoration(
                       color: ColorPalette.backgroundColor,
                       shape: const StadiumBorder(),
@@ -125,12 +134,12 @@ class FromToCard extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          "Trip Distance",
+                          "trip_distance".tr(),
                           style: TextStyles.font9GreyDarkSemiBold(),
                         ),
                         verticalSpace(4),
                         Text(
-                          "$distance km",
+                          "${double.parse(distance).toStringAsFixed(1)} km",
                           style: TextStyles.font12Blackbold(),
                         ),
                       ],
@@ -148,20 +157,30 @@ class FromToCard extends StatelessWidget {
                 shape: const StadiumBorder(),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Text(
-                      "Trip Type",
-                      style: TextStyles.font9GreyDarkSemiBold(),
-                    ),
+                  Text(
+                    "trip_type".tr(),
+                    style: TextStyles.font9GreyDarkSemiBold(),
                   ),
                   verticalSpace(4),
-                  Center(
-                    child: Text(
-                      tripType,
-                      style: TextStyles.font12Blackbold(),
-                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Center(
+                        child: Text(
+                          tripType,
+                          style: TextStyles.font12Blackbold(),
+                        ),
+                      ),
+                      verticalSpace(2),
+                      Center(
+                        child: Text(
+                          TripTypeTranslator.toArabic(tripType),
+                          style: TextStyles.font12Blackbold(),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -175,21 +194,14 @@ class FromToCard extends StatelessWidget {
                 shape: const StadiumBorder(),
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Center(
-                    child: Text(
-                      "Passengers",
-                      style: TextStyles.font9GreyDarkSemiBold(),
-                    ),
+                  Text(
+                    "passengers".tr(),
+                    style: TextStyles.font9GreyDarkSemiBold(),
                   ),
                   verticalSpace(4),
-                  Center(
-                    child: Text(
-                      passengers,
-                      style: TextStyles.font12Blackbold(),
-                    ),
-                  ),
+                  Text(passengers, style: TextStyles.font12Blackbold()),
                 ],
               ),
             ),

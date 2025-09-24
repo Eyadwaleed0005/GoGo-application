@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class CarInfoForm extends StatelessWidget {
   final TextEditingController brandController;
@@ -20,7 +21,7 @@ class CarInfoForm extends StatelessWidget {
 
   InputDecoration _inputDecoration(String label) {
     return InputDecoration(
-      labelText: label,
+      labelText: label.tr(),
       labelStyle: TextStyles.font10Blackbold(),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12.r),
@@ -39,11 +40,11 @@ class CarInfoForm extends StatelessWidget {
       children: [
         TextFormField(
           controller: brandController,
-          decoration: _inputDecoration("Car Brand"),
+          decoration: _inputDecoration("car_brand"),
           keyboardType: TextInputType.text,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the car brand";
+              return "enter_car_brand".tr();
             }
             return null;
           },
@@ -51,10 +52,10 @@ class CarInfoForm extends StatelessWidget {
         verticalSpace(12),
         TextFormField(
           controller: modelController,
-          decoration: _inputDecoration("Car Model"),
+          decoration: _inputDecoration("car_model"),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the car model";
+              return "enter_car_model".tr();
             }
             return null;
           },
@@ -62,10 +63,10 @@ class CarInfoForm extends StatelessWidget {
         verticalSpace(12),
         TextFormField(
           controller: colorController,
-          decoration: _inputDecoration("Car Color"),
+          decoration: _inputDecoration("car_color"),
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the car color";
+              return "enter_car_color".tr();
             }
             return null;
           },
@@ -73,11 +74,11 @@ class CarInfoForm extends StatelessWidget {
         verticalSpace(12),
         TextFormField(
           controller: plateController,
-          decoration: _inputDecoration("Plate Number"),
+          decoration: _inputDecoration("plate_number"),
           keyboardType: TextInputType.number,
           validator: (value) {
             if (value == null || value.trim().isEmpty) {
-              return "Please enter the plate number";
+              return "enter_plate_number".tr();
             }
             return null;
           },

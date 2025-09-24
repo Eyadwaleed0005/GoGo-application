@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gogo/core/widgets/language_dropdown_widget.dart';
 import 'driver_profile_avatar.dart';
 import 'driver_status_button.dart';
 import 'edit_button.dart';
@@ -31,10 +32,13 @@ class DriverProfileHeader extends StatelessWidget {
             bottom: 2.h,
             left: 0.5.sw - avatarRadius - 38.w,
             child: EditButton(
-              onTap: () {
-                debugPrint("Edit button tapped!");
-              },
+              onTap: () {},
             ),
+          ),
+          Positioned(
+            top: 2.h,
+            left:15.w,
+            child: LanguageDropdownWidget(),
           ),
         ],
       ),

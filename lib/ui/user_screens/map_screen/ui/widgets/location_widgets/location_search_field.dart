@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/model/map_suggestion_model.dart';
@@ -161,7 +162,7 @@ class _LocationSearchFieldState extends State<LocationSearchField>
               ScaleTransition(
                 scale: _pulseAnimation,
                 child: Container(
-                  width: 14.w,
+                  width: 16.w,
                   height: 14.w,
                   margin: EdgeInsets.only(right: 8.w),
                   decoration: BoxDecoration(
@@ -181,6 +182,7 @@ class _LocationSearchFieldState extends State<LocationSearchField>
                   ),
                 ),
               ),
+              horizontalSpace(5),
               Expanded(
                 child: TextFormField(
                   controller: widget.controller,

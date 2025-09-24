@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -71,7 +72,7 @@ class RegisterUserScreen extends StatelessWidget {
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Text(
-                              'Sign Up',
+                              'sign_up'.tr(),
                               style: TextStyles.font21BlackBold(),
                             ),
                             SizedBox(width: 6.w),
@@ -82,16 +83,16 @@ class RegisterUserScreen extends StatelessWidget {
                           ],
                         ),
                       ),
-                      SizedBox(height: 10),
+                      SizedBox(height: 10.h),
                       Center(
                         child: Column(
                           children: [
                             Text(
-                              'Lorem ipsum dolor sit amet a ',
+                              'signup_description_line1'.tr(),
                               style: TextStyles.font11GrayRegular(),
                             ),
                             Text(
-                              'aconsectetur ut',
+                              'signup_description_line2'.tr(),
                               style: TextStyles.font11GrayRegular(),
                             ),
                           ],
@@ -103,8 +104,8 @@ class RegisterUserScreen extends StatelessWidget {
                       SizedBox(height: 18.h),
                       Center(
                         child: ClickableTextSpan(
-                          normalText: 'Don’t Have An Account? ',
-                          clickableText: 'Sign in Here',
+                          normalText: 'dont_have_account'.tr(),
+                          clickableText: 'sign_in_here'.tr(),
                           onTap: () {
                             Navigator.pushReplacementNamed(
                               context,
