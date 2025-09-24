@@ -14,7 +14,6 @@ import 'package:gogo/ui/admin_screens/driver_wating_list_screen/ui/driver_waitin
 import 'package:gogo/ui/driver_screen/driver_profile_screen/logic/cubit/driver_location_cubit.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
 import 'firebase_options.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 Future<void> main() async {
@@ -42,18 +41,10 @@ Future<void> main() async {
       ),
     ),
   );
-  _checkLocationPermission();
 }
 
-Future<void> _checkLocationPermission() async {
-  var status = await Permission.location.status;
-  if (!status.isGranted) {
-    var result = await Permission.location.request();
-    if (result.isPermanentlyDenied) {
-      await openAppSettings();
-    }
-  }
-}
+
+
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

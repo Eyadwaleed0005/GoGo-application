@@ -12,7 +12,8 @@ class NotificationService {
       FlutterLocalNotificationsPlugin();
 
   // قناة الإشعارات للأندرويد
-  static const AndroidNotificationChannel _androidChannel = AndroidNotificationChannel(
+  static const AndroidNotificationChannel _androidChannel =
+      AndroidNotificationChannel(
     'arrival_channel', // id
     'رحلة الوصول', // name
     description: 'الإشعارات الخاصة بوصول السائق',
@@ -20,12 +21,13 @@ class NotificationService {
   );
 
   Future<void> init() async {
-    // طلب صلاحيات الإشعارات من المستخدم
-    await _messaging.requestPermission(
+    // اطلب صلاحيات من المستخدم
+    final settings = await _messaging.requestPermission(
       alert: true,
       badge: true,
       sound: true,
     );
+    print("🔔 Notification permission: ${settings.authorizationStatus}");
 
     // إعدادات Android
     const androidSettings = AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -46,12 +48,22 @@ class NotificationService {
 
     // إنشاء قناة للأندرويد
     await _localNotifications
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.createNotificationChannel(_androidChannel);
 
-    // جلب FCM token
-    final token = await _messaging.getToken();
-    print("FCM Token: $token"); // ممكن تحفظه على السيرفر
+    // iOS فقط: لازم نتأكد إن APNs Token متوفر
+    String? apnsToken = await _messaging.getAPNSToken();
+    print("📱 APNs Token: $apnsToken");
+
+    if (apnsToken == null) {
+      print("⚠️ APNs token not ready yet, skipping FCM token fetch.");
+    } else {
+      // ✅ جلب FCM token بعد APNs جاهز
+      final fcmToken = await _messaging.getToken();
+      print("🔥 FCM Token: $fcmToken");
+      // TODO: ابعته للسيرفر
+    }
 
     // التعامل مع الرسائل في الخلفية
     FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
@@ -61,7 +73,8 @@ class NotificationService {
   }
 
   // Background handler
-  static Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  static Future<void> _firebaseMessagingBackgroundHandler(
+      RemoteMessage message) async {
     if (message.notification != null) {
       final androidDetails = AndroidNotificationDetails(
         _androidChannel.id,
@@ -73,7 +86,7 @@ class NotificationService {
         icon: '@mipmap/ic_launcher',
       );
 
-      final iosDetails = DarwinNotificationDetails(
+      const iosDetails = DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,
@@ -107,7 +120,7 @@ class NotificationService {
         icon: '@mipmap/ic_launcher',
       );
 
-      final iosDetails = DarwinNotificationDetails(
+      const iosDetails = DarwinNotificationDetails(
         presentAlert: true,
         presentBadge: true,
         presentSound: true,

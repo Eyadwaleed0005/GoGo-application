@@ -428,6 +428,7 @@ MapSuggestion(
       address: "السكادرة، الشيخ زويد، شمال سيناء، مصر",
     ),
   ];
+  
   static List<MapSuggestion> getCustomLocations() => _customLocations;
   static List<MapSuggestion> searchCustomLocations(String query) {
     final lower = query.toLowerCase();

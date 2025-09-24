@@ -62,57 +62,59 @@ class DriverLoginScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(16.0.w),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BackTextButton(onTap: () => Navigator.pop(context)),
-                      Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'driver_sign_in'.tr(),
-                              style: TextStyles.font21BlackBold(),
-                            ),
-                            SizedBox(width: 6.w),
-                            const OrangeDot(),
-                          ],
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0.w),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BackTextButton(onTap: () => Navigator.pop(context)),
+                        Center(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'driver_sign_in'.tr(),
+                                style: TextStyles.font21BlackBold(),
+                              ),
+                              SizedBox(width: 6.w),
+                              const OrangeDot(),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 2.h),
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              'welcome_back_driver'.tr(),
-                              style: TextStyles.font11GrayRegular(),
-                            ),
-                            Text(
-                              'please_login_to_continue'.tr(),
-                              style: TextStyles.font11GrayRegular(),
-                            ),
-                          ],
+                        SizedBox(height: 2.h),
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'welcome_back_driver'.tr(),
+                                style: TextStyles.font11GrayRegular(),
+                              ),
+                              Text(
+                                'please_login_to_continue'.tr(),
+                                style: TextStyles.font11GrayRegular(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 35.h),
-                      const DriverLoginFormFields(),
-                      SizedBox(height: 18.h),
-                      Center(
-                        child: ClickableTextSpan(
-                          normalText: 'dont_have_account'.tr(),
-                          clickableText: 'sign_up_here'.tr(),
-                          onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              AppRoutes.driverRegisterScreen,
-                            );
-                          },
+                        SizedBox(height: 35.h),
+                        const DriverLoginFormFields(),
+                        SizedBox(height: 18.h),
+                        Center(
+                          child: ClickableTextSpan(
+                            normalText: 'dont_have_account'.tr(),
+                            clickableText: 'sign_up_here'.tr(),
+                            onTap: () {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                AppRoutes.driverRegisterScreen,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

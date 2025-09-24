@@ -10,6 +10,7 @@ import 'package:gogo/ui/driver_screen/driver_order_list_screen/data/repo/get_all
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/ui/driver_order_list_screen.dart';
 import 'package:gogo/ui/driver_screen/driver_profile_screen/ui/driver_profile_screen.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/ui/driver_wallet_screen.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class DriverHomeScreen extends StatefulWidget {
   const DriverHomeScreen({super.key});
@@ -33,6 +34,21 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       DriverWalletScreen(),
       DriverProfileScreen(),
     ];
+
+    /// ⬇️ استدعاء البيرمشن أول ما تفتح شاشة DriverHomeScreen
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLocationPermission();
+    });
+  }
+
+  Future<void> _checkLocationPermission() async {
+    var status = await Permission.location.status;
+    if (!status.isGranted) {
+      var result = await Permission.location.request();
+      if (result.isPermanentlyDenied) {
+        await openAppSettings();
+      }
+    }
   }
 
   @override
@@ -40,14 +56,14 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (_) => DriverOrderListScreenCubit(
-            repository: GetAllOrdersRepository(),
-          )..fetchOrders(),
+          create: (_) =>
+              DriverOrderListScreenCubit(repository: GetAllOrdersRepository())
+                ..fetchOrders(),
         ),
         BlocProvider(
-          create: (_) => DriverHistoryScreenCubit(
-            DriverHistoryRepository(),
-          )..fetchDriverHistory(),
+          create: (_) =>
+              DriverHistoryScreenCubit(DriverHistoryRepository())
+                ..fetchDriverHistory(),
         ),
       ],
       child: Scaffold(

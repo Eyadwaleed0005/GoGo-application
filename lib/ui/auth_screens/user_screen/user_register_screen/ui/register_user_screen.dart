@@ -60,61 +60,63 @@ class RegisterUserScreen extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             body: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.all(16.0.w),
-                child: SingleChildScrollView(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BackTextButton(onTap: () => Navigator.pop(context)),
-                      Center(
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'sign_up'.tr(),
-                              style: TextStyles.font21BlackBold(),
-                            ),
-                            SizedBox(width: 6.w),
-                            Transform.translate(
-                              offset: Offset(0, 12.h),
-                              child: const OrangeDot(),
-                            ),
-                          ],
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: EdgeInsets.all(16.0.w),
+                  child: SingleChildScrollView(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        BackTextButton(onTap: () => Navigator.pop(context)),
+                        Center(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'sign_up'.tr(),
+                                style: TextStyles.font21BlackBold(),
+                              ),
+                              SizedBox(width: 6.w),
+                              Transform.translate(
+                                offset: Offset(0, 12.h),
+                                child: const OrangeDot(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 10.h),
-                      Center(
-                        child: Column(
-                          children: [
-                            Text(
-                              'signup_description_line1'.tr(),
-                              style: TextStyles.font11GrayRegular(),
-                            ),
-                            Text(
-                              'signup_description_line2'.tr(),
-                              style: TextStyles.font11GrayRegular(),
-                            ),
-                          ],
+                        SizedBox(height: 10.h),
+                        Center(
+                          child: Column(
+                            children: [
+                              Text(
+                                'signup_description_line1'.tr(),
+                                style: TextStyles.font11GrayRegular(),
+                              ),
+                              Text(
+                                'signup_description_line2'.tr(),
+                                style: TextStyles.font11GrayRegular(),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      SizedBox(height: 20.h),
-                      RegisterFormFields(),
-                      SizedBox(height: 15.h),
-                      SizedBox(height: 18.h),
-                      Center(
-                        child: ClickableTextSpan(
-                          normalText: 'dont_have_account'.tr(),
-                          clickableText: 'sign_in_here'.tr(),
-                          onTap: () {
-                            Navigator.pushReplacementNamed(
-                              context,
-                              AppRoutes.loginScreen,
-                            );
-                          },
+                        SizedBox(height: 20.h),
+                        RegisterFormFields(),
+                        SizedBox(height: 15.h),
+                        SizedBox(height: 18.h),
+                        Center(
+                          child: ClickableTextSpan(
+                            normalText: 'dont_have_account'.tr(),
+                            clickableText: 'sign_in_here'.tr(),
+                            onTap: () {
+                              Navigator.pushReplacementNamed(
+                                context,
+                                AppRoutes.loginScreen,
+                              );
+                            },
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),

@@ -16,78 +16,77 @@ class DriverAuthScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(25.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              BackTextButton(onTap: () => Navigator.pop(context)),
-              SizedBox(height: 20.h),
-              Center(
-                child: Container(
-                  width: 181.w,
-                  height: 181.w,
-                  decoration: const BoxDecoration(shape: BoxShape.circle),
-                  child: ClipOval(
-                    child: Image.asset(AppImage().driver, fit: BoxFit.cover),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(25.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                BackTextButton(onTap: () => Navigator.pop(context)),
+                SizedBox(height: 20.h),
+                Center(
+                  child: Container(
+                    width: 181.w,
+                    height: 181.w,
+                    decoration: const BoxDecoration(shape: BoxShape.circle),
+                    child: ClipOval(
+                      child: Image.asset(AppImage().driver, fit: BoxFit.cover),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 30.h),
-              Center(
-                child: Text(
-                  'drive_smarter'.tr(),
-                  style: TextStyles.font21BlackBold(),
-                  textAlign: TextAlign.center,
+                SizedBox(height: 30.h),
+                Center(
+                  child: Text(
+                    'drive_smarter'.tr(),
+                    style: TextStyles.font21BlackBold(),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              SizedBox(height: 10.h),
-              Center(
-                child: Text(
-                  'join_drivers_start_earning'.tr(),
-                  style: TextStyles.font11GrayRegular(),
-                  textAlign: TextAlign.center,
+                SizedBox(height: 10.h),
+                Center(
+                  child: Text(
+                    'join_drivers_start_earning'.tr(),
+                    style: TextStyles.font11GrayRegular(),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              Center(
-                child: Text(
-                  'while_providing_safe_rides'.tr(),
-                  style: TextStyles.font11GrayRegular(),
-                  textAlign: TextAlign.center,
+                Center(
+                  child: Text(
+                    'while_providing_safe_rides'.tr(),
+                    style: TextStyles.font11GrayRegular(),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
-              ),
-              SizedBox(height: 20.h),
-              Center(
-                child: CustomButton(
-                  text: 'become_driver'.tr(),
-                  backgroundColor: ColorPalette.mainColor,
-                  height: 30.h,
-                  width: 222.w,
-                  borderRadius: 3.r,
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.driverRegisterScreen,
-                    );
-                  },
+                SizedBox(height: 20.h),
+                Center(
+                  child: CustomButton(
+                    text: 'become_driver'.tr(),
+                    backgroundColor: ColorPalette.mainColor,
+                    height: 30.h,
+                    width: 222.w,
+                    borderRadius: 3.r,
+                    onPressed: () {
+                      Navigator.pushNamed(
+                        context,
+                        AppRoutes.driverRegisterScreen,
+                      );
+                    },
+                  ),
                 ),
-              ),
-              SizedBox(height: 15.h),
-              Center(
-                child: CustomOutlinedButton(
-                  text: 'login_as_driver'.tr(),
-                  height: 30.h,
-                  width: 200.w,
-                  borderRadius: 3.r,
-                  onPressed: () {
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.driverLoginScreen,
-                    );
-                  },
+                SizedBox(height: 15.h),
+                Center(
+                  child: CustomOutlinedButton(
+                    text: 'login_as_driver'.tr(),
+                    height: 30.h,
+                    width: 200.w,
+                    borderRadius: 3.r,
+                    onPressed: () {
+                      Navigator.pushNamed(context, AppRoutes.driverLoginScreen);
+                    },
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),

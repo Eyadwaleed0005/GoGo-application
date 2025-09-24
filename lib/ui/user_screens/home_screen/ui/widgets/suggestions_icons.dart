@@ -17,7 +17,7 @@ class SuggestionsIcons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      borderRadius: BorderRadius.circular(15.r), 
+      borderRadius: BorderRadius.circular(15.r),
       onTap: onTap,
       child: Container(
         width: 53.w,
@@ -29,11 +29,13 @@ class SuggestionsIcons extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Image.asset(
-              imagePath,
-              width: 30.w,
-              height: 30.w,
-              fit: BoxFit.contain,
+            Expanded(
+              child: Image.asset(
+                imagePath,
+                width: 30.w,
+                height: 30.w,
+                fit: BoxFit.contain,
+              ),
             ),
             Text(
               label,

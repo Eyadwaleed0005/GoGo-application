@@ -10,6 +10,7 @@ import 'package:gogo/ui/user_screens/home_screen/ui/widgets/suggestions_icons.da
 import 'package:gogo/ui/user_screens/services_screen/ui/services_screen.dart';
 import 'package:gogo/ui/user_screens/user_profile_screen/ui/user_profile_screen.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -22,10 +23,29 @@ class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-    SingleChildScrollView(child: HomeContent()),
-    ServicesScreen(),
-    UserProfileScreen(),
+    const SingleChildScrollView(child: HomeContent()),
+    const ServicesScreen(),
+    const UserProfileScreen(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    // استدعاء البيرمشن أول ما الشاشة تتبني
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkLocationPermission();
+    });
+  }
+
+  Future<void> _checkLocationPermission() async {
+    var status = await Permission.location.status;
+    if (!status.isGranted) {
+      var result = await Permission.location.request();
+      if (result.isPermanentlyDenied) {
+        await openAppSettings();
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
