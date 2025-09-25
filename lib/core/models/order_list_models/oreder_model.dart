@@ -19,7 +19,7 @@ class GetAllOrdersModel {
   final String? status;     
   final int? driverId;      
   final int? review;        
-  final String paymentWay;  // 🔥 بقت non-nullable ومعاها default value
+  final String paymentWay;  
 
   GetAllOrdersModel({
     required this.id,
@@ -64,7 +64,7 @@ class GetAllOrdersModel {
       status: json['status'],          
       driverId: json['driverid'],      
       review: json['review'],          
-      paymentWay: json['paymentWay'] ?? "cash", // 🔥 القيمة الافتراضية
+      paymentWay: json['paymentWay'] ?? "cash", 
     );
   }
 
