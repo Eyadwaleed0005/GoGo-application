@@ -85,7 +85,6 @@ class DriverDetailsOrderScreenCubit
         return;
       }
 
-      // ✅ الأوردر صالح → نكمل
       emit(DriverDetailsOrderScreenSuccess(order));
     } catch (e) {
       if (!isClosed) {

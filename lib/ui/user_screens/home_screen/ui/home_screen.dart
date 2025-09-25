@@ -31,7 +31,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // استدعاء البيرمشن أول ما الشاشة تتبني
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkLocationPermission();
     });

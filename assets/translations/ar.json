@@ -318,5 +318,8 @@
   "recharge_wallet_message": "يرجى شحن محفظتك لقبول هذا الطلب.",
   "recharge_now": "اشحن الآن",
   "three_of_group": "ثلاثة في مجموعة",
-  "connect_with_us": "تواصل معنا"
+  "connect_with_us": "تواصل معنا",
+  "cash": "كاش",
+  "vodafone_cash": "فودافون كاش",
+  "payment_way": "طريقة الدفع"
 }

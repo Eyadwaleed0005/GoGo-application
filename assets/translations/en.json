@@ -81,8 +81,8 @@
   "bad_response_error": "Bad response error",
   "unexpected_error": "Unexpected error occurred",
   "something_went_wrong": "Something went wrong.",
-"login_description_line1": "Welcome back",
-"login_description_line2": "Enter your details",
+  "login_description_line1": "Welcome back",
+  "login_description_line2": "Enter your details",
   "sign_up_here": "Sign Up Here",
   "loading": "Loading",
   "email_invalid": "Enter a valid email",
@@ -318,5 +318,8 @@
   "recharge_wallet_message": "Please recharge your wallet to accept this order.",
   "recharge_now": "Recharge Now",
   "three_of_group": "Three of group",
-  "connect_with_us": "Connect with us"
+  "connect_with_us": "Connect with us",
+  "cash": "Cash",
+  "vodafone_cash": "Vodafone Cash",
+  "payment_way": "Payment Method"
 }

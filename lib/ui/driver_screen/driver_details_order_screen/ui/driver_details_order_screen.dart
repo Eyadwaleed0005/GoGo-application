@@ -62,6 +62,7 @@ class DriverDetailsOrderScreen extends StatelessWidget {
                             distance: order.distance.toString(),
                             tripType: order.type,
                             passengers: order.noPassengers.toString(),
+                            paymentWay: order.paymentWay,
                           ),
                           SizedBox(height: 18.h),
                           if (order.notes.isNotEmpty)

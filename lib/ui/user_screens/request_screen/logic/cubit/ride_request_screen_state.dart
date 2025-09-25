@@ -10,6 +10,7 @@ class RideRequestScreenState {
   final String notes;
   final double distanceKm;
   final int suggestedPrice;
+  final String paymentWay; // 🔥 جديد
 
   final RideRequestStatus status;
   final String? errorMessage;
@@ -22,6 +23,7 @@ class RideRequestScreenState {
     required this.notes,
     required this.distanceKm,
     required this.suggestedPrice,
+    required this.paymentWay, // 🔥 جديد
     required this.status,
     this.errorMessage,
     this.createdOrder,
@@ -34,6 +36,7 @@ class RideRequestScreenState {
     String? notes,
     double? distanceKm,
     int? suggestedPrice,
+    String? paymentWay, 
     RideRequestStatus? status,
     String? errorMessage,
     GetAllOrdersModel? createdOrder,
@@ -45,6 +48,7 @@ class RideRequestScreenState {
       notes: notes ?? this.notes,
       distanceKm: distanceKm ?? this.distanceKm,
       suggestedPrice: suggestedPrice ?? this.suggestedPrice,
+      paymentWay: paymentWay ?? this.paymentWay, 
       status: status ?? this.status,
       errorMessage: errorMessage,
       createdOrder: createdOrder,

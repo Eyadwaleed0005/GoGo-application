@@ -13,6 +13,7 @@ class FromToCard extends StatelessWidget {
   final String distance;
   final String tripType;
   final String passengers;
+  final String paymentWay; 
 
   const FromToCard({
     super.key,
@@ -22,6 +23,7 @@ class FromToCard extends StatelessWidget {
     required this.distance,
     required this.tripType,
     required this.passengers,
+    required this.paymentWay, 
   });
 
   @override
@@ -202,6 +204,26 @@ class FromToCard extends StatelessWidget {
                   ),
                   verticalSpace(4),
                   Text(passengers, style: TextStyles.font12Blackbold()),
+                ],
+              ),
+            ),
+            verticalSpace(8),
+            Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(vertical: 8.h, horizontal: 10.w),
+              decoration: ShapeDecoration(
+                color: ColorPalette.backgroundColor,
+                shape: const StadiumBorder(),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Text(
+                    "payment_way".tr(),
+                    style: TextStyles.font9GreyDarkSemiBold(),
+                  ),
+                  verticalSpace(4),
+                 Text(paymentWay.tr(), style: TextStyles.font12Blackbold()),
                 ],
               ),
             ),

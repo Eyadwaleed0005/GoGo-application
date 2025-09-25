@@ -23,28 +23,30 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
             tripType: "one_of_group",
             distanceKm: distanceKm,
           ),
+          paymentWay: "cash", // 🔥 القيمة الافتراضية
           status: RideRequestStatus.initial,
         ));
 
- void changeTripType(String value) {
-  // إذا الرحلة دليفري، ركاب = 0
-  final passengers = value == "delivery" ? "0" : (state.passengers == "0" ? "" : state.passengers);
+  void changeTripType(String value) {
+    final passengers = value == "delivery"
+        ? "0"
+        : (state.passengers == "0" ? "" : state.passengers);
 
-  final newSuggestedPrice = SuggestedPriceCalculator.calculate(
-    tripType: value,
-    distanceKm: state.distanceKm,
-  );
+    final newSuggestedPrice = SuggestedPriceCalculator.calculate(
+      tripType: value,
+      distanceKm: state.distanceKm,
+    );
 
-  emit(state.copyWith(
-    tripType: value,
-    passengers: passengers,
-    suggestedPrice: newSuggestedPrice,
-  ));
-}
+    emit(state.copyWith(
+      tripType: value,
+      passengers: passengers,
+      suggestedPrice: newSuggestedPrice,
+    ));
+  }
 
- void changePassengers(String value) {
-  emit(state.copyWith(passengers: value));
-}
+  void changePassengers(String value) {
+    emit(state.copyWith(passengers: value));
+  }
 
   void changePrice(String value) {
     emit(state.copyWith(price: value));
@@ -52,6 +54,10 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
 
   void changeNotes(String value) {
     emit(state.copyWith(notes: value));
+  }
+
+  void changePaymentWay(String value) {
+    emit(state.copyWith(paymentWay: value));
   }
 
   bool validateInputs() {
@@ -108,6 +114,7 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
         status: 'pending',
         driverId: null,
         review: 0,
+        paymentWay: state.paymentWay, 
       );
 
       final createdOrder = await _ordersRepository.createOrderWithFCM(order);

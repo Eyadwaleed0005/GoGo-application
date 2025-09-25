@@ -7,6 +7,7 @@ import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/core/models/order_list_models/oreder_model.dart';
 import 'package:gogo/ui/user_screens/request_screen/logic/cubit/ride_request_screen_cubit.dart';
+import 'package:gogo/ui/user_screens/request_screen/ui/widgets/payment_way_dropdown.dart';
 import 'package:gogo/ui/user_screens/request_screen/ui/widgets/trip_type_dropdown.dart';
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
 
@@ -80,8 +81,10 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              verticalSpace(30),
+               verticalSpace(30),
               const TripCategoryDropdown(),
+              verticalSpace(20),
+              const PaymentWayDropdown(), 
               verticalSpace(20),
               Row(
                 children: [

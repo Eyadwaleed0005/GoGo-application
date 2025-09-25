@@ -16,9 +16,10 @@ class GetAllOrdersModel {
   final int noPassengers;
   final String userName;
   final String userImage;
-  final String? status; // جديد - nullable
-  final int? driverId;  // جديد - nullable
-  final int? review;    // جديد - nullable
+  final String? status;     
+  final int? driverId;      
+  final int? review;        
+  final String paymentWay;  // 🔥 بقت non-nullable ومعاها default value
 
   GetAllOrdersModel({
     required this.id,
@@ -39,6 +40,7 @@ class GetAllOrdersModel {
     this.status,   
     this.driverId, 
     this.review,   
+    this.paymentWay = "cash", // القيمة الافتراضية
   });
 
   factory GetAllOrdersModel.fromJson(Map<String, dynamic> json) {
@@ -59,9 +61,10 @@ class GetAllOrdersModel {
       distance: (json['distance'] as num?)?.toDouble() ?? 0.0,
       notes: json['notes'] ?? '',
       noPassengers: json['noPassengers'] ?? 0,
-      status: json['status'],          // اختياري
-      driverId: json['driverid'],      // اختياري
-      review: json['review'],          // اختياري
+      status: json['status'],          
+      driverId: json['driverid'],      
+      review: json['review'],          
+      paymentWay: json['paymentWay'] ?? "cash", // 🔥 القيمة الافتراضية
     );
   }
 
@@ -82,9 +85,10 @@ class GetAllOrdersModel {
       "noPassengers": noPassengers,
       "userName": userName,
       "userImage": userImage,
-      "status": status,        // اختياري
-      "driverid": driverId,    // اختياري
-      "review": review,        // اختياري
+      "status": status,        
+      "driverid": driverId,    
+      "review": review,        
+      "paymentWay": paymentWay // 🔥 هيكون دايمًا موجود
     };
   }
 
