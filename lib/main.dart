@@ -22,7 +22,7 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await EasyLocalization.ensureInitialized();
   await NotificationService().init();
-  DioHelper.init();
+  DioHelper.init(baseUrl: EndPoints.baseurl);
   mb.MapboxOptions.setAccessToken(EndPoints.accessToken);
   const storage = FlutterSecureStorage();
   String? savedLang = await storage.read(key: SharedPreferenceKeys.selectedLanguage);

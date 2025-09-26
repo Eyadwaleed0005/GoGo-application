@@ -12,25 +12,22 @@ class DriverLoginRepository {
   Future<UserDriverResponseModel> login(DriverLoginRequestModel model) async {
     try {
       final response = await DioHelper.postData(
-        url: EndPoints.loginUser, 
+        url: EndPoints.loginUser,
         data: model.toJson(),
       );
 
       final loginResponse = UserDriverResponseModel.fromJson(response.data);
 
-      // 🔹 حفظ userId
       await SecureStorageHelper.savedata(
         key: SecureStorageKeys.userId,
         value: loginResponse.userId,
       );
 
-      // 🔹 بعد اللوجين نعمل GET Driver Data
       final driverResponse = await DioHelper.getData(
         url: EndPoints.getDriverData(loginResponse.userId),
       );
       final driver = DriverModel.fromJson(driverResponse.data);
 
-      // 🔹 حفظ driverId
       await SecureStorageHelper.savedata(
         key: SecureStorageKeys.driverId,
         value: driver.id.toString(),
