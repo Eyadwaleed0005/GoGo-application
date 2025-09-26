@@ -98,12 +98,19 @@ class RegisterFormFields extends StatelessWidget {
               if (!RegExp(r'[!@#$%^&*(),.?":{}|<>_\-]').hasMatch(value)) {
                 return '* ${'password_special_char'.tr()}';
               }
+              if (!RegExp(r'[a-zA-Z]').hasMatch(value)) {
+                return '* ${'password_letter'.tr()}';
+              }
               return null;
             },
           ),
+
           SizedBox(height: 8.h),
 
-          Text('confirm_password'.tr(), style: TextStyles.font10BlackSemiBold()),
+          Text(
+            'confirm_password'.tr(),
+            style: TextStyles.font10BlackSemiBold(),
+          ),
           SizedBox(height: 8.h),
           AppTextField(
             hint: 'password_hint'.tr(),

@@ -321,5 +321,10 @@
   "connect_with_us": "تواصل معنا",
   "cash": "كاش",
   "vodafone_cash": "فودافون كاش",
-  "payment_way": "طريقة الدفع"
+  "payment_way": "طريقة الدفع",
+  "delete_account_confirmation": "هل أنت متأكد من حذف حسابك؟ هذا الإجراء لا يمكن التراجع عنه.",
+  "English": "الإنجليزية",
+  "Arabic": "العربية",
+  "delete_account": "حذف الحساب",
+  "password_letter": "يجب أن يحتوي الباسورد على حرف واحد على الأقل"
 }

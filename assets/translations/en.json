@@ -321,5 +321,10 @@
   "connect_with_us": "Connect with us",
   "cash": "Cash",
   "vodafone_cash": "Vodafone Cash",
-  "payment_way": "Payment Method"
+  "payment_way": "Payment Method",
+  "delete_account_confirmation": "Are you sure you want to delete your account? This action cannot be undone.",
+  "English": "English",
+  "Arabic": "Arabic",
+  "delete_account": "Delete Account",
+  "password_letter": "Password must contain at least one letter"
 }

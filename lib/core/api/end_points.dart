@@ -4,6 +4,8 @@ class EndPoints {
   // ---------------- AUTH ----------------
   static const String registerUser = "$baseurl/api/UsersIdentity/Register";
   static const String loginUser = "$baseurl/api/UsersIdentity/Login";
+  static String deleteAccount(String userId) => "$baseurl/api/UsersIdentity/Delete/$userId";
+
 
   // ---------------- DRIVER ----------------
   static const String getDataDriver = "$baseurl/api/Driver";
