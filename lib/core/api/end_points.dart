@@ -1,5 +1,5 @@
 class EndPoints {
-  static const String baseurl = "https://in-drive.runasp.net";
+  static const String baseurl = "http://38.242.129.50:5000";
 
   // ---------------- AUTH ----------------
   static const String registerUser = "$baseurl/api/UsersIdentity/Register";

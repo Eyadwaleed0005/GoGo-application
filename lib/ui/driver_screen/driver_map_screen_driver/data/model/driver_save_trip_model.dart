@@ -4,7 +4,7 @@ class DriverSaveTripModel {
   final String from;
   final String to;
   final DateTime date;
-  final num totalTip; // 👈 يقدر يبقى int أو double
+  final num totalTip; 
   final int driverId;
 
   DriverSaveTripModel({
@@ -24,7 +24,7 @@ class DriverSaveTripModel {
       "from": from,
       "to": to,
       "date": date.toUtc().toIso8601String(),
-      "totalTip": totalTip, // هيبعت int لو مفيش كسور
+      "totalTip": totalTip, 
       "driverId": driverId,
     };
   }

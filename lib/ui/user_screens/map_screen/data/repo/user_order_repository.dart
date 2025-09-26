@@ -47,8 +47,8 @@ class UserOrderRepository {
       to: order.to,
       price: order.expectedPrice,
       date: order.date,
-      paymentMethod: "Cash",   // ✅ دايمًا كاش
-      rideType: order.type,    // ✅ هنا ممكن تحط نوع الرحلة
+      paymentMethod: order.paymentWay,   
+      rideType: order.type,    
     );
   }
 
