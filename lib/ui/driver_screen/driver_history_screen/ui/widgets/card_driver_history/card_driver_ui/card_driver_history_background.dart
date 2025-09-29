@@ -13,45 +13,40 @@ class CardDriverHistoryBackground extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.all(5.r),
-      child: SizedBox(
-        width: double.infinity,
-        height: 180.h,
-        child: Container(
-          decoration: BoxDecoration(
-            color: colorContainr,
-            borderRadius: BorderRadius.circular(20.r),
-          ),
-          child: Stack(
-            children: [
-              Positioned(
-                top: 8.h,
-                right: 4.w,
-                child: Container(
-                  width: 55.w,
-                  height: 55.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colorCircle,
-                  ),
-                ),
+    return Container(
+      width: double.infinity,
+      padding: EdgeInsets.all(16.r),
+      decoration: BoxDecoration(
+        color: colorContainr,
+        borderRadius: BorderRadius.circular(20.r),
+      ),
+      child: Stack(
+        children: [
+          Positioned(
+            right: 10.w,
+            top: 8.h,
+            child: Container(
+              width: 55.w,
+              height: 55.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colorCircle,
               ),
-              Positioned(
-                bottom: 25.h,
-                left: 4.w,
-                child: Container(
-                  width: 60.w,
-                  height: 60.w,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: colorCircle,
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+          Positioned(
+            left: 10.w,
+            bottom: 8.h,
+            child: Container(
+              width: 60.w,
+              height: 60.w,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: colorCircle,
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -21,127 +21,135 @@ class ServicesScreen extends StatelessWidget {
       child: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 20.h),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Row(
-                children: [
-                  Image.asset(
-                    AppImage().servises,
-                    width: 35.w,
-                    height: 35.w,
-                    fit: BoxFit.contain,
-                  ),
-                  horizontalSpace(35),
-                  Text(
-                    'services'.tr(),
-                    textAlign: TextAlign.center,
-                    style: TextStyles.font20Blackbold(),
-                  ),
-                ],
-              ),
-              verticalSpace(15),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  SuggestionsIcons(
-                    imagePath: AppImage().taxiIcon,
-                    label: 'car'.tr(),
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.mapScreen);
-                    },
-                  ),
-                  SuggestionsIcons(
-                    imagePath: AppImage().delivery,
-                    label: 'delivery'.tr(),
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.mapScreen);
-                    },
-                  ),
-                  SuggestionsIcons(
-                    imagePath: AppImage().busIcon,
-                    label: 'bus'.tr(),
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.comingSoonScreen);
-                    },
-                  ),
-                  SuggestionsIcons(
-                    imagePath: AppImage().calendar,
-                    label: 'reserve'.tr(),
-                    onTap: () {
-                      Navigator.pushNamed(context, AppRoutes.comingSoonScreen);
-                    },
-                  ),
-                ],
-              ),
-              verticalSpace(12),
-              FoodComingSoon(),
-              verticalSpace(20),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    AppImage().bannar2,
-                    width: 130.w,
-                    height: 130.w,
-                    fit: BoxFit.contain,
-                  ),
-                  horizontalSpace(12),
-                  Expanded(
-                    child: RichText(
-                      text: TextSpan(
-                        style: TextStyles.font15whitebold(),
-                        children: [
-                          TextSpan(text: 'get_best'.tr()),
-                          TextSpan(
-                            text: 'bus_rides'.tr(),
-                            style: TextStyles.font12Blackbold().copyWith(
-                              color: Colors.red,
-                            ),
-                          ),
-                          TextSpan(text: 'to_destination'.tr()),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              verticalSpace(40),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text("GoGo", style: TextStyles.font25Blackbold()),
-                  InkWell(
-                    onTap: () {
-                      Navigator.pushNamed(
-                        context,
-                        AppRoutes.privacyPolicyScreen,
-                      );
-                    },
-                    borderRadius: BorderRadius.circular(30.r),
-                    child: Container(
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  children: [
+                    Image.asset(
+                      AppImage().servises,
                       width: 35.w,
-                      height: 35.h,
-                      decoration: BoxDecoration(
-                        color: ColorPalette.textColor1,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.star_outline,
-                        size: 28.sp,
-                        color: ColorPalette.mainColor,
+                      height: 35.w,
+                      fit: BoxFit.contain,
+                    ),
+                    horizontalSpace(35),
+                    Text(
+                      'services'.tr(),
+                      textAlign: TextAlign.center,
+                      style: TextStyles.font20Blackbold(),
+                    ),
+                  ],
+                ),
+                verticalSpace(15),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    SuggestionsIcons(
+                      imagePath: AppImage().taxiIcon,
+                      label: 'car'.tr(),
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.mapScreen);
+                      },
+                    ),
+                    SuggestionsIcons(
+                      imagePath: AppImage().delivery,
+                      label: 'delivery'.tr(),
+                      onTap: () {
+                        Navigator.pushNamed(context, AppRoutes.mapScreen);
+                      },
+                    ),
+                    SuggestionsIcons(
+                      imagePath: AppImage().busIcon,
+                      label: 'bus'.tr(),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.comingSoonScreen,
+                        );
+                      },
+                    ),
+                    SuggestionsIcons(
+                      imagePath: AppImage().calendar,
+                      label: 'reserve'.tr(),
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.comingSoonScreen,
+                        );
+                      },
+                    ),
+                  ],
+                ),
+                verticalSpace(12),
+                FoodComingSoon(),
+                verticalSpace(20),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Image.asset(
+                      AppImage().bannar2,
+                      width: 130.w,
+                      height: 130.w,
+                      fit: BoxFit.contain,
+                    ),
+                    horizontalSpace(12),
+                    Expanded(
+                      child: RichText(
+                        text: TextSpan(
+                          style: TextStyles.font15whitebold(),
+                          children: [
+                            TextSpan(text: 'get_best'.tr()),
+                            TextSpan(
+                              text: 'bus_rides'.tr(),
+                              style: TextStyles.font12Blackbold().copyWith(
+                                color: Colors.red,
+                              ),
+                            ),
+                            TextSpan(text: 'to_destination'.tr()),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              verticalSpace(10),
-              PickupPointWidget(
-                onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.mapScreen);
-                },
-              ),
-            ],
+                  ],
+                ),
+                verticalSpace(40),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text("GoGo", style: TextStyles.font25Blackbold()),
+                    InkWell(
+                      onTap: () {
+                        Navigator.pushNamed(
+                          context,
+                          AppRoutes.privacyPolicyScreen,
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(30.r),
+                      child: Container(
+                        width: 35.w,
+                        height: 35.h,
+                        decoration: BoxDecoration(
+                          color: ColorPalette.textColor1,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.star_outline,
+                          size: 28.sp,
+                          color: ColorPalette.mainColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                verticalSpace(10),
+                PickupPointWidget(
+                  onTap: () {
+                    Navigator.pushNamed(context, AppRoutes.mapScreen);
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),

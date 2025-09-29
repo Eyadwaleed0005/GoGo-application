@@ -36,7 +36,7 @@ class RegisterFormFields extends StatelessWidget {
           Text('email_here'.tr(), style: TextStyles.font10BlackSemiBold()),
           SizedBox(height: 8.h),
           AppTextField(
-            hint: 'your_email'.tr(),
+            hint: 'enter_email'.tr(),
             controller: cubit.emailController,
             keyboardType: TextInputType.emailAddress,
             validator: (value) {
@@ -44,7 +44,10 @@ class RegisterFormFields extends StatelessWidget {
                 return '* ${'email_required'.tr()}';
               }
               if (!value.contains('@')) {
-                return '* ${'enter_valid_email'.tr()}';
+                return '* ${'valid_email'.tr()}';
+              }
+              if (value.split('@').length != 2) {
+                return '* ${'valid_email_2'.tr()}';
               }
               return null;
             },

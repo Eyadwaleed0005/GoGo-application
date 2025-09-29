@@ -12,7 +12,7 @@ import 'package:gogo/ui/user_screens/request_screen/ui/widgets/trip_type_dropdow
 import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
 
 class TripDetailsForm extends StatefulWidget {
-  TripDetailsForm({
+  const TripDetailsForm({
     super.key,
     required this.from,
     required this.to,
@@ -75,16 +75,15 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
         }
         priceController.text = state.price;
         notesController.text = state.notes;
-
         return Form(
           key: _formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               verticalSpace(30),
+              verticalSpace(30),
               const TripCategoryDropdown(),
               verticalSpace(20),
-              const PaymentWayDropdown(), 
+              const PaymentWayDropdown(),
               verticalSpace(20),
               Row(
                 children: [
@@ -98,7 +97,6 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
                       onChanged: cubit.changePassengers,
                       validator: (value) {
                         final passengers = int.tryParse(value ?? "") ?? -1;
-
                         if (state.tripType == "delivery") {
                           if (passengers != 0) {
                             return "passengers_zero".tr();

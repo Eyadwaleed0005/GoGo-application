@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gogo/ui/admin_screens/admin_home_screen.dart/ui/admin_home_screen.dart';
 import 'package:gogo/ui/admin_screens/driver_check_data_screen/ui/check_data_driver_screen.dart';
 import 'package:gogo/ui/admin_screens/driver_request_charge_screen/ui/driver_request_charge_screen.dart';
 import 'package:gogo/ui/admin_screens/driver_wating_list_screen/data/model/driver_detils_arges_model.dart';
@@ -88,6 +89,7 @@ class AppRoutes {
   static const String driverWatingListScreen = '/driverWatingListScreen';
   static const String checkDataDriverScreen = '/checkDataDriverScreen';
   static const String driverRequestChargeScreen = '/driverRequestChargeScreen';
+  static const String adminHomeScreen = '/adminHomeScreen';
   // 🔹 Route generator
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -140,6 +142,8 @@ class AppRoutes {
         );
       case driverRequestChargeScreen:
         return MaterialPageRoute(builder: (_) => DriverRequestChargeScreen());
+      case adminHomeScreen:
+        return MaterialPageRoute(builder: (_) => AdminHomeScreen());
       /////////////////////////////////////////////////////////////
       case carDriverInformationScreen:
         return MaterialPageRoute(builder: (_) => CarDriverInformationScreen());

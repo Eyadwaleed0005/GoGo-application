@@ -104,6 +104,14 @@ class TextStyles {
       color: ColorPalette.textColor1,
     );
   }
+   static TextStyle font11Blackbold() {
+    return TextStyle(
+      fontSize: 11.sp,
+      fontWeight: FontWeightHelper.bold,
+      fontFamily: plusJakartaSans,
+      color: ColorPalette.textColor1,
+    );
+  }
     static TextStyle font9Blackbold() {
     return TextStyle(
       fontSize: 9.sp,

@@ -30,19 +30,22 @@ class TripCategoryDropdown extends StatelessWidget {
       builder: (context, state) {
         final cubit = context.read<RideRequestScreenCubit>();
         final currentValue = state.tripType;
-
         return DropdownButtonFormField<String>(
-          value: currentValue,
+          initialValue: currentValue.isEmpty ? null : currentValue,
           isExpanded: true,
           dropdownColor: Colors.white,
-          menuMaxHeight: 250.h,
           decoration: InputDecoration(
-            contentPadding: EdgeInsets.symmetric(
-              horizontal: 10.w,
-              vertical: 10.h,
+            labelText: "trip_type".tr(),
+            labelStyle: TextStyles.font10Blackbold().copyWith(
+              color: Colors.black,
             ),
+
+            // contentPadding: EdgeInsets.symmetric(
+            //   horizontal: 10.w,
+            //   vertical: 10.h,
+            // ),
             filled: true,
-            fillColor: ColorPalette.backgroundColor,
+            fillColor: Colors.white,
             border: _borderStyle(),
             enabledBorder: _borderStyle(),
             focusedBorder: _borderStyle(),
@@ -50,11 +53,10 @@ class TripCategoryDropdown extends StatelessWidget {
           items: items.map((item) {
             return DropdownMenuItem<String>(
               value: item["value"],
-              child: Center(
-                child: Text(
-                  item["label"]!,
-                  style: TextStyles.font10Blackbold(),
-                ),
+              child: Text(
+                item["label"]!,
+                style: TextStyles.font11Blackbold(),
+                overflow: TextOverflow.ellipsis, 
               ),
             );
           }).toList(),

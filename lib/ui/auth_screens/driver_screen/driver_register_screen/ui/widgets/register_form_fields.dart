@@ -46,9 +46,13 @@ class RegisterFormFields extends StatelessWidget {
               if (!value.contains('@')) {
                 return '* ${'valid_email'.tr()}';
               }
+              if (value.split('@').length != 2) {
+                return '* ${'valid_email_2'.tr()}';
+              }
               return null;
             },
           ),
+
           SizedBox(height: 8.h),
 
           Text('phone_number'.tr(), style: TextStyles.font10BlackSemiBold()),

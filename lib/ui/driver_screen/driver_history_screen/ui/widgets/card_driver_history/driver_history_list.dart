@@ -24,7 +24,6 @@ class DriverHistoryList extends StatelessWidget {
       groupedData.putIfAbsent(sectionKey, () => []).add(item);
     }
 
-    // 3️⃣ إنشاء ListView للـ sections
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -38,7 +37,7 @@ class DriverHistoryList extends StatelessWidget {
             verticalSpace(10),
             Center(
               child: Text(
-                sectionTitle, // النص النسبي المترجم
+                sectionTitle, 
                 style: TextStyles.font20Blackbold(),
               ),
             ),
@@ -50,8 +49,6 @@ class DriverHistoryList extends StatelessWidget {
               separatorBuilder: (_, __) => verticalSpace(0),
               itemBuilder: (context, index) {
                 final item = sectionItems[index];
-
-                // تحديد ألوان الـ card حسب index
                 final bool isOrange = index.isEven;
                 final containerColor = isOrange
                     ? ColorPalette.mainColor
@@ -59,22 +56,17 @@ class DriverHistoryList extends StatelessWidget {
                 final circleColor = isOrange
                     ? ColorPalette.textDark
                     : ColorPalette.circlesBackground;
-
-                final textStyle = isOrange
-                    ? TextStyles.font10Blackbold()
-                    : TextStyles.font10whitebold();
-
                 return CardDriverHistory(
+                  from: item.from,
+                  to: item.to,
                   containerColor: containerColor,
                   circleColor: circleColor,
                   rating: item.review,
-                  firstLocation: item.from,
-                  secondLocation: item.to,
+       
                   price: "${item.totalTip}",
                   wayOfPay: item.paymentWay,
                   date: item.formattedDate,
                   time: item.formattedTime,
-                  textStyle: textStyle,
                 );
               },
             ),

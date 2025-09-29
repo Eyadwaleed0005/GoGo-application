@@ -33,7 +33,6 @@ class DriverHistoryScreen extends StatelessWidget {
                           .read<DriverHistoryScreenCubit>()
                           .fetchDriverHistory();
                     },
-                    // هنا نخلي الشاشة كلها Scroll
                     child: SingleChildScrollView(
                       physics: const AlwaysScrollableScrollPhysics(),
                       padding: EdgeInsets.symmetric(

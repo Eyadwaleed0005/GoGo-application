@@ -45,7 +45,7 @@ class EndPoints {
   static const String directions = "$mapboxBase/directions/v5/mapbox/driving";
 
   static const String accessToken =
-      "pk.eyJ1IjoiZXlhZHdhbGVlZDIzMzIiLCJhIjoiY21mcTN2YXU1MDF2eDJpc2NrbG5hZzA0ZiJ9.jdNWpKUpVSJh7f0yDQobSg";
+      "pk.eyJ1IjoiZ29nb2FwcDEyMyIsImEiOiJjbWZxNDM4bXcwMHIzMnFzN3V1NXB6aTdnIn0.zUwFy7yoHsrqMDYdLUbCyg";
 
   // ---------------- FCM ----------------
   static String sendFcmMessage(String projectId) =>

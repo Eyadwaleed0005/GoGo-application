@@ -16,10 +16,10 @@ class GetAllOrdersModel {
   final int noPassengers;
   final String userName;
   final String userImage;
-  final String? status;     
-  final int? driverId;      
-  final int? review;        
-  final String paymentWay;  
+  final String? status;
+  final int? driverId;
+  final int? review;
+  final String paymentWay;
 
   GetAllOrdersModel({
     required this.id,
@@ -37,9 +37,9 @@ class GetAllOrdersModel {
     required this.noPassengers,
     required this.userName,
     required this.userImage,
-    this.status,   
-    this.driverId, 
-    this.review,   
+    this.status,
+    this.driverId,
+    this.review,
     this.paymentWay = "cash", // القيمة الافتراضية
   });
 
@@ -49,8 +49,11 @@ class GetAllOrdersModel {
       userId: json['userId'] ?? '',
       userPhone: json['userPhone'] ?? "No Phone",
       userName: json['userName'] ?? "Unknown User",
-      userImage: json['userImage'] ??
-          "https://tse1.mm.bing.net/th/id/OIP.0OL9oXb9QieUmjjSoWf-6gHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
+      userImage:
+          (json['userImage'] == null || (json['userImage'] as String).isEmpty)
+          ? "https://tse1.mm.bing.net/th/id/OIP.0OL9oXb9QieUmjjSoWf-6gHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
+          : json['userImage'],
+
       date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
       from: json['from'] ?? '',
       to: json['to'] ?? '',
@@ -61,10 +64,10 @@ class GetAllOrdersModel {
       distance: (json['distance'] as num?)?.toDouble() ?? 0.0,
       notes: json['notes'] ?? '',
       noPassengers: json['noPassengers'] ?? 0,
-      status: json['status'],          
-      driverId: json['driverid'],      
-      review: json['review'],          
-      paymentWay: json['paymentWay'] ?? "cash", 
+      status: json['status'],
+      driverId: json['driverid'],
+      review: json['review'],
+      paymentWay: json['paymentWay'] ?? "cash",
     );
   }
 
@@ -85,15 +88,15 @@ class GetAllOrdersModel {
       "noPassengers": noPassengers,
       "userName": userName,
       "userImage": userImage,
-      "status": status,        
-      "driverid": driverId,    
-      "review": review,        
-      "paymentWay": paymentWay // 🔥 هيكون دايمًا موجود
+      "status": status,
+      "driverid": driverId,
+      "review": review,
+      "paymentWay": paymentWay, 
     };
   }
 
   String get formattedTime {
-    return DateFormat('HH:mm').format(date); 
+    return DateFormat('HH:mm').format(date);
   }
 
   String get formattedDate {

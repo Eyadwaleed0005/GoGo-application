@@ -28,7 +28,6 @@ class SuggestedPriceCalculator {
         price = 40;
       }
     }
-
     return price.ceil();
   }
 }

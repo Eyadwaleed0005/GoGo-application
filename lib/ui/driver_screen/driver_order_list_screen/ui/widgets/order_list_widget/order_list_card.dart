@@ -26,7 +26,7 @@ class OrderListCard extends StatelessWidget {
     return location.replaceAll(RegExp(r'[0-9]'), '');
   }
 
-  String _displayTime(String isoTime) {
+ String _displayTime(String isoTime) {
   try {
     DateTime dt = DateTime.parse(isoTime).toLocal();
     return DateFormat('hh:mm a').format(dt); 
@@ -34,6 +34,7 @@ class OrderListCard extends StatelessWidget {
     return isoTime;
   }
 }
+
 
 
   @override

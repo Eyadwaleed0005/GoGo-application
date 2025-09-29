@@ -151,7 +151,7 @@
   "enter_car_color": "Please enter the car color",
   "enter_plate_number": "Please enter the plate number",
   "request_pending": "Your request is pending",
-  "request_wait_description": "Please wait until a driver responds.\nThe request will be automatically canceled after 2 minutes if no driver accepts.",
+  "request_wait_description": "Please wait until a driver responds.\nThe request will be automatically canceled after 4 minutes if no driver accepts.",
   "cancel_request": "Cancel Request",
   "camera": "Camera",
   "gallery": "Gallery",
@@ -199,7 +199,7 @@
   "lone_trip": "Lone trip",
   "passengers_zero": "Passengers must be 0 for delivery",
   "passengers_gt_zero": "Passengers must be greater than 0",
-  "max_passengers": "Max passengers is 6",
+  "max_passengers": "Max passengers is 4",
   "enter_passengers": "Enter passengers",
   "passengers": "Passengers",
   "price_note": "Please consider the prices of Arish drivers when setting your price so that your request will be accepted.",
@@ -326,5 +326,10 @@
   "English": "English",
   "Arabic": "Arabic",
   "delete_account": "Delete Account",
-  "password_letter": "Password must contain at least one letter"
+  "password_letter": "Password must contain at least one letter",
+  "valid_email_2": "Please enter a valid email with only one @ symbol",
+  "trip_to_customer": "You are now heading to the customer location: {place}",
+  "trip_to_destination": "You are now heading to the trip destination: {place}",
+  "total_price": "Total: {price}"
+
 }

@@ -12,7 +12,7 @@ class WaitingOrderStatusScreenCubit extends Cubit<WaitingOrderStatusScreenState>
   final GetOrderByIdRepository repository;
   Timer? _pollingTimer;
   Timer? _autoCancelTimer;
-  bool _disposed = false; // Flag للحماية
+  bool _disposed = false; 
 
   WaitingOrderStatusScreenCubit(this.repository)
       : super(WaitingOrderStatusScreenInitial());
@@ -40,7 +40,7 @@ class WaitingOrderStatusScreenCubit extends Cubit<WaitingOrderStatusScreenState>
       });
 
       _autoCancelTimer?.cancel();
-      _autoCancelTimer = Timer(const Duration(minutes: 2), () async {
+      _autoCancelTimer = Timer(const Duration(minutes: 4), () async {
         if (_disposed) return;
         final prefs = await SharedPreferences.getInstance();
         final status = prefs.getString(SharedPreferenceKeys.orderStatus);

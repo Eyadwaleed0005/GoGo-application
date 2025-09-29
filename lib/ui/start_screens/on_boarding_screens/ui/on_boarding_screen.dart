@@ -72,74 +72,78 @@ class OnboardingScreen extends StatelessWidget {
                         context.read<OnboardingCubit>().nextPage(index);
                       },
                       itemBuilder: (context, index) {
-                        return Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              width: 181.w,
-                              height: 181.w,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 10.r,
-                                    offset: Offset(0, 5.h),
+                        return SingleChildScrollView(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Container(
+                                width: 181.w,
+                                height: 181.w,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black12,
+                                      blurRadius: 10.r,
+                                      offset: Offset(0, 5.h),
+                                    ),
+                                  ],
+                                ),
+                                child: ClipOval(
+                                  child: Image.asset(
+                                    onboardingData[index]['image']!,
+                                    fit: BoxFit.cover,
                                   ),
-                                ],
-                              ),
-                              child: ClipOval(
-                                child: Image.asset(
-                                  onboardingData[index]['image']!,
-                                  fit: BoxFit.cover,
                                 ),
                               ),
-                            ),
-                            SizedBox(height: 28.h),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24.w),
-                              child: Text(
-                                onboardingData[index]['title']!,
-                                style: TextStyles.font21BlackBold(),
-                                textAlign: TextAlign.center,
+                              SizedBox(height: 28.h),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                child: Text(
+                                  onboardingData[index]['title']!,
+                                  style: TextStyles.font21BlackBold(),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 6.h),
-                            Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 24.w),
-                              child: Text(
-                                onboardingData[index]['description']!,
-                                style: TextStyles.font11GrayRegular(),
-                                textAlign: TextAlign.center,
+                              SizedBox(height: 6.h),
+                              Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 24.w),
+                                child: Text(
+                                  onboardingData[index]['description']!,
+                                  style: TextStyles.font11GrayRegular(),
+                                  textAlign: TextAlign.center,
+                                ),
                               ),
-                            ),
-                            SizedBox(height: 18.h),
-                            BlocBuilder<OnboardingCubit, OnboardingState>(
-                              builder: (context, state) {
-                                return Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: List.generate(
-                                    onboardingData.length,
-                                    (i) => Container(
-                                      margin: EdgeInsets.symmetric(
-                                        horizontal: 2.w,
-                                      ),
-                                      width: state.currentPage == i ? 6.w : 4.w,
-                                      height: 6.h,
-                                      decoration: BoxDecoration(
-                                        color: state.currentPage == i
-                                            ? ColorPalette.mainColor
-                                            : Colors.grey,
-                                        borderRadius: BorderRadius.circular(
-                                          10.r,
+                              SizedBox(height: 18.h),
+                              BlocBuilder<OnboardingCubit, OnboardingState>(
+                                builder: (context, state) {
+                                  return Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: List.generate(
+                                      onboardingData.length,
+                                      (i) => Container(
+                                        margin: EdgeInsets.symmetric(
+                                          horizontal: 2.w,
+                                        ),
+                                        width: state.currentPage == i
+                                            ? 6.w
+                                            : 4.w,
+                                        height: 6.h,
+                                        decoration: BoxDecoration(
+                                          color: state.currentPage == i
+                                              ? ColorPalette.mainColor
+                                              : Colors.grey,
+                                          borderRadius: BorderRadius.circular(
+                                            10.r,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
+                                  );
+                                },
+                              ),
+                            ],
+                          ),
                         );
                       },
                     );

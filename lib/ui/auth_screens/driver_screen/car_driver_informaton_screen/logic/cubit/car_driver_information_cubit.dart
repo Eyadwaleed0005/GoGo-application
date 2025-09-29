@@ -3,6 +3,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:gogo/core/local/secure_storage.dart';
 import 'package:gogo/core/local/secure_storage_keys.dart';
 import 'package:gogo/core/models/car_models/car_model.dart';
@@ -45,7 +47,12 @@ class CarDriverInformationCubit extends Cubit<CarDriverInformationState> {
   Future<void> pickImage(ImageSource source, void Function(File) onPicked) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      onPicked(File(pickedFile.path));
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = basename(pickedFile.path);
+      final savedImage =
+          await File(pickedFile.path).copy('${appDir.path}/$fileName');
+
+      onPicked(savedImage); 
       validateCarInfo();
     }
   }
