@@ -10,15 +10,6 @@ class DriverDetailsOrderSkeletonScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: ColorPalette.backgroundColor,
-      appBar: AppBar(
-        title: Container(
-          width: 120.w,
-          height: 20.h,
-          color: Colors.grey.shade300,
-        ),
-        backgroundColor: ColorPalette.backgroundColor,
-        elevation: 0,
-      ),
       body: SingleChildScrollView(
         padding: EdgeInsets.all(12.w),
         child: Shimmer.fromColors(
@@ -39,17 +30,10 @@ class DriverDetailsOrderSkeletonScreen extends StatelessWidget {
                   ),
                   SizedBox(width: 12.w),
                   Expanded(
-                    child: Container(
-                      height: 14.h,
-                      color: Colors.white,
-                    ),
+                    child: Container(height: 14.h, color: Colors.white),
                   ),
                   SizedBox(width: 12.w),
-                  Container(
-                    width: 40.w,
-                    height: 12.h,
-                    color: Colors.white,
-                  ),
+                  Container(width: 40.w, height: 12.h, color: Colors.white),
                 ],
               ),
 
