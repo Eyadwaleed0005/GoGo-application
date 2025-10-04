@@ -14,6 +14,7 @@ import 'package:gogo/ui/driver_screen/driver_details_order_screen/ui/driver_deta
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/logic/cubit/driver_order_list_screen_cubit.dart';
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/data/repo/get_all_orders_repository.dart';
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/ui/widgets/order_list_widget/order_list_card.dart';
+import 'package:gogo/ui/driver_screen/driver_order_list_screen/ui/widgets/order_list_widget/order_list_card_skeleton.dart';
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/ui/widgets/small_widgets.dart/order_list_background.dart';
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/ui/widgets/small_widgets.dart/title_screen_widget.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/data/repo/driver_wallet_repository.dart';
@@ -106,10 +107,20 @@ class DriverOrderListScreen extends StatelessWidget {
 
   Widget _buildContent(BuildContext context, DriverOrderListScreenState state) {
     if (state is DriverOrderListScreenLoading) {
-      return const Center(
-        child: CircularProgressIndicator(
-          strokeWidth: 4,
-          color: ColorPalette.mainColor,
+      return SingleChildScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const TitleScreenWidget(),
+            verticalSpace(15),
+            ...List.generate(6, (index) {
+              return Padding(
+                padding: EdgeInsets.only(bottom: 25.h),
+                child: const OrderListCardSkeleton(),
+              );
+            }),
+          ],
         ),
       );
     } else if (state is DriverOrderListScreenError) {

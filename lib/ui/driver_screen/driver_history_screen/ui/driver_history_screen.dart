@@ -4,12 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
-import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/core/widgets/animation_box.dart';
 import 'package:gogo/core/widgets/custom_refresh_widget.dart';
 import 'package:gogo/ui/driver_screen/driver_history_screen/data/repo/driver_history_repository.dart';
 import 'package:gogo/ui/driver_screen/driver_history_screen/logic/cubit/driver_history_screen_cubit.dart';
+import 'package:gogo/ui/driver_screen/driver_history_screen/ui/widgets/card_driver_history/card_driver_ui/card_driver_history_skeleton.dart';
 import 'package:gogo/ui/driver_screen/driver_history_screen/ui/widgets/card_driver_history/driver_history_list.dart';
 import 'package:gogo/ui/driver_screen/driver_history_screen/ui/widgets/title_history_widget.dart';
 
@@ -60,12 +60,18 @@ class DriverHistoryScreen extends StatelessWidget {
   Widget _buildContent(BuildContext context, DriverHistoryScreenState state) {
     if (state is DriverHistoryScreenLoading) {
       return Padding(
-        padding: EdgeInsets.only(top: 180.h),
-        child: Center(
-          child: CircularProgressIndicator(
-            strokeWidth: 2.w,
-            color: ColorPalette.mainColor,
-          ),
+        padding: EdgeInsets.only(top: 20.h),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              itemCount: 6,
+              itemBuilder: (context, index) =>
+                  const CardDriverHistorySkeleton(),
+            ),
+          ],
         ),
       );
     } else if (state is DriverHistoryScreenLoaded) {

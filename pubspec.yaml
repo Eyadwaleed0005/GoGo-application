@@ -102,6 +102,7 @@ dependencies:
     sdk: flutter
   easy_localization: ^3.0.8
   in_app_update: ^4.2.5
+  shimmer: ^3.0.0
   
 
 dev_dependencies:

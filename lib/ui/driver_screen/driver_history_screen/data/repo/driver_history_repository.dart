@@ -7,7 +7,7 @@ import 'package:gogo/core/local/secure_storage_keys.dart';
 import 'package:gogo/ui/driver_screen/driver_history_screen/data/model/driver_history_model.dart';
 
 class DriverHistoryRepository {
-  Future<List<DriverHistoryMoedl>> getDriverHistory() async {
+  Future<List<DriverHistoryModel>> getDriverHistory() async {
     try {
       final userId = await SecureStorageHelper.getdata(
         key: SecureStorageKeys.userId,
@@ -17,7 +17,7 @@ class DriverHistoryRepository {
         url: EndPoints.getDriverHistory(userId!),
       );
 
-      return DriverHistoryMoedl.fromJsonList(response.data);
+      return DriverHistoryModel.fromJsonList(response.data);
     } on DioException catch (e) {
       throw DioExceptionHandler.handleDioError(e);
     } catch (e) {

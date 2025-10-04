@@ -1,6 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gogo/core/helper/spacer.dart';
+import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 
 class CardDriverHistory extends StatelessWidget {
@@ -33,7 +35,7 @@ class CardDriverHistory extends StatelessWidget {
       margin: EdgeInsets.all(12.r),
       padding: EdgeInsets.all(16.r),
       decoration: BoxDecoration(
-        color: containerColor, // background yellow
+        color: containerColor,
         borderRadius: BorderRadius.circular(20.r),
       ),
       child: Column(
@@ -51,11 +53,11 @@ class CardDriverHistory extends StatelessWidget {
                   ),
                 ),
               ),
-              SizedBox(width: 8.w),
+              horizontalSpace(8),
               Container(
                 padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: ColorPalette.backgroundColor,
                   borderRadius: BorderRadius.circular(10.r),
                 ),
                 child: Text(wayOfPay, style: TextStyles.font12Blackbold()),
@@ -77,7 +79,7 @@ class CardDriverHistory extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16.h),
+          verticalSpace(16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -86,14 +88,24 @@ class CardDriverHistory extends StatelessWidget {
               _locationBox(to),
             ],
           ),
-          SizedBox(height: 16.h),
+          verticalSpace(16),
           Row(
             children: [
               Expanded(
                 flex: 4,
-                child: Text(
-                  "$date - $time",
-                  style: TextStyles.font10Blackbold(),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      date,
+                      style: TextStyles.font10whitebold(),
+                    ),
+                    verticalSpace(8),
+                    Text(
+                      time,
+                      style: TextStyles.font10whitebold(),
+                    ),
+                  ],
                 ),
               ),
               Container(

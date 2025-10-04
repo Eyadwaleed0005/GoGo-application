@@ -2,28 +2,29 @@ import 'package:flutter/material.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
+import 'package:gogo/core/helper/simple_date_helper.dart';
 import 'package:gogo/ui/driver_screen/driver_history_screen/data/model/driver_history_model.dart';
 import 'package:gogo/ui/driver_screen/driver_history_screen/ui/widgets/card_driver_history/card_driver_ui/card_driver_history.dart';
-import 'package:gogo/core/helper/simple_date_helper.dart';
 
 class DriverHistoryList extends StatelessWidget {
-  final List<DriverHistoryMoedl> historyData;
+  final List<DriverHistoryModel> historyData;
 
   const DriverHistoryList({super.key, required this.historyData});
 
   @override
   Widget build(BuildContext context) {
-    // 1️⃣ نسخ وترتيب البيانات تنازليًا حسب التاريخ
-    final sortedData = List<DriverHistoryMoedl>.from(historyData);
+    // ✅ 1. ترتيب حسب التاريخ تنازليًا
+    final sortedData = List<DriverHistoryModel>.from(historyData);
     sortedData.sort((a, b) => b.date.compareTo(a.date));
 
-    // 2️⃣ تجميع البيانات حسب SimpleDateHelper.format
-    final Map<String, List<DriverHistoryMoedl>> groupedData = {};
+    // ✅ 2. تجميع حسب النتيجة من SimpleDateHelper.format
+    final Map<String, List<DriverHistoryModel>> groupedData = {};
     for (var item in sortedData) {
-      final sectionKey = SimpleDateHelper.format(item.date);
-      groupedData.putIfAbsent(sectionKey, () => []).add(item);
+      final key = SimpleDateHelper.format(item.date);
+      groupedData.putIfAbsent(key, () => []).add(item);
     }
 
+    // ✅ 3. عرض البيانات مجمعة تحت كل عنوان (اليوم / أمس / منذ أسبوع ...)
     return ListView(
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
@@ -34,19 +35,19 @@ class DriverHistoryList extends StatelessWidget {
         return Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            verticalSpace(10),
+            verticalSpace(12),
             Center(
               child: Text(
-                sectionTitle, 
+                sectionTitle,
                 style: TextStyles.font20Blackbold(),
               ),
             ),
-            verticalSpace(8),
+            verticalSpace(10),
             ListView.separated(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: sectionItems.length,
-              separatorBuilder: (_, __) => verticalSpace(0),
+              separatorBuilder: (_, __) => verticalSpace(8),
               itemBuilder: (context, index) {
                 final item = sectionItems[index];
                 final bool isOrange = index.isEven;
@@ -56,17 +57,17 @@ class DriverHistoryList extends StatelessWidget {
                 final circleColor = isOrange
                     ? ColorPalette.textDark
                     : ColorPalette.circlesBackground;
+
                 return CardDriverHistory(
                   from: item.from,
                   to: item.to,
                   containerColor: containerColor,
                   circleColor: circleColor,
                   rating: item.review,
-       
                   price: "${item.totalTip}",
                   wayOfPay: item.paymentWay,
-                  date: item.formattedDate,
-                  time: item.formattedTime,
+                  date: item.formattedDate(context), 
+                  time: item.formattedTime(context), 
                 );
               },
             ),

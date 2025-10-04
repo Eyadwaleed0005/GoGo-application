@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/data/repo/order_details_repository.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/logic/cubit/driver_details_order_screen_cubit.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/ui/widget/action_buttons_widget.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/ui/widget/driver_details_appbar.dart';
+import 'package:gogo/ui/driver_screen/driver_details_order_screen/ui/widget/driver_details_order_skeleton_screen.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/ui/widget/from_to_card.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/ui/widget/note_widget.dart';
 import 'package:gogo/ui/driver_screen/driver_details_order_screen/ui/widget/user_info_row.dart';
@@ -34,12 +34,7 @@ class DriverDetailsOrderScreen extends StatelessWidget {
               >(
                 builder: (context, state) {
                   if (state is DriverDetailsOrderScreenLoading) {
-                    return const Center(
-                      child: CircularProgressIndicator(
-                        strokeWidth: 4,
-                        color: ColorPalette.mainColor,
-                      ),
-                    );
+                   return const DriverDetailsOrderSkeletonScreen();
                   } else if (state is DriverDetailsOrderScreenError) {
                     return Center(child: Text(state.message));
                   } else if (state is DriverDetailsOrderScreenSuccess) {
