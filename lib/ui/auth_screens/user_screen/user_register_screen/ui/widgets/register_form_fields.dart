@@ -75,7 +75,7 @@ class RegisterFormFields extends StatelessWidget {
                 return '* ${'phone_starts_01'.tr()}';
               }
               return null;
-            },
+            }, 
           ),
           SizedBox(height: 8.h),
 

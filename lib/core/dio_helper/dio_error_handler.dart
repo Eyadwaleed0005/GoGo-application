@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
-import 'package:gogo/core/dio_helper/model/error_model.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:gogo/core/dio_helper/model/error_model.dart';
 
 class DioExceptionHandler {
   static String handleDioError(DioException error) {
@@ -21,15 +21,22 @@ class DioExceptionHandler {
           final response = error.response;
           if (response != null && response.data != null) {
             try {
-              final errorModel = ErrorModel.fromJson(response.data);
-              if (errorModel.message != null && errorModel.message!.isNotEmpty) {
-                return errorModel.message!;
+              if (response.data is Map<String, dynamic>) {
+                final errorModel = ErrorModel.fromJson(response.data);
+                return errorModel.toString(); // ✅ يعتمد على الموديل الجديد
+              }
+
+              // لو السيرفر رجع نص صريح
+              if (response.data is String) {
+                return response.data;
               }
             } catch (_) {
               if (response.data is String) {
                 return response.data;
               }
             }
+
+            // fallback حسب status code
             switch (response.statusCode) {
               case 400:
                 return "bad_request".tr();

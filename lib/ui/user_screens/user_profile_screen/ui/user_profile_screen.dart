@@ -130,7 +130,7 @@ class UserProfileScreen extends StatelessWidget {
                         imageUrl: finalImage,
                         userName: user?.name ?? "loading".tr(),
                         onCameraTap: () => _showImageSourceDialog(context),
-                        onEditTap: () => _showImageSourceDialog(context),
+                        /*onEditTap: () => _showImageSourceDialog(context),*/
                       ),
                     ),
                     verticalSpace(35),

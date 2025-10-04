@@ -157,7 +157,7 @@ class DriverOrderListScreen extends StatelessWidget {
                 child: OrderListCard(
                   imageUrl: order.userImage,
                   userName: order.userName,
-                  time: order.formattedTime,
+                  time: order.formattedTime(context),
                   location: order.to,
                   onTap: () async {
                     await Navigator.push(

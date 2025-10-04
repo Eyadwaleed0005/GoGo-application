@@ -99,7 +99,7 @@ class _DriverMapViewState extends State<DriverMapView> {
         geometry: mapbox.LineString(coordinates: coords),
         lineColor: widget.isTripStarted
             ? ColorPalette.green.value
-            : ColorPalette.mainColor.value,
+            : ColorPalette.moreBlue.value,
         lineWidth: 5.0,
       ),
     );

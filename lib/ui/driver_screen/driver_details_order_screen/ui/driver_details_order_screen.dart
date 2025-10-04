@@ -52,7 +52,7 @@ class DriverDetailsOrderScreen extends StatelessWidget {
                           UserInfoRow(
                             imageUrl: order.userImage,
                             name: order.userName,
-                            time: order.formattedTime,
+                            time: order.formattedTime(context),
                           ),
                           SizedBox(height: 18.h),
                           FromToCard(

@@ -1,10 +1,12 @@
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class GetAllOrdersModel {
   final int id;
   final String userId;
   final String userPhone;
-  final DateTime date; // الوقت كما هو على الجهاز
+  final DateTime date;
   final String from;
   final String to;
   final LatLngModel fromLatLng;
@@ -40,7 +42,7 @@ class GetAllOrdersModel {
     this.status,
     this.driverId,
     this.review,
-    this.paymentWay = "cash", // القيمة الافتراضية
+    this.paymentWay = "cash",
   });
 
   factory GetAllOrdersModel.fromJson(Map<String, dynamic> json) {
@@ -53,7 +55,6 @@ class GetAllOrdersModel {
           (json['userImage'] == null || (json['userImage'] as String).isEmpty)
           ? "https://tse1.mm.bing.net/th/id/OIP.0OL9oXb9QieUmjjSoWf-6gHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
           : json['userImage'],
-
       date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
       from: json['from'] ?? '',
       to: json['to'] ?? '',
@@ -91,16 +92,31 @@ class GetAllOrdersModel {
       "status": status,
       "driverid": driverId,
       "review": review,
-      "paymentWay": paymentWay, 
+      "paymentWay": paymentWay,
     };
   }
 
-  String get formattedTime {
-    return DateFormat('HH:mm').format(date);
+  String formattedTime(BuildContext context) {
+    final locale = context.locale.languageCode;
+
+    if (locale == "ar") {
+      return DateFormat(
+        'h:mm a',
+        'ar',
+      ).format(date).replaceAll("AM", "ص").replaceAll("PM", "م");
+    } else {
+      return DateFormat('h:mm a', locale).format(date);
+    }
   }
 
-  String get formattedDate {
-    return DateFormat('yyyy-MM-dd').format(date);
+  String formattedDate(BuildContext context) {
+    final locale = context.locale.languageCode;
+
+    if (locale == "ar") {
+      return DateFormat('dd MMMM yyyy', 'ar').format(date);
+    } else {
+      return DateFormat('MMM dd, yyyy', locale).format(date);
+    }
   }
 }
 
@@ -116,7 +132,6 @@ class LatLngModel {
       lng: (json['lng'] as num).toDouble(),
     );
   }
-
   Map<String, dynamic> toJson() {
     return {"lat": lat, "lng": lng};
   }
