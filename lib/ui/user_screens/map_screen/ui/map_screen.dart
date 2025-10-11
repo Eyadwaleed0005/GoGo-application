@@ -2,19 +2,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repo/map_repository.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/repo/user_order_repository.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_input_panel_cubit/cubit/route_input_panel_cubit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gogo/core/local/shared_preference_keys.dart';
 import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
-import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repository.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_state.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/review_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit/location_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit/location_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit/route_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit/search_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/review_cubit/review_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/location_widgets/location_button.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/location_widgets/location_error_widget.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/network_banner.dart';
@@ -55,7 +57,7 @@ class _MapScreenState extends State<MapScreen> {
     _checkOrderStatus();
 
     Future.delayed(const Duration(milliseconds: 300), () {
-      _routeCubit.loadSavedRoutes();
+      _routeCubit.loadSavedRoute();
     });
   }
 
@@ -98,6 +100,12 @@ class _MapScreenState extends State<MapScreen> {
         BlocProvider.value(value: _searchCubit),
         BlocProvider.value(value: _locationServiceCubit),
         BlocProvider.value(value: _reviewCubit),
+        BlocProvider(
+          create: (_) => RouteInputPanelCubit(
+            routeCubit: _routeCubit,
+            mapCubit: _mapCubit,
+          ),
+        ),
       ],
       child: Builder(
         builder: (context) {
@@ -105,7 +113,12 @@ class _MapScreenState extends State<MapScreen> {
             child: Scaffold(
               body: Stack(
                 children: [
-                  MapView(fromController: fromController),
+                  MapView(
+                    fromController: fromController,
+                    isTripApproved:
+                        _orderStatus == "approved" || _orderStatus == "approve",
+                  ),
+
                   Positioned(
                     top: 10.h,
                     left: 5.w,
@@ -118,14 +131,21 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                     ),
                   ),
+
+                  /// ⬅️ نعرض RouteInputPanel فقط عندما لا يوجد طلب نشط
                   if (_orderStatus == null || _orderStatus == "cancel")
                     RouteInputPanel(
                       fromController: fromController,
                       toController: toController,
                     ),
+
+                  /// ⬅️ في حالة وجود رحلة حالية Approved
                   if (_orderStatus == "approved" || _orderStatus == "approve")
                     const ApprovedTripPanel(),
+
                   const NetworkBanner(),
+
+                  /// ⬅️ زر تحديد الموقع الحالي
                   Positioned(
                     bottom: 205.h,
                     right: 16.w,
@@ -147,6 +167,8 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                     ),
                   ),
+
+                  /// ⬅️ في حال كانت خدمة الموقع مغلقة
                   BlocBuilder<LocationServiceCubit, LocationServiceState>(
                     builder: (context, state) {
                       if (state is LocationServiceDisabled) {

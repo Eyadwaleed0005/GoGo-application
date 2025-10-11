@@ -12,10 +12,8 @@ import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/admin_screens/driver_wating_list_screen/ui/driver_waiting_list_screen.dart';
 import 'package:gogo/ui/driver_screen/driver_profile_screen/logic/cubit/driver_location_cubit.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
 import 'firebase_options.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,11 +21,13 @@ Future<void> main() async {
   await EasyLocalization.ensureInitialized();
   await NotificationService().init();
   DioHelper.init(baseUrl: EndPoints.baseurl);
-  mb.MapboxOptions.setAccessToken(EndPoints.accessToken);
   const storage = FlutterSecureStorage();
-  String? savedLang = await storage.read(key: SharedPreferenceKeys.selectedLanguage);
-  Locale initialLocale = savedLang != null ? Locale(savedLang) : const Locale('en');
-
+  String? savedLang = await storage.read(
+    key: SharedPreferenceKeys.selectedLanguage,
+  );
+  Locale initialLocale = savedLang != null
+      ? Locale(savedLang)
+      : const Locale('en');
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
@@ -35,27 +35,25 @@ Future<void> main() async {
       fallbackLocale: const Locale('en'),
       startLocale: initialLocale,
       child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => DriverLocationCubit()),
-        ],
+        providers: [BlocProvider(create: (_) => DriverLocationCubit())],
         child: const MyApp(),
       ),
     ),
   );
 }
 
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppUpdateManager.checkForUpdate(context); 
+      AppUpdateManager.checkForUpdate(context);
     });
   }
 

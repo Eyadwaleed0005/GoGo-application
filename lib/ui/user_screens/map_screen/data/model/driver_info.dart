@@ -4,7 +4,7 @@ class DriverInfo {
   final String driverFullname;
   final String email;
   final String userId;
-  final double review; // ✅ خليها double
+  final double review; 
   final String phoneNumber;
 
   DriverInfo({

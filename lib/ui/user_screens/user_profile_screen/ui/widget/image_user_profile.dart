@@ -110,7 +110,6 @@ class ImageUserProfile extends StatelessWidget {
             ),
             horizontalSpace(8.w),*/
             Center(child: Text(userName, style: TextStyles.font10Blackbold())),
-            horizontalSpace(8.w),
           ],
         ),
       ],

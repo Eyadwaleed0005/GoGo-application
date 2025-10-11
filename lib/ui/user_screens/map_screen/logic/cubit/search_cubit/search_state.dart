@@ -1,4 +1,4 @@
-import '../../data/model/map_suggestion_model.dart';
+import '../../../data/model/map_suggestion_model.dart';
 
 abstract class SearchState {}
 
@@ -14,4 +14,13 @@ class SearchLoaded extends SearchState {
 class SearchError extends SearchState {
   final String message;
   SearchError(this.message);
+}
+
+class SearchListening extends SearchState {}
+
+class SearchStopped extends SearchState {}
+
+class SearchLocationLoaded extends SearchState {
+  final MapSuggestion location;
+  SearchLocationLoaded(this.location);
 }

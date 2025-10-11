@@ -18,32 +18,42 @@ class TripCategoryDropdown extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final items = [
-      {"value": "one_of_group", "label": "one_of_group".tr()},
-      {"value": "two_of_group", "label": "two_of_group".tr()},
-      {"value": "three_of_group", "label": "three_of_group".tr()},
-      {"value": "lone_trip", "label": "lone_trip".tr()},
-      {"value": "delivery", "label": "delivery".tr()},
-    ];
-
     return BlocBuilder<RideRequestScreenCubit, RideRequestScreenState>(
       builder: (context, state) {
         final cubit = context.read<RideRequestScreenCubit>();
-        final currentValue = state.tripType;
+
+        List<Map<String, String>> items = [];
+        if (state.carType == "car") {
+          items = [
+            {"value": "lone_trip", "label": "lone_trip".tr()},
+            {"value": "delivery", "label": "delivery".tr()},
+          ];
+        } else if (state.carType == "scooter") {
+          items = [
+            {"value": "lone_trip", "label": "lone_trip".tr()},
+            {"value": "delivery", "label": "delivery".tr()},
+          ];
+        } else {
+          items = [
+            {"value": "one_of_group", "label": "one_of_group".tr()},
+            {"value": "two_of_group", "label": "two_of_group".tr()},
+            {"value": "three_of_group", "label": "three_of_group".tr()},
+            {"value": "lone_trip", "label": "lone_trip".tr()},
+            {"value": "delivery", "label": "delivery".tr()},
+          ];
+        }
+
+        String currentValue = items.any((e) => e["value"] == state.tripType)
+            ? state.tripType
+            : items.first["value"]!;
+
         return DropdownButtonFormField<String>(
-          initialValue: currentValue.isEmpty ? null : currentValue,
+          value: currentValue,
           isExpanded: true,
           dropdownColor: Colors.white,
           decoration: InputDecoration(
             labelText: "trip_type".tr(),
-            labelStyle: TextStyles.font10Blackbold().copyWith(
-              color: Colors.black,
-            ),
-
-            // contentPadding: EdgeInsets.symmetric(
-            //   horizontal: 10.w,
-            //   vertical: 10.h,
-            // ),
+            labelStyle: TextStyles.font10Blackbold().copyWith(color: Colors.black),
             filled: true,
             fillColor: Colors.white,
             border: _borderStyle(),
@@ -56,7 +66,7 @@ class TripCategoryDropdown extends StatelessWidget {
               child: Text(
                 item["label"]!,
                 style: TextStyles.font11Blackbold(),
-                overflow: TextOverflow.ellipsis, 
+                overflow: TextOverflow.ellipsis,
               ),
             );
           }).toList(),

@@ -4,7 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/model/driver_info.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/review_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/review_cubit/review_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/rating_widgets/driver_info_widget.dart';
 import 'end_trip_button.dart';
 import 'call_police_button.dart';
@@ -134,6 +134,7 @@ class _ApprovedTripPanelState extends State<ApprovedTripPanel> {
                 const EndTripButton(),
                 SizedBox(height: 12.h),
                 const CallPoliceButton(),
+                 SizedBox(height: 12.h),
               ],
             ),
           ),

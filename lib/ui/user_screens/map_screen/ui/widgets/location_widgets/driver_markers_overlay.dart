@@ -1,73 +1,90 @@
+import 'dart:typed_data';
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/model/driver_places_model.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_state.dart';
+import 'dart:ui' as ui;
 
 class DriverMarkersOverlay extends StatelessWidget {
   const DriverMarkersOverlay({super.key});
 
-  Future<void> _addSingleDriverMarker(
-    MapCubit mapCubit,
-    DriverPlace driver,
-  ) async {
-    if (mapCubit.mapboxMap == null) return;
-
-    mapCubit.driverAnnotationManager ??=
-        await mapCubit.mapboxMap!.annotations.createPointAnnotationManager();
-
-    await mapCubit.driverAnnotationManager!.deleteAll();
-
-    final annotationOptions = mb.PointAnnotationOptions(
-      geometry: mb.Point(coordinates: mb.Position(driver.lng, driver.lat)),
-      iconImage: "car-15",
-      iconSize: 3.5,
-      textField: driver.driverName,
-      textSize: 12.0,
-      textOffset: [0, 2.0],
+  /// تحويل صورة PNG من assets إلى BitmapDescriptor
+  Future<BitmapDescriptor> _getMarkerFromAsset(String path, int width) async {
+    ByteData data = await rootBundle.load(path);
+    ui.Codec codec = await ui.instantiateImageCodec(
+      data.buffer.asUint8List(),
+      targetWidth: width,
     );
-    await mapCubit.driverAnnotationManager!.create(annotationOptions);
+    ui.FrameInfo fi = await codec.getNextFrame();
+    final Uint8List bytes = (await fi.image.toByteData(
+      format: ui.ImageByteFormat.png,
+    ))!.buffer.asUint8List();
+    return BitmapDescriptor.fromBytes(bytes);
   }
 
+  /// إضافة ماركر لكل السائقين
   Future<void> _addDriverMarkers(
     MapCubit mapCubit,
     List<DriverPlace> drivers,
   ) async {
-    if (mapCubit.mapboxMap == null) return;
+    final markerIcon = await _getMarkerFromAsset(
+      'assets/images/taxi2.png',
+      180,
+    );
 
-    mapCubit.driverAnnotationManager ??=
-        await mapCubit.mapboxMap!.annotations.createPointAnnotationManager();
-
-    await mapCubit.driverAnnotationManager!.deleteAll();
-
-    for (var driver in drivers) {
-      final annotationOptions = mb.PointAnnotationOptions(
-        geometry: mb.Point(coordinates: mb.Position(driver.lng, driver.lat)),
-        iconImage: "car-15",
-        iconSize: 3.5,
-        textField: driver.driverName,
-        textSize: 12.0,
-        textOffset: [0, 2.0],
+    final markers = drivers.map((driver) {
+      return Marker(
+        markerId: MarkerId(driver.driverName),
+        position: LatLng(driver.lat, driver.lng),
+        icon: markerIcon,
+        infoWindow: InfoWindow(
+          title: driver.driverName,
+        ), // اسم السائق فوق الماركر
+        anchor: const Offset(0.5, 1.0),
       );
-      await mapCubit.driverAnnotationManager!.create(annotationOptions);
-    }
+    }).toSet();
+
+    mapCubit.updateDriversMarkers(markers);
   }
+
+  /// إضافة ماركر لسائق واحد
+  Future<void> _addSingleDriverMarker(
+    MapCubit mapCubit,
+    DriverPlace driver,
+  ) async {
+    final markerIcon = await _getMarkerFromAsset(
+      'assets/images/taxi2.png',
+      180,
+    );
+
+    final marker = Marker(
+      markerId: MarkerId(driver.driverName),
+      position: LatLng(driver.lat, driver.lng),
+      icon: markerIcon,
+      infoWindow: InfoWindow(title: driver.driverName),
+      anchor: const Offset(0.5, 1.0),
+    );
+
+    mapCubit.updateDriversMarkers({marker});
+  }
+
   @override
   Widget build(BuildContext context) {
     final mapCubit = context.read<MapCubit>();
 
-    return BlocBuilder<LocationServiceCubit, LocationServiceState>(
-      builder: (context, state) {
-        WidgetsBinding.instance.addPostFrameCallback((_) async {
-          if (state is LocationServiceWithDrivers) {
-            await _addDriverMarkers(mapCubit, state.drivers);
-          } else if (state is LocationServiceWithSingleDriver) {
-            await _addSingleDriverMarker(mapCubit, state.driver);
-          }
-        });
-        return const SizedBox.shrink();
+    return BlocListener<LocationServiceCubit, LocationServiceState>(
+      listener: (context, state) async {
+        if (state is LocationServiceWithDrivers) {
+          await _addDriverMarkers(mapCubit, state.drivers);
+        } else if (state is LocationServiceWithSingleDriver) {
+          await _addSingleDriverMarker(mapCubit, state.driver);
+        }
       },
+      child: const SizedBox.shrink(),
     );
   }
 }

@@ -1,4 +1,4 @@
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 abstract class LocationState {}
 
@@ -7,7 +7,7 @@ class LocationInitial extends LocationState {}
 class LocationLoading extends LocationState {}
 
 class LocationLoaded extends LocationState {
-  final mb.Point currentLocation;
+  final LatLng currentLocation;
   final String address;
   final double latitude;
   final double longitude;

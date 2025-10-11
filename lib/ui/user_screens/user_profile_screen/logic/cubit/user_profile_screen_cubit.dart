@@ -33,7 +33,7 @@ class UserProfileScreenCubit extends Cubit<UserProfileScreenState> {
     };
 
     localUser = LocalUserModel.fromMap(data);
-    emit(UserProfileScreenUserDataLoaded(localUser!));
+    if (!isClosed) emit(UserProfileScreenUserDataLoaded(localUser!));
   }
 
   Future<void> pickImage(ImageSource source) async {
@@ -43,35 +43,34 @@ class UserProfileScreenCubit extends Cubit<UserProfileScreenState> {
     );
     if (pickedFile != null) {
       userImage = File(pickedFile.path);
-      emit(UserProfileScreenImageChanged(userImage!));
+      if (!isClosed) emit(UserProfileScreenImageChanged(userImage!));
       await updateProfile();
     }
   }
 
   Future<void> updateProfile() async {
     if (userImage == null) return;
-    emit(UserProfileScreenUpdating());
+    if (!isClosed) emit(UserProfileScreenUpdating());
     try {
       await _repo.updateUserProfile(userImage!);
-      emit(UserProfileScreenUpdateSuccess());
+      if (!isClosed) emit(UserProfileScreenUpdateSuccess());
     } catch (e) {
-      emit(UserProfileScreenUpdateError(e.toString()));
+      if (!isClosed) emit(UserProfileScreenUpdateError(e.toString()));
     }
   }
 
   Future<void> loadUserPhoto() async {
-  emit(UserProfilePhotoLoading());
-  try {
-    final photo = await _repo.getUserProfilePhoto();
-    if (photo != null) {
-      userProfileImageUrl = photo.imageUrl; 
-      emit(UserProfilePhotoLoaded(photo.imageUrl));
-    } else {
-      emit(UserProfilePhotoLoadError("No Image Found"));
+    if (!isClosed) emit(UserProfilePhotoLoading());
+    try {
+      final photo = await _repo.getUserProfilePhoto();
+      if (photo != null) {
+        userProfileImageUrl = photo.imageUrl; 
+        if (!isClosed) emit(UserProfilePhotoLoaded(photo.imageUrl));
+      } else {
+        if (!isClosed) emit(UserProfilePhotoLoadError("No Image Found"));
+      }
+    } catch (e) {
+      if (!isClosed) emit(UserProfilePhotoLoadError(e.toString()));
     }
-  } catch (e) {
-    emit(UserProfilePhotoLoadError(e.toString()));
   }
-}
-
 }

@@ -1,4 +1,4 @@
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 abstract class RouteState {}
 
@@ -7,7 +7,7 @@ class RouteInitial extends RouteState {}
 class RouteLoading extends RouteState {}
 
 class RouteLoaded extends RouteState {
-  final List<mb.Point> routePoints;
+  final List<LatLng> routePoints;
   final double distanceKm;
   final double durationMin;
 
@@ -24,8 +24,8 @@ class RouteError extends RouteState {
 }
 
 class RoutePointsSelected extends RouteState {
-  final mb.Point? fromPoint;
-  final mb.Point? toPoint;
+  final LatLng? fromPoint;
+  final LatLng? toPoint;
 
   RoutePointsSelected({this.fromPoint, this.toPoint});
 }

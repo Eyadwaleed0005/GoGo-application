@@ -60,7 +60,7 @@ class DriverLoginScreenCubit extends Cubit<DriverLoginScreenState> {
       );
       await SecureStorageHelper.savedata(
         key: SecureStorageKeys.displayName,
-        value: response.displayName,
+        value: response.dispalyName,
       );
       await SecureStorageHelper.savedata(
         key: SecureStorageKeys.phoneNumber,

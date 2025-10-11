@@ -1,34 +1,36 @@
-// ==================== MapView ====================
 import 'dart:async';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_state.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/model/map_suggestion_model.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_state.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_state.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit/location_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit/location_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit/route_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit/route_state.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/location_widgets/driver_markers_overlay.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/pin_widget.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/trip_summary_card.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart';
-import 'package:geolocator/geolocator.dart' hide Position;
 
 class MapView extends StatefulWidget {
   final TextEditingController fromController;
   final bool isSelecting;
   final void Function(MapSuggestion)? onPlacePicked;
+  final bool isTripApproved;
 
   const MapView({
     super.key,
     required this.fromController,
     this.isSelecting = false,
     this.onPlacePicked,
+    this.isTripApproved = false,
   });
 
   @override
@@ -49,9 +51,7 @@ class _MapViewState extends State<MapView> {
   }
 
   void _safeSetState(VoidCallback fn) {
-    if (mounted) {
-      setState(fn);
-    }
+    if (mounted) setState(fn);
   }
 
   @override
@@ -67,34 +67,39 @@ class _MapViewState extends State<MapView> {
         return MultiBlocListener(
           listeners: [
             BlocListener<LocationCubit, LocationState>(
-              listener: (context, state) {
+              listener: (context, state) async {
                 if (state is LocationLoaded) {
-                  mapCubit.moveCamera(
+                  await mapCubit.moveCamera(
                     state.currentLocation,
                     zoom: 17,
+                    tilt: 30,
                     bearing: -15,
-                    pitch: 30,
                   );
                 }
               },
             ),
             BlocListener<RouteCubit, RouteState>(
               listener: (context, state) async {
-                final routeCubit = context.read<RouteCubit>();
                 final mapCubit = context.read<MapCubit>();
+                final routeCubit = context.read<RouteCubit>();
 
-                if (routeCubit.savedRoutePoints != null &&
-                    routeCubit.savedRoutePoints!.isNotEmpty) {
-                  await mapCubit.drawRoute(routeCubit.savedRoutePoints!);
+                // تحميل المسار من التخزين
+                if (routeCubit.routePoints != null &&
+                    routeCubit.routePoints!.isNotEmpty) {
+                  await mapCubit.drawRoute(routeCubit.routePoints!);
                   await mapCubit.fitCameraToBounds(
-                    routeCubit.savedRoutePoints!.first,
-                    routeCubit.savedRoutePoints!.last,
+                    routeCubit.routePoints!.first,
+                    routeCubit.routePoints!.last,
                   );
+
                   _safeSetState(() {
                     routeSummary = {
-                      "distance": routeCubit.savedDistance,
-                      "timeText":
-                          "${routeCubit.savedDuration?.toStringAsFixed(0)} min",
+                      "distance": routeCubit.distanceKm ?? 0.0,
+                      "timeText": routeCubit.durationMin != null
+                          ? (routeCubit.durationMin! >= 60
+                                ? "${(routeCubit.durationMin! / 60).toStringAsFixed(1)} h"
+                                : "${routeCubit.durationMin!.toStringAsFixed(0)} min")
+                          : "0 min",
                     };
                   });
                 }
@@ -104,12 +109,13 @@ class _MapViewState extends State<MapView> {
                     state.routePoints.first,
                     state.routePoints.last,
                   );
-                  final summary = await mapCubit.calculateDistanceAndTime(
-                    state.routePoints.first,
-                    state.routePoints.last,
-                  );
                   _safeSetState(() {
-                    routeSummary = summary;
+                    routeSummary = {
+                      "distance": state.distanceKm,
+                      "timeText": (state.durationMin >= 60
+                          ? "${(state.durationMin / 60).toStringAsFixed(1)} h"
+                          : "${state.durationMin.toStringAsFixed(0)} min"),
+                    };
                   });
                 }
               },
@@ -118,11 +124,9 @@ class _MapViewState extends State<MapView> {
               listener: (context, state) async {
                 if (state is LocationServiceDisabled) {
                   if (!_firstCheckDone) {
-                    mapCubit.moveCamera(
-                      Point(coordinates: Position(31.2357, 30.0444)),
+                    await mapCubit.moveCamera(
+                      const LatLng(30.0444, 31.2357),
                       zoom: 5,
-                      bearing: 0,
-                      pitch: 0,
                     );
                     _firstCheckDone = true;
                   }
@@ -130,18 +134,14 @@ class _MapViewState extends State<MapView> {
                   _firstCheckDone = true;
                   try {
                     final pos = await Geolocator.getCurrentPosition();
-                    final point = Point(
-                      coordinates: Position(pos.longitude, pos.latitude),
-                    );
-
                     await mapCubit.moveCamera(
-                      point,
-                      zoom: 14,
+                      LatLng(pos.latitude, pos.longitude),
+                      zoom: 18,
+                      tilt: 45,
                       bearing: -15,
-                      pitch: 30,
                     );
                     context.read<LocationCubit>().getCurrentLocation();
-                  } catch (e) {}
+                  } catch (_) {}
                 }
               },
             ),
@@ -149,50 +149,82 @@ class _MapViewState extends State<MapView> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              MapWidget(
-                styleUri: "mapbox://styles/mapbox/streets-v12",
-                cameraOptions: CameraOptions(zoom: 14.0),
-                textureView: true,
-                onMapCreated: (mapboxMap) async {
-                  await mapCubit.initMap(mapboxMap);
-                  try {
-                    await mapboxMap.compass.updateSettings(
-                      CompassSettings(enabled: false),
-                    );
-                    await mapboxMap.scaleBar.updateSettings(
-                      ScaleBarSettings(enabled: false),
-                    );
-                    await mapboxMap.location.updateSettings(
-                      LocationComponentSettings(
-                        enabled: true,
-                        pulsingEnabled: true,
-                        puckBearingEnabled: true,
-                        showAccuracyRing: false,
-                      ),
-                    );
-                  } catch (e) {}
+              GoogleMap(
+                initialCameraPosition: const CameraPosition(
+                  target: LatLng(30.0444, 31.2357),
+                  zoom: 18,
+                ),
+                mapType: MapType.normal,
+                myLocationEnabled: true,
+                myLocationButtonEnabled: false,
+                zoomControlsEnabled: false,
+                compassEnabled: false,
+                onMapCreated: (controller) {
+                  mapCubit.initMap(controller);
                 },
-                onCameraChangeListener: (event) async {
-                  if (!isMapMoving) _safeSetState(() => isMapMoving = true);
+                onCameraMoveStarted: () {
+                  _safeSetState(() => isMapMoving = true);
+                },
+                onCameraIdle: () async {
+                  _safeSetState(() => isMapMoving = false);
 
                   _debounce?.cancel();
                   _debounce = Timer(
                     const Duration(milliseconds: 500),
                     () async {
-                      if (mapCubit.mapboxMap == null) return;
-                      final cameraState = await mapCubit.mapboxMap!
-                          .getCameraState();
-                      final lat = cameraState.center.coordinates.lat.toDouble();
-                      final lng = cameraState.center.coordinates.lng.toDouble();
+                      final screenSize = MediaQuery.of(context).size;
+                      final center = await mapCubit.mapController?.getLatLng(
+                        ScreenCoordinate(
+                          x: (screenSize.width / 2).round(),
+                          y: (screenSize.height / 2).round(),
+                        ),
+                      );
 
-                      _safeSetState(() => isMapMoving = false);
-                      mapCubit.getPlaceName(lat, lng);
+                      if (center != null) {
+                        await mapCubit.getPlaceName(
+                          center.latitude,
+                          center.longitude,
+                        );
+                      }
                     },
                   );
                 },
+                markers: context.select((MapCubit c) {
+                  final state = c.state;
+                  final markers = <Marker>{};
+
+                  // ✅ أضف ماركرات السواقين
+                  markers.addAll(c.driverMarkers);
+
+                  // ✅ أضف الماركر الخاص بالمستخدم لو تم اختياره
+                  if (state is MapPinUpdated) {
+                    markers.add(
+                      Marker(
+                        markerId: const MarkerId("selected"),
+                        position: state.point,
+                        infoWindow: InfoWindow(title: state.placeName),
+                      ),
+                    );
+                  }
+
+                  return markers;
+                }),
+
+                /// ✅ المسار
+                polylines: {
+                  if (mapCubit.currentRoutePoints.isNotEmpty)
+                    Polyline(
+                      polylineId: const PolylineId("route"),
+                      points: mapCubit.currentRoutePoints,
+                      color: Colors.blueAccent,
+                      width: 5,
+                    ),
+                },
               ),
+
               DriverMarkersOverlay(),
-              AnimatedPinWidget(placeName: placeName, isMoving: isMapMoving),
+              if (!widget.isTripApproved)
+                AnimatedPinWidget(placeName: placeName, isMoving: isMapMoving),
               if (widget.isSelecting)
                 Positioned(
                   bottom: 40.h,
@@ -203,29 +235,37 @@ class _MapViewState extends State<MapView> {
                       backgroundColor: ColorPalette.mainColor,
                       padding: const EdgeInsets.symmetric(vertical: 14),
                     ),
+                    onPressed: () async {
+                      final screenSize = MediaQuery.of(context).size;
+                      final center = await mapCubit.mapController?.getLatLng(
+                        ScreenCoordinate(
+                          x: (screenSize.width / 2).round(),
+                          y: (screenSize.height / 2).round(),
+                        ),
+                      );
+                      if (center != null) {
+                        final picked = MapSuggestion(
+                          id: "manual_pick",
+                          name: placeName.isNotEmpty
+                              ? placeName
+                              : "no_name_now".tr(),
+                          latitude: center.latitude,
+                          longitude: center.longitude,
+                        );
+                        Navigator.pop(context, picked);
+                      }
+                    },
                     child: Text(
                       "done".tr(),
                       style: const TextStyle(color: ColorPalette.textColor1),
                     ),
-                    onPressed: () async {
-                      final camera = await mapCubit.mapboxMap!.getCameraState();
-                      final picked = MapSuggestion(
-                        id: "manual_pick",
-                        name: placeName.isNotEmpty
-                            ? placeName
-                            : "no_name_now".tr(),
-                        latitude: camera.center.coordinates.lat.toDouble(),
-                        longitude: camera.center.coordinates.lng.toDouble(),
-                      );
-                      Navigator.pop(context, picked);
-                    },
                   ),
                 ),
               if (routeSummary != null)
                 Positioned(
-                  top: 150,
-                  left: 20,
-                  right: 20,
+                  top: 45.h,
+                  left: 20.w,
+                  right: 20.w,
                   child: TripSummaryCard(
                     distanceKm: double.parse(
                       routeSummary!["distance"].toStringAsFixed(1),

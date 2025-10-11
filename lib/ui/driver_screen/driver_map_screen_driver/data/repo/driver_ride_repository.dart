@@ -14,21 +14,32 @@ class DriverRideRepository {
   }) async {
     try {
       final url =
-          "${EndPoints.directions}/$fromLng,$fromLat;$toLng,$toLat"
-          "?geometries=geojson&overview=full&access_token=${EndPoints.accessToken}";
+          "${EndPoints.googleDirections}?origin=$fromLat,$fromLng&destination=$toLat,$toLng&key=${EndPoints.googleMapsKey}";
 
       final response = await DioHelper.getData(url: url);
       final data = response.data;
 
       if (data['routes'] == null || data['routes'].isEmpty) {
-        throw "No routes found from Mapbox";
+        throw "No routes found from Google Directions API";
       }
 
       final route = data['routes'][0];
+      final leg = route['legs'][0];
 
-      final geometry = (route['geometry']['coordinates'] as List)
-          .map((c) => [(c[0] as num).toDouble(), (c[1] as num).toDouble()])
-          .toList();
+      /// ✅ بدلاً من overview_polyline استخدم الخطوات التفصيلية
+      List<List<double>> allCoords = [];
+
+      if (leg['steps'] != null) {
+        for (var step in leg['steps']) {
+          final stepPolyline = step['polyline']['points'];
+          final stepCoords = _decodePolyline(stepPolyline);
+          allCoords.addAll(stepCoords);
+        }
+      }
+
+      /// 🔹 إجمالي المسافة والمدة
+      final distanceMeters = (leg['distance']['value'] as num).toDouble();
+      final durationSeconds = (leg['duration']['value'] as num).toDouble();
 
       return RideModel(
         fromLat: fromLat,
@@ -36,14 +47,48 @@ class DriverRideRepository {
         toLat: toLat,
         toLng: toLng,
         userPhone: userPhone,
-        distanceKm: (route['distance'] as num).toDouble() / 1000,
-        durationMin: (route['duration'] as num).toDouble() / 60,
-        routeGeometry: geometry,
+        distanceKm: distanceMeters / 1000,
+        durationMin: durationSeconds / 60,
+        routeGeometry: allCoords, // 👈 الطريق كامل شارع بشارع
       );
     } on DioException catch (e) {
       throw DioExceptionHandler.handleDioError(e);
     } catch (e) {
       throw e.toString();
     }
+  }
+
+  /// 🔹 فك ترميز الـ polyline
+  List<List<double>> _decodePolyline(String encoded) {
+    List<List<double>> polyline = [];
+    int index = 0, len = encoded.length;
+    int lat = 0, lng = 0;
+
+    while (index < len) {
+      int b, shift = 0, result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlat = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lat += dlat;
+
+      shift = 0;
+      result = 0;
+      do {
+        b = encoded.codeUnitAt(index++) - 63;
+        result |= (b & 0x1F) << shift;
+        shift += 5;
+      } while (b >= 0x20);
+      int dlng = (result & 1) != 0 ? ~(result >> 1) : (result >> 1);
+      lng += dlng;
+
+      double latitude = lat / 1E5;
+      double longitude = lng / 1E5;
+      polyline.add([longitude, latitude]);
+    }
+
+    return polyline;
   }
 }

@@ -8,7 +8,7 @@ class ConstThingsOfUser {
   static const String notificationTitle = "🚗 العربية وصلت";
   static const String projectId ="gogo-app-6ef48";
   static const String notificationBody = "شكرا لاستعمالك GoGo";
-  static const double  percentageOfProfit = 0.15;
+  static const double  percentageOfProfit = 0.10;
   static const double  priceOfOneKelo = 7;
 
 }

@@ -19,7 +19,8 @@ class DriverStatusButton extends StatefulWidget {
   State<DriverStatusButton> createState() => _DriverStatusButtonState();
 }
 
-class _DriverStatusButtonState extends State<DriverStatusButton> {
+class _DriverStatusButtonState extends State<DriverStatusButton>
+    with WidgetsBindingObserver {
   bool isActive = false;
   String? driverId;
   bool locationEnabled = false;
@@ -28,6 +29,7 @@ class _DriverStatusButtonState extends State<DriverStatusButton> {
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _loadStatusAndDriverId();
     _checkLocationService();
     _listenLocationChanges();
@@ -35,8 +37,30 @@ class _DriverStatusButtonState extends State<DriverStatusButton> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _locationServiceSubscription?.cancel();
     super.dispose();
+  }
+
+  /// ✅ نراقب حالة التطبيق (Foreground / Background / Closed)
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) async {
+    super.didChangeAppLifecycleState(state);
+
+    if (state == AppLifecycleState.detached ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive) {
+      // المستخدم خرج أو التطبيق بالخلفية → نغلق التتبع ونحفظ الحالة false
+      if (isActive && driverId != null) {
+        context.read<DriverLocationCubit>().stopTracking();
+        await _saveStatus(false);
+      }
+      if (mounted) {
+        setState(() {
+          isActive = false;
+        });
+      }
+    }
   }
 
   Future<void> _loadStatusAndDriverId() async {
@@ -97,18 +121,18 @@ class _DriverStatusButtonState extends State<DriverStatusButton> {
   }
 
   Future<void> _promptEnableLocation() async {
-  await ConfirmationDialog.show(
-    context: context,
-    title: "enable_location".tr(),   // ✅ مفتاح الترجمة
-    content: "enable_location_message".tr(),
-    confirmText: "open_settings".tr(),
-    showCancel: true,
-    onConfirm: () async {
-      await Geolocator.openLocationSettings();
-      _checkLocationService();
-    },
-  );
-}
+    await ConfirmationDialog.show(
+      context: context,
+      title: "enable_location".tr(),
+      content: "enable_location_message".tr(),
+      confirmText: "open_settings".tr(),
+      showCancel: true,
+      onConfirm: () async {
+        await Geolocator.openLocationSettings();
+        _checkLocationService();
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -3,7 +3,6 @@ import 'package:geolocator/geolocator.dart';
 import 'package:gogo/ui/driver_screen/driver_map_screen_driver/data/model/ride_model.dart';
 import 'package:gogo/ui/driver_screen/driver_map_screen_driver/data/repo/driver_ride_repository.dart';
 import 'package:meta/meta.dart';
-
 part 'driver_map_screen_state.dart';
 
 class DriverMapScreenCubit extends Cubit<DriverMapScreenState> {

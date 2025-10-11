@@ -1,5 +1,6 @@
-import 'package:easy_localization/easy_localization.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:intl/intl.dart';
 
 class GetAllOrdersModel {
@@ -22,6 +23,8 @@ class GetAllOrdersModel {
   final int? driverId;
   final int? review;
   final String paymentWay;
+  final String carType;      
+  final bool pinkMode;        
 
   GetAllOrdersModel({
     required this.id,
@@ -43,6 +46,8 @@ class GetAllOrdersModel {
     this.driverId,
     this.review,
     this.paymentWay = "cash",
+    this.carType = "taxi", 
+    this.pinkMode = false,    
   });
 
   factory GetAllOrdersModel.fromJson(Map<String, dynamic> json) {
@@ -51,8 +56,8 @@ class GetAllOrdersModel {
       userId: json['userId'] ?? '',
       userPhone: json['userPhone'] ?? "No Phone",
       userName: json['userName'] ?? "Unknown User",
-      userImage:
-          (json['userImage'] == null || (json['userImage'] as String).isEmpty)
+      userImage: (json['userImage'] == null ||
+              (json['userImage'] as String).isEmpty)
           ? "https://tse1.mm.bing.net/th/id/OIP.0OL9oXb9QieUmjjSoWf-6gHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
           : json['userImage'],
       date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
@@ -69,6 +74,8 @@ class GetAllOrdersModel {
       driverId: json['driverid'],
       review: json['review'],
       paymentWay: json['paymentWay'] ?? "cash",
+      carType: json['carType'] ?? "taxi", 
+      pinkMode: json['pinkMode'] ?? false,  
     );
   }
 
@@ -93,17 +100,18 @@ class GetAllOrdersModel {
       "driverid": driverId,
       "review": review,
       "paymentWay": paymentWay,
+      "carType": carType,   // ✅
+      "pinkMode": pinkMode, // ✅
     };
   }
 
   String formattedTime(BuildContext context) {
     final locale = context.locale.languageCode;
-
     if (locale == "ar") {
-      return DateFormat(
-        'h:mm a',
-        'ar',
-      ).format(date).replaceAll("AM", "ص").replaceAll("PM", "م");
+      return DateFormat('h:mm a', 'ar')
+          .format(date)
+          .replaceAll("AM", "ص")
+          .replaceAll("PM", "م");
     } else {
       return DateFormat('h:mm a', locale).format(date);
     }
@@ -111,7 +119,6 @@ class GetAllOrdersModel {
 
   String formattedDate(BuildContext context) {
     final locale = context.locale.languageCode;
-
     if (locale == "ar") {
       return DateFormat('dd MMMM yyyy', 'ar').format(date);
     } else {
@@ -120,19 +127,45 @@ class GetAllOrdersModel {
   }
 }
 
+/// ✅ متوافق مع Google Maps LatLng
 class LatLngModel {
   final double lat;
   final double lng;
 
-  LatLngModel({required this.lat, required this.lng});
+  const LatLngModel({
+    required this.lat,
+    required this.lng,
+  });
 
   factory LatLngModel.fromJson(Map<String, dynamic> json) {
     return LatLngModel(
-      lat: (json['lat'] as num).toDouble(),
-      lng: (json['lng'] as num).toDouble(),
+      lat: (json['lat'] as num?)?.toDouble() ?? 0.0,
+      lng: (json['lng'] as num?)?.toDouble() ?? 0.0,
     );
   }
-  Map<String, dynamic> toJson() {
-    return {"lat": lat, "lng": lng};
+
+  Map<String, dynamic> toJson() => {
+        "lat": lat,
+        "lng": lng,
+      };
+
+  LatLng toLatLng() => LatLng(lat, lng);
+
+  factory LatLngModel.fromLatLng(LatLng latLng) {
+    return LatLngModel(
+      lat: latLng.latitude,
+      lng: latLng.longitude,
+    );
   }
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is LatLngModel &&
+          runtimeType == other.runtimeType &&
+          lat == other.lat &&
+          lng == other.lng;
+
+  @override
+  int get hashCode => lat.hashCode ^ lng.hashCode;
 }

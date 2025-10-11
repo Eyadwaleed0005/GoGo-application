@@ -46,8 +46,14 @@ class _LanguageDropdownWidgetState extends State<LanguageDropdownWidget> {
       builder: (context) {
         return AlertDialog(
           backgroundColor: ColorPalette.backgroundColor,
-          title: Text("delete_account".tr(), style: TextStyles.font10Blackbold()),
-          content: Text("delete_account_confirmation".tr(), style: TextStyles.font10BlackMedium()),
+          title: Text(
+            "delete_account".tr(),
+            style: TextStyles.font10Blackbold(),
+          ),
+          content: Text(
+            "delete_account_confirmation".tr(),
+            style: TextStyles.font10BlackMedium(),
+          ),
           actions: [
             TextButton(
               onPressed: () => Navigator.pop(context, false),
@@ -55,7 +61,9 @@ class _LanguageDropdownWidgetState extends State<LanguageDropdownWidget> {
             ),
             ElevatedButton(
               onPressed: () => Navigator.pop(context, true),
-              style: ElevatedButton.styleFrom(backgroundColor: ColorPalette.moreRed),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: ColorPalette.moreRed,
+              ),
               child: Text("yes".tr(), style: TextStyles.font8whiteSemiBold()),
             ),
           ],
@@ -65,39 +73,44 @@ class _LanguageDropdownWidgetState extends State<LanguageDropdownWidget> {
 
     if (confirm != true) return;
 
-    _deleteAccount(); 
+    _deleteAccount();
   }
 
-void _deleteAccount() async {
-  final userId = await SecureStorageHelper.getdata(key: SecureStorageKeys.userId);
-  if (userId == null) return;
-
-  try {
-    await DioHelper.deleteData(url: EndPoints.deleteAccount(userId));
-    await SecureStorageHelper.clearAll();
-    await SharedPreferencesHelper.clearAll(); 
-    Navigator.pushNamedAndRemoveUntil(
-      context,
-      AppRoutes.accountTypeScreen,
-      (route) => false,
+  void _deleteAccount() async {
+    final userId = await SecureStorageHelper.getdata(
+      key: SecureStorageKeys.userId,
     );
-  } on DioException catch (_) {
-  } catch (_) {
+    if (userId == null) return;
+
+    try {
+      await DioHelper.deleteData(url: EndPoints.deleteAccount(userId));
+      await SecureStorageHelper.clearAll();
+      await SharedPreferencesHelper.clearAll();
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.accountTypeScreen,
+        (route) => false,
+      );
+    } on DioException catch (_) {
+    } catch (_) {}
   }
-}
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
+      color: Colors.white,
       onSelected: (value) {
         if (value == 'delete') {
-          _showDeleteDialog(context); 
+          _showDeleteDialog(context);
         } else {
           _changeLanguage(value);
         }
       },
       offset: const Offset(0, 40),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.r)),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8.r),
+        side: BorderSide(color: ColorPalette.backgroundColor),
+      ),
       itemBuilder: (context) => [
         PopupMenuItem(
           value: 'en',

@@ -4,6 +4,7 @@ class RegisterRequestModel {
   final String phoneNumber;
   final String password;
   final String userType;
+  final String gender;
 
   RegisterRequestModel({
     required this.email,
@@ -11,6 +12,7 @@ class RegisterRequestModel {
     required this.phoneNumber,
     required this.password,
     required this.userType,
+    required this.gender,
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +22,7 @@ class RegisterRequestModel {
       'phoneNumber': phoneNumber,
       'password': password,
       'userType': userType,
+      'gender': gender,
     };
   }
 }

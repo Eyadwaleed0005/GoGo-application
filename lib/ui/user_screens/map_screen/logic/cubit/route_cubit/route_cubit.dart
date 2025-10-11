@@ -1,34 +1,36 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
-import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repository.dart';
-import 'route_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repo/map_repository.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:gogo/core/local/shared_preference_keys.dart';
+import 'route_state.dart';
 
 class RouteCubit extends Cubit<RouteState> {
   final MapRepository repository;
 
   RouteCubit(this.repository) : super(RouteInitial());
 
-  mb.Point? fromPoint;
-  mb.Point? toPoint;
+  LatLng? fromPoint;
+  LatLng? toPoint;
 
-  List<mb.Point>? savedRoutePoints;
-  double? savedDistance;
-  double? savedDuration;
+  List<LatLng>? routePoints;
+  double? distanceKm;
+  double? durationMin;
 
-  void setFromPoint(mb.Point? point) {
+  /// 🟢 تحديد نقطة البداية
+  void setFromPoint(LatLng? point) {
     fromPoint = point;
     emit(RoutePointsSelected(fromPoint: fromPoint, toPoint: toPoint));
   }
 
-  void setToPoint(mb.Point? point) {
+  /// 🔵 تحديد نقطة النهاية
+  void setToPoint(LatLng? point) {
     toPoint = point;
     emit(RoutePointsSelected(fromPoint: fromPoint, toPoint: toPoint));
   }
 
-  /// تحميل المسار الحالي فقط (بدون إعادة المسار القديم)
-  Future<void> loadRouteIfReady() async {
+  /// 🚗 تحميل المسار الحالي بين النقطتين
+  Future<void> loadRoute() async {
     if (fromPoint == null || toPoint == null) return;
 
     emit(RouteLoading());
@@ -37,11 +39,10 @@ class RouteCubit extends Cubit<RouteState> {
       final result = await repository.getRoute(fromPoint!, toPoint!);
 
       if (result != null) {
-        savedRoutePoints = result.routePoints;
-        savedDistance = result.distanceKm;
-        savedDuration = result.durationMin;
+        routePoints = result.routePoints;
+        distanceKm = result.distanceKm;
+        durationMin = result.durationMin;
 
-        // ✅ استبدل المسار القديم بالجديد
         await _saveRouteToPrefs(fromPoint!, toPoint!);
 
         emit(RouteLoaded(
@@ -57,15 +58,15 @@ class RouteCubit extends Cubit<RouteState> {
     }
   }
 
-  /// مسح البيانات
-  void clearRoute({bool force = false}) async {
+  /// 🧹 مسح المسار الحالي
+  Future<void> clearRoute({bool removeSaved = false}) async {
     fromPoint = null;
     toPoint = null;
-    savedRoutePoints = null;
-    savedDistance = null;
-    savedDuration = null;
+    routePoints = null;
+    distanceKm = null;
+    durationMin = null;
 
-    if (force) {
+    if (removeSaved) {
       final prefs = await SharedPreferences.getInstance();
       await prefs.remove(SharedPreferenceKeys.savedRoutesPoints);
     }
@@ -73,22 +74,21 @@ class RouteCubit extends Cubit<RouteState> {
     emit(RouteInitial());
   }
 
-  /// حفظ المسار الجديد واستبدال القديم
-  Future<void> _saveRouteToPrefs(mb.Point from, mb.Point to) async {
+  /// 💾 حفظ المسار في SharedPreferences
+  Future<void> _saveRouteToPrefs(LatLng from, LatLng to) async {
     final prefs = await SharedPreferences.getInstance();
 
     final routeString =
-        "${from.coordinates.lng},${from.coordinates.lat}|${to.coordinates.lng},${to.coordinates.lat}";
+        "${from.latitude},${from.longitude}|${to.latitude},${to.longitude}";
 
-    // ✅ نخزن مسار واحد فقط (نستبدل القديم بالجديد)
     await prefs.setStringList(
       SharedPreferenceKeys.savedRoutesPoints,
       [routeString],
     );
   }
 
-  /// تحميل آخر مسار محفوظ
-  Future<void> loadSavedRoutes() async {
+  /// 🔁 تحميل آخر مسار محفوظ
+  Future<void> loadSavedRoute() async {
     final prefs = await SharedPreferences.getInstance();
     final routes =
         prefs.getStringList(SharedPreferenceKeys.savedRoutesPoints) ?? [];
@@ -101,32 +101,19 @@ class RouteCubit extends Cubit<RouteState> {
       final toParts = parts[1].split(",");
 
       if (fromParts.length == 2 && toParts.length == 2) {
-        final from = mb.Point(
-          coordinates: mb.Position(
-            double.parse(fromParts[0]),
-            double.parse(fromParts[1]),
-          ),
+        final from = LatLng(
+          double.parse(fromParts[0]),
+          double.parse(fromParts[1]),
         );
-        final to = mb.Point(
-          coordinates: mb.Position(
-            double.parse(toParts[0]),
-            double.parse(toParts[1]),
-          ),
+        final to = LatLng(
+          double.parse(toParts[0]),
+          double.parse(toParts[1]),
         );
 
         fromPoint = from;
         toPoint = to;
 
-        try {
-          final result = await repository.getRoute(from, to);
-          if (result != null) {
-            emit(RouteLoaded(
-              result.routePoints,
-              distanceKm: result.distanceKm,
-              durationMin: result.durationMin,
-            ));
-          }
-        } catch (_) {}
+        await loadRoute();
       }
     }
   }

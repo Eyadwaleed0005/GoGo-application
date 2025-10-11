@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:gogo/ui/user_screens/map_screen/data/model/driver_places_model.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/repo/driver_places_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-part 'location_service_state.dart';
+import 'location_service_state.dart';
 
 class LocationServiceCubit extends Cubit<LocationServiceState> {
   StreamSubscription<ServiceStatus>? _serviceSubscription;
@@ -18,21 +16,16 @@ class LocationServiceCubit extends Cubit<LocationServiceState> {
     checkLocationService();
   }
 
-  /// ✅ helper للتأكد إن cubit مش مقفول
   void safeEmit(LocationServiceState state) {
-    if (!isClosed) {
-      emit(state);
-    }
+    if (!isClosed) emit(state);
   }
 
-  /// ✅ جلب حالة الطلب من SharedPreferences
   Future<void> _initOrderStatus() async {
     final prefs = await SharedPreferences.getInstance();
     orderStatus = prefs.getString("orderStatus") ?? "cancel";
     safeEmit(LocationServiceOrderUpdated(orderStatus!));
   }
 
-  /// ✅ فحص تفعيل خدمة الموقع
   Future<void> checkLocationService() async {
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
@@ -43,7 +36,6 @@ class LocationServiceCubit extends Cubit<LocationServiceState> {
     }
   }
 
-  /// ✅ جلب البيانات بناءً على حالة الرحلة
   Future<void> _fetchBasedOnOrderStatus() async {
     if (orderStatus == "approve") {
       await fetchSingleDriverPlace();
@@ -54,27 +46,17 @@ class LocationServiceCubit extends Cubit<LocationServiceState> {
     }
   }
 
-  /// ✅ جلب جميع السواقين (حالة cancel)
   Future<void> fetchAllDriverPlaces() async {
-    try {
-      final places = await DriverPlacesService.getDriverPlaces();
-      if (places != null) {
-        safeEmit(LocationServiceWithDrivers(places.drivers));
-      }
-    } catch (e) {
-      print("❌ Error fetching all drivers: $e");
+    final places = await DriverPlacesService.getDriverPlaces();
+    if (places != null) {
+      safeEmit(LocationServiceWithDrivers(places.drivers));
     }
   }
 
-  /// ✅ جلب سواق واحد (حالة approved)
   Future<void> fetchSingleDriverPlace() async {
-    try {
-      final driver = await DriverPlacesService.getDriverPlaceFromPrefs();
-      if (driver != null) {
-        safeEmit(LocationServiceWithSingleDriver(driver));
-      }
-    } catch (e) {
-      print("❌ Error fetching driver place: $e");
+    final driver = await DriverPlacesService.getDriverPlaceFromPrefs();
+    if (driver != null) {
+      safeEmit(LocationServiceWithSingleDriver(driver));
     }
   }
 

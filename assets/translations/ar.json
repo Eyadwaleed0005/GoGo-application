@@ -330,5 +330,21 @@
   "valid_email_2": "من فضلك أدخل بريد إلكتروني صحيح يحتوي على علامة @ واحدة فقط",
   "trip_to_customer": "أنت الآن متجه لمكان العميل: {place}",
   "trip_to_destination": "أنت الآن متجه إلى مكان الرحلة: {place}",
-  "total_price": "الإجمالي: {price}"
+  "total_price": "الإجمالي: {price}",
+   "trip_route": "خط سير الرحلة",
+  "driver_to_customer": "العميل → أنت",
+  "customer_to_destination": "الوجهة → العميل",
+  "distance_time": "المسافة: {distance} كم • الوقت: {time} دقيقة",
+  "male": "ذكر",
+  "female": "أنثى",
+  "select_gender": "اختر الجنس",
+  "car_type_taxi": "تاكسي",
+  "car_type_scooter": "سكوتر",
+  "car_type_car": "ملاكى",
+  "car_type_other": "أخرى",
+  "car_brand_name": "اسم الماركة",
+  "Pink_Mode": "الوضع الوردي",
+    "ON": "تشغيل",
+  "OFF": "إيقاف"
+
 }

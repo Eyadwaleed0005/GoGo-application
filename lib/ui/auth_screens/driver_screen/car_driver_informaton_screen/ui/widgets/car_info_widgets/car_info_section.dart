@@ -28,7 +28,7 @@ class CarInfoSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'car_info'.tr(), // المفتاح من ملفات الترجمة
+                'car_info'.tr(), 
                 style: TextStyles.font20Blackbold(),
               ),
               verticalSpace(10),

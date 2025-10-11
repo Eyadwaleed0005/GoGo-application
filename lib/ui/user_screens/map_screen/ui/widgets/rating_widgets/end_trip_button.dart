@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/textstyles.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/review_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/review_cubit/review_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit/route_cubit.dart';
 import 'package:gogo/core/local/shared_preference_keys.dart';
 import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/widgets/animation_box.dart';
@@ -43,7 +43,7 @@ await context.read<ReviewCubit>().sendReviewAndSaveHistory(rating);
       await prefs.remove(SharedPreferenceKeys.savedRoutesPoints);
 
       context.read<LocationServiceCubit>().updateOrderStatus("cancel");
-      context.read<RouteCubit>().clearRoute(force: true);
+      context.read<RouteCubit>().clearRoute(removeSaved: true);
 
       Navigator.pushNamedAndRemoveUntil(
         context,

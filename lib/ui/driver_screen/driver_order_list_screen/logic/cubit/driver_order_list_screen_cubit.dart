@@ -1,12 +1,12 @@
 import 'dart:collection';
-
 import 'package:bloc/bloc.dart';
+import 'package:gogo/core/local/secure_storage.dart';
+import 'package:gogo/core/local/secure_storage_keys.dart';
 import 'package:gogo/core/models/order_list_models/oreder_model.dart';
 import 'package:gogo/core/local/shared_preference_keys.dart';
 import 'package:gogo/core/local/shared_preferences.dart';
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/data/repo/get_all_orders_repository.dart';
 import 'package:meta/meta.dart';
-
 part 'driver_order_list_screen_state.dart';
 
 class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
@@ -30,11 +30,38 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
     }
 
     try {
+      final carBrand = await SecureStorageHelper.getdata(
+        key: SecureStorageKeys.carBrand,
+      );
+      final gender = await SecureStorageHelper.getdata(
+        key: SecureStorageKeys.gender,
+      );
+
       final orders = await repository.getAllOrders();
-      final pendingOrders = orders
+
+      List<GetAllOrdersModel> filteredOrders = [];
+      if (carBrand?.toLowerCase() == 'taxi') {
+        filteredOrders = orders
+            .where((o) => o.carType.toLowerCase() == 'taxi')
+            .toList();
+      } else if (carBrand?.toLowerCase() == 'scooter') {
+        filteredOrders = orders
+            .where((o) => o.carType.toLowerCase() == 'scooter')
+            .toList();
+      } else {
+        filteredOrders = orders.where((o) {
+          if (o.pinkMode == true) {
+            return gender?.toLowerCase() == 'female';
+          } else {
+            return gender?.toLowerCase() != 'female';
+          }
+        }).toList();
+      }
+
+      final pendingOrders = filteredOrders
           .where((order) => (order.status ?? '').toLowerCase() == 'pending')
           .toList()
-          .reversed 
+          .reversed
           .toList();
 
       if (isClosed) return;

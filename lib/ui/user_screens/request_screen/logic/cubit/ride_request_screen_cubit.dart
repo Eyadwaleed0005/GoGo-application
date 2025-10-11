@@ -13,19 +13,24 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
   final OrdersRepository _ordersRepository = OrdersRepository();
 
   RideRequestScreenCubit(double distanceKm)
-      : super(RideRequestScreenState(
-          tripType: "one_of_group",
-          passengers: "1",
-          price: "",
-          notes: "",
-          distanceKm: distanceKm,
-          suggestedPrice: SuggestedPriceCalculator.calculate(
+      : super(
+          RideRequestScreenState(
             tripType: "one_of_group",
+            passengers: "1",
+            price: "",
+            notes: "",
             distanceKm: distanceKm,
+            suggestedPrice: SuggestedPriceCalculator.calculate(
+              tripType: "one_of_group",
+              distanceKm: distanceKm,
+              carType: "taxi", // ✅ الافتراضي
+            ),
+            paymentWay: "cash",
+            carType: "taxi",
+            pinkMode: false,
+            status: RideRequestStatus.initial,
           ),
-          paymentWay: "cash", // 🔥 القيمة الافتراضية
-          status: RideRequestStatus.initial,
-        ));
+        );
 
   void changeTripType(String value) {
     final passengers = value == "delivery"
@@ -35,13 +40,16 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
     final newSuggestedPrice = SuggestedPriceCalculator.calculate(
       tripType: value,
       distanceKm: state.distanceKm,
+      carType: state.carType, // ✅ أضفنا نوع السيارة هنا
     );
 
-    emit(state.copyWith(
-      tripType: value,
-      passengers: passengers,
-      suggestedPrice: newSuggestedPrice,
-    ));
+    emit(
+      state.copyWith(
+        tripType: value,
+        passengers: passengers,
+        suggestedPrice: newSuggestedPrice,
+      ),
+    );
   }
 
   void changePassengers(String value) {
@@ -58,6 +66,25 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
 
   void changePaymentWay(String value) {
     emit(state.copyWith(paymentWay: value));
+  }
+
+  void changeCarType(String value) {
+    final newSuggestedPrice = SuggestedPriceCalculator.calculate(
+      tripType: state.tripType,
+      distanceKm: state.distanceKm,
+      carType: value, // ✅ أضفناها هنا كمان
+    );
+
+    emit(
+      state.copyWith(
+        carType: value,
+        suggestedPrice: newSuggestedPrice,
+      ),
+    );
+  }
+
+  void togglePinkMode(bool value) {
+    emit(state.copyWith(pinkMode: value));
   }
 
   bool validateInputs() {
@@ -82,10 +109,12 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
     required LatLngModel toLatLng,
   }) async {
     if (!validateInputs()) {
-      emit(state.copyWith(
-        status: RideRequestStatus.error,
-        errorMessage: "invalid_inputs".tr(),
-      ));
+      emit(
+        state.copyWith(
+          status: RideRequestStatus.error,
+          errorMessage: "invalid_inputs".tr(),
+        ),
+      );
       return;
     }
 
@@ -114,20 +143,26 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
         status: 'pending',
         driverId: null,
         review: 0,
-        paymentWay: state.paymentWay, 
+        paymentWay: state.paymentWay,
+        carType: state.carType,
+        pinkMode: state.pinkMode,
       );
 
       final createdOrder = await _ordersRepository.createOrderWithFCM(order);
 
-      emit(state.copyWith(
-        status: RideRequestStatus.success,
-        createdOrder: createdOrder,
-      ));
+      emit(
+        state.copyWith(
+          status: RideRequestStatus.success,
+          createdOrder: createdOrder,
+        ),
+      );
     } catch (e) {
-      emit(state.copyWith(
-        status: RideRequestStatus.error,
-        errorMessage: e.toString(),
-      ));
+      emit(
+        state.copyWith(
+          status: RideRequestStatus.error,
+          errorMessage: e.toString(),
+        ),
+      );
     }
   }
 }

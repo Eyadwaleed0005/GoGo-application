@@ -373,4 +373,13 @@ class TextStyles {
       fontFamily: plusJakartaSans,
     );
   }
+
+  static TextStyle font8pinkSemiBold() {
+    return TextStyle(
+      fontSize: 8.sp,
+      fontWeight: FontWeightHelper.semiBold,
+      color: ColorPalette.pinkMode,
+      fontFamily: plusJakartaSans,
+    );
+  }
 }

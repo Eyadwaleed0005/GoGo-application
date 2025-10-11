@@ -8,7 +8,7 @@ import 'package:gogo/core/dio_helper/dio_helper.dart';
 import 'package:gogo/core/models/order_list_models/oreder_model.dart';
 
 class OrdersRepository {
-  static const String userOrderId = 'userOrderId'; // ✅ المفتاح ثابت
+  static const String userOrderId = 'userOrderId'; 
 
   Future<GetAllOrdersModel?> createOrder(GetAllOrdersModel order) async {
     try {
@@ -22,8 +22,7 @@ class OrdersRepository {
         final orderModel = GetAllOrdersModel.fromJson(data);
 
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt(userOrderId, orderModel.id); // ✅ تخزين كـ int
-
+        await prefs.setInt(userOrderId, orderModel.id); 
         return orderModel;
       } else {
         return null;
@@ -47,13 +46,13 @@ class OrdersRepository {
       final orderId = orderModel.id;
 
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(userOrderId, orderId); // ✅ تخزين كـ int
+      await prefs.setInt(userOrderId, orderId); 
 
       final fcmToken = await FirebaseMessaging.instance.getToken();
       if (fcmToken != null) {
         await FirebaseFirestore.instance
             .collection('orderNotifications')
-            .doc(orderId.toString()) // Firestore بيدعم String كـ documentId
+            .doc(orderId.toString()) 
             .set({
           'orderId': orderId,
           'fcmToken': fcmToken,

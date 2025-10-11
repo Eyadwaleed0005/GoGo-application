@@ -1,4 +1,4 @@
-part of 'location_service_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/data/model/driver_places_model.dart';
 
 abstract class LocationServiceState {}
 

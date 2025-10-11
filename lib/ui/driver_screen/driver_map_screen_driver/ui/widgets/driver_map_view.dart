@@ -1,9 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:gogo/core/style/app_color.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mapbox;
-import 'package:gogo/core/api/end_points.dart';
 import '../../data/model/ride_model.dart';
 
 class DriverMapView extends StatefulWidget {
@@ -17,17 +16,18 @@ class DriverMapView extends StatefulWidget {
 }
 
 class _DriverMapViewState extends State<DriverMapView> {
-  mapbox.MapboxMap? _mapboxMap;
-  mapbox.PolylineAnnotationManager? _polylineManager;
+  GoogleMapController? _googleMapController;
   StreamSubscription<Position>? _positionStream;
   StreamSubscription<ServiceStatus>? _serviceStatusSub;
 
   bool _gpsEnabled = true;
+  Set<Polyline> _polylines = {};
+  LatLng? _currentPosition;
+  double _currentBearing = 0.0;
 
   @override
   void initState() {
     super.initState();
-    mapbox.MapboxOptions.setAccessToken(EndPoints.accessToken);
     _listenToGpsStatus();
   }
 
@@ -36,7 +36,6 @@ class _DriverMapViewState extends State<DriverMapView> {
       final enabled = status == ServiceStatus.enabled;
       if (_gpsEnabled != enabled) {
         setState(() => _gpsEnabled = enabled);
-
         if (enabled) {
           _startPositionStream();
         } else {
@@ -47,62 +46,83 @@ class _DriverMapViewState extends State<DriverMapView> {
     });
   }
 
-  Future<void> _onMapCreated(mapbox.MapboxMap controller) async {
-    _mapboxMap = controller;
-    await _mapboxMap!.location.updateSettings(
-      mapbox.LocationComponentSettings(enabled: true, pulsingEnabled: true),
-    );
-
-    _polylineManager ??= await _mapboxMap!.annotations
-        .createPolylineAnnotationManager();
-    _drawRoute();
+  void _onMapCreated(GoogleMapController controller) {
+    _googleMapController = controller;
     if (_gpsEnabled) {
       _startPositionStream();
     }
+    _drawRoute();
   }
 
+  /// 🔹 دالة تحسب الزوم المناسب حسب سرعة السائق
+  double _getDynamicZoom(double speed) {
+    if (speed < 10) return 17.0; // بطيء -> قريب
+    if (speed < 30) return 16.5;
+    if (speed < 60) return 16.0;
+    return 15.5; // سريع -> الكاميرا تبعد أكتر
+  }
+
+  /// 🎯 تتبع موقع السواق وتحريك الكاميرا فوق العلامة الزرقاء
   void _startPositionStream() async {
     _positionStream?.cancel();
 
     final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return;
+
     _positionStream =
         Geolocator.getPositionStream(
           locationSettings: const LocationSettings(
-            accuracy: LocationAccuracy.high,
-            distanceFilter: 5,
+            accuracy: LocationAccuracy.bestForNavigation,
+            distanceFilter: 2,
           ),
         ).listen((pos) async {
-          try {
-            await _mapboxMap?.flyTo(
-              mapbox.CameraOptions(
-                center: mapbox.Point(
-                  coordinates: mapbox.Position(pos.longitude, pos.latitude),
+          _currentPosition = LatLng(pos.latitude, pos.longitude);
+          _currentBearing = _smoothBearing(_currentBearing, pos.heading);
+
+          if (_googleMapController != null && _currentPosition != null) {
+            try {
+              await _googleMapController!.animateCamera(
+                CameraUpdate.newCameraPosition(
+                  CameraPosition(
+                    target: _currentPosition!,
+                    zoom: _getDynamicZoom(pos.speed), // 👈 زوم ديناميكي حسب السرعة
+                    bearing: _currentBearing,
+                    tilt: 0,
+                  ),
                 ),
-                zoom: 18,
-                bearing: pos.heading,
-              ),
-              mapbox.MapAnimationOptions(duration: 1000),
-            );
-          } catch (e) {}
-        }, onError: (err) {});
+              );
+              setState(() {});
+            } catch (_) {}
+          }
+        });
   }
 
-  Future<void> _drawRoute() async {
-    if (_polylineManager == null || widget.ride?.routeGeometry == null) return;
-    await _polylineManager!.deleteAll();
+  /// 🌀 تنعيم دوران الكاميرا علشان ما تلفش فجأة
+  double _smoothBearing(double oldBearing, double newBearing) {
+    double diff = newBearing - oldBearing;
+    if (diff.abs() > 180) {
+      diff = diff > 0 ? diff - 360 : diff + 360;
+    }
+    return (oldBearing + diff * 0.1) % 360;
+  }
+
+  void _drawRoute() {
+    if (widget.ride?.routeGeometry == null) return;
+
     final coords = widget.ride!.routeGeometry!
-        .map((p) => mapbox.Position(p[0], p[1]))
+        .map((p) => LatLng(p[1], p[0]))
         .toList();
-    await _polylineManager!.create(
-      mapbox.PolylineAnnotationOptions(
-        geometry: mapbox.LineString(coordinates: coords),
-        lineColor: widget.isTripStarted
-            ? ColorPalette.green.value
-            : ColorPalette.moreBlue.value,
-        lineWidth: 5.0,
-      ),
+
+    final polyline = Polyline(
+      polylineId: const PolylineId('route'),
+      color: widget.isTripStarted ? ColorPalette.green : ColorPalette.moreBlue,
+      width: 6,
+      points: coords,
     );
+
+    setState(() {
+      _polylines = {polyline};
+    });
   }
 
   @override
@@ -118,18 +138,46 @@ class _DriverMapViewState extends State<DriverMapView> {
   void dispose() {
     _positionStream?.cancel();
     _serviceStatusSub?.cancel();
+    _googleMapController?.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    return mapbox.MapWidget(
-      styleUri: mapbox.MapboxStyles.MAPBOX_STREETS,
-      cameraOptions: mapbox.CameraOptions(
-        center: mapbox.Point(coordinates: mapbox.Position(33.7984, 31.1316)),
-        zoom: 12,
-      ),
+    final markers = <Marker>{};
+
+    if (widget.ride?.routeGeometry?.isNotEmpty ?? false) {
+      final endLatLng = LatLng(
+        widget.ride!.routeGeometry!.last[1],
+        widget.ride!.routeGeometry!.last[0],
+      );
+
+      markers.add(
+        Marker(
+          markerId: const MarkerId('end_point'),
+          position: endLatLng,
+          icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed),
+          infoWindow: const InfoWindow(title: 'نقطة الوصول'),
+        ),
+      );
+    }
+
+    return GoogleMap(
       onMapCreated: _onMapCreated,
+      mapType: MapType.normal,
+      initialCameraPosition: const CameraPosition(
+        target: LatLng(31.1316, 33.7984),
+        zoom: 16, // 👈 زوم مبدئي متوسط مناسب للسائق
+      ),
+      myLocationEnabled: true,
+      myLocationButtonEnabled: true,
+      compassEnabled: false,
+      trafficEnabled: true,
+      buildingsEnabled: true,
+      rotateGesturesEnabled: false,
+      tiltGesturesEnabled: false,
+      polylines: _polylines,
+      markers: markers,
     );
   }
 }

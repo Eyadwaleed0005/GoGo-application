@@ -27,9 +27,15 @@ class DriverStatusRepository {
         SharedPreferenceKeys.statusOfAccountDriver,
         driverStatus.status,
       );
-
-      print("✅ DriverId saved: ${driverStatus.id}, Status saved: ${driverStatus.status}");
-
+      await SecureStorageHelper.savedata(
+        key: SecureStorageKeys.carBrand, 
+        value: driverStatus.carBrand,    
+      );
+      await SecureStorageHelper.savedata(
+        key: SecureStorageKeys.gender,
+        value: driverStatus.gender,
+      );
+      print("✅ DriverId: ${driverStatus.id}, Status: ${driverStatus.status}, CarBrand: ${driverStatus.carBrand}, Gender: ${driverStatus.gender}");
       return driverStatus;
     } on DioException catch (e) {
       throw Exception(DioExceptionHandler.handleDioError(e));
@@ -38,4 +44,3 @@ class DriverStatusRepository {
     }
   }
 }
-
