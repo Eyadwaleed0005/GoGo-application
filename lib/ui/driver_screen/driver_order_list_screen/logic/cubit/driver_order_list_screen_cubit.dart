@@ -19,6 +19,7 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
     if (isClosed) return;
     emit(DriverOrderListScreenLoading());
 
+    // ✅ يشوف هل السواق أونلاين ولا لا
     final isActive = await SharedPreferencesHelper.getBool(
       key: SharedPreferenceKeys.driverActive,
     );
@@ -30,6 +31,7 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
     }
 
     try {
+      // ✅ يجيب نوع العربية والجندر من التخزين المحلي
       final carBrand = await SecureStorageHelper.getdata(
         key: SecureStorageKeys.carBrand,
       );
@@ -37,9 +39,12 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
         key: SecureStorageKeys.gender,
       );
 
+      // ✅ يجيب كل الأوردرات
       final orders = await repository.getAllOrders();
 
       List<GetAllOrdersModel> filteredOrders = [];
+
+      // ✅ فلترة الطلبات حسب نوع العربية
       if (carBrand?.toLowerCase() == 'taxi') {
         filteredOrders = orders
             .where((o) => o.carType.toLowerCase() == 'taxi')
@@ -50,14 +55,18 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
             .toList();
       } else {
         filteredOrders = orders.where((o) {
+          if (o.carType.toLowerCase() == 'taxi' ||
+              o.carType.toLowerCase() == 'scooter') {
+            return false;
+          }
+
           if (o.pinkMode == true) {
             return gender?.toLowerCase() == 'female';
           } else {
-            return gender?.toLowerCase() != 'female';
+            return true;
           }
         }).toList();
       }
-
       final pendingOrders = filteredOrders
           .where((order) => (order.status ?? '').toLowerCase() == 'pending')
           .toList()
