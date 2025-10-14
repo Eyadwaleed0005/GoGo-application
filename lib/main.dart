@@ -4,7 +4,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:gogo/core/api/end_points.dart';
+import 'package:gogo/core/local/secure_storage.dart';
 import 'package:gogo/core/local/shared_preference_keys.dart';
+import 'package:gogo/core/local/shared_preferences.dart';
 import 'package:gogo/core/services/app_update_manager.dart';
 import 'package:gogo/core/services/notification_service.dart';
 import 'package:gogo/core/dio_helper/dio_helper.dart';
@@ -17,11 +19,19 @@ import 'package:easy_localization/easy_localization.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  // debugPrint("Clearing all secure & shared storage data...");
+  // // مسح البيانات من SecureStorage
+  // await SecureStorageHelper.clearAll();
+  // debugPrint("Clearing all secure & shared storage data done.");
+
+  // // مسح البيانات من SharedPreferences
+  // await SharedPreferencesHelper.clearAll();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await EasyLocalization.ensureInitialized();
   await NotificationService().init();
   DioHelper.init(baseUrl: EndPoints.baseurl);
   const storage = FlutterSecureStorage();
+
   String? savedLang = await storage.read(
     key: SharedPreferenceKeys.selectedLanguage,
   );

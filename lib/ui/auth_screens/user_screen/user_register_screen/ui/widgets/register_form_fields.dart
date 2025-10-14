@@ -61,22 +61,22 @@ class RegisterFormFields extends StatelessWidget {
             hint: 'phone_hint'.tr(),
             controller: cubit.phoneController,
             keyboardType: TextInputType.phone,
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return '* ${'phone_required'.tr()}';
-              }
-              final isNumeric = RegExp(r'^[0-9]+$').hasMatch(value);
-              if (!isNumeric) {
-                return '* ${'phone_digits_only'.tr()}';
-              }
-              if (value.length != 11) {
-                return '* ${'phone_11_digits'.tr()}';
-              }
-              if (!value.startsWith('01')) {
-                return '* ${'phone_starts_01'.tr()}';
-              }
-              return null;
-            },
+            // validator: (value) {
+            //   if (value == null || value.isEmpty) {
+            //     return '* ${'phone_required'.tr()}';
+            //   }
+            //   final isNumeric = RegExp(r'^[0-9]+$').hasMatch(value);
+            //   if (!isNumeric) {
+            //     return '* ${'phone_digits_only'.tr()}';
+            //   }
+            //   if (value.length != 11) {
+            //     return '* ${'phone_11_digits'.tr()}';
+            //   }
+            //   if (!value.startsWith('01')) {
+            //     return '* ${'phone_starts_01'.tr()}';
+            //   }
+            //   return null;
+            // },
           ),
           verticalSpace(8),
           Text('select_gender'.tr(), style: TextStyles.font10BlackSemiBold()),

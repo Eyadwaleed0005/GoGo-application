@@ -41,32 +41,30 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
 
       // ✅ يجيب كل الأوردرات
       final orders = await repository.getAllOrders();
+      final driverCarType = _resolveDriverCarType(carBrand);
+      final driverGender = gender?.trim().toLowerCase() ?? '';
+      final isFemaleDriver = driverGender == 'female';
 
-      List<GetAllOrdersModel> filteredOrders = [];
+      final filteredOrders = orders.where((order) {
+        final orderCarType = _normalizeOrderCarType(order.carType);
+        if (order.pinkMode == true && !isFemaleDriver) {
+          return false;
+        }
 
-      // ✅ فلترة الطلبات حسب نوع العربية
-      if (carBrand?.toLowerCase() == 'taxi') {
-        filteredOrders = orders
-            .where((o) => o.carType.toLowerCase() == 'taxi')
-            .toList();
-      } else if (carBrand?.toLowerCase() == 'scooter') {
-        filteredOrders = orders
-            .where((o) => o.carType.toLowerCase() == 'scooter')
-            .toList();
-      } else {
-        filteredOrders = orders.where((o) {
-          if (o.carType.toLowerCase() == 'taxi' ||
-              o.carType.toLowerCase() == 'scooter') {
-            return false;
-          }
+        if (driverCarType == 'taxi') {
+          return orderCarType == 'taxi';
+        }
 
-          if (o.pinkMode == true) {
-            return gender?.toLowerCase() == 'female';
-          } else {
-            return true;
-          }
-        }).toList();
-      }
+        if (driverCarType == 'scooter') {
+          return orderCarType == 'scooter';
+        }
+
+        if (orderCarType == 'taxi' || orderCarType == 'scooter') {
+          return false;
+        }
+
+        return true;
+      }).toList();
       final pendingOrders = filteredOrders
           .where((order) => (order.status ?? '').toLowerCase() == 'pending')
           .toList()
@@ -79,5 +77,30 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
       if (isClosed) return;
       emit(DriverOrderListScreenError(error.toString()));
     }
+  }
+
+  String _resolveDriverCarType(String? rawCarBrand) {
+    final normalized = rawCarBrand?.trim().toLowerCase();
+    if (normalized == null || normalized.isEmpty) {
+      return 'car';
+    }
+    if (normalized.contains('taxi')) {
+      return 'taxi';
+    }
+    if (normalized.contains('scooter') || normalized.contains('scotter')) {
+      return 'scooter';
+    }
+    if (normalized == 'car' || normalized == 'other') {
+      return 'car';
+    }
+    return 'car';
+  }
+
+  String _normalizeOrderCarType(String? rawCarType) {
+    final normalized = rawCarType?.trim().toLowerCase() ?? '';
+    if (normalized == 'scotter') {
+      return 'scooter';
+    }
+    return normalized;
   }
 }
