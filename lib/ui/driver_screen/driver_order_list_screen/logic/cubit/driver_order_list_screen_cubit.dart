@@ -13,13 +13,11 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
   final GetAllOrdersRepository repository;
 
   DriverOrderListScreenCubit({required this.repository})
-      : super(DriverOrderListScreenInitial());
+    : super(DriverOrderListScreenInitial());
 
   Future<void> fetchOrders() async {
     if (isClosed) return;
     emit(DriverOrderListScreenLoading());
-
-    // ✅ يشوف هل السواق أونلاين ولا لا
     final isActive = await SharedPreferencesHelper.getBool(
       key: SharedPreferenceKeys.driverActive,
     );
@@ -31,7 +29,6 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
     }
 
     try {
-      // ✅ يجيب نوع العربية والجندر من التخزين المحلي
       final carBrand = await SecureStorageHelper.getdata(
         key: SecureStorageKeys.carBrand,
       );
@@ -39,7 +36,6 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
         key: SecureStorageKeys.gender,
       );
 
-      // ✅ يجيب كل الأوردرات
       final orders = await repository.getAllOrders();
       final driverCarType = _resolveDriverCarType(carBrand);
       final driverGender = gender?.trim().toLowerCase() ?? '';
@@ -95,7 +91,6 @@ class DriverOrderListScreenCubit extends Cubit<DriverOrderListScreenState> {
     }
     return 'car';
   }
-
   String _normalizeOrderCarType(String? rawCarType) {
     final normalized = rawCarType?.trim().toLowerCase() ?? '';
     if (normalized == 'scotter') {

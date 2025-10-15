@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gogo/core/local/secure_storage.dart';
@@ -35,7 +36,7 @@ Future<void> loginUser() async {
     final response = await _loginRepository.login(model);
 
     if (response.userType.toLowerCase() != "passenger") {
-      emit(LoginFailure(errorMessage: "This Account isn't User"));
+      emit(LoginFailure(errorMessage: 'account_not_user'.tr()),);
       return;
     }
     await SecureStorageHelper.savedata(
@@ -50,6 +51,9 @@ Future<void> loginUser() async {
         key: SecureStorageKeys.phoneNumber, value: response.phoneNumber);
     await SecureStorageHelper.savedata(
         key: SecureStorageKeys.userType, value: response.userType);
+    await SecureStorageHelper.savedata(
+        key: SecureStorageKeys.gender, value: response.gender);
+
 
     emit(LoginSuccess());
   } catch (e) {

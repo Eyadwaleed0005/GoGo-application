@@ -1,12 +1,12 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:gogo/core/api/end_points.dart';
-import 'package:gogo/core/local/secure_storage.dart';
 import 'package:gogo/core/local/shared_preference_keys.dart';
-import 'package:gogo/core/local/shared_preferences.dart';
 import 'package:gogo/core/services/app_update_manager.dart';
 import 'package:gogo/core/services/notification_service.dart';
 import 'package:gogo/core/dio_helper/dio_helper.dart';
@@ -15,29 +15,19 @@ import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/admin_screens/driver_wating_list_screen/ui/driver_waiting_list_screen.dart';
 import 'package:gogo/ui/driver_screen/driver_profile_screen/logic/cubit/driver_location_cubit.dart';
 import 'firebase_options.dart';
-import 'package:easy_localization/easy_localization.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // debugPrint("Clearing all secure & shared storage data...");
-  // // مسح البيانات من SecureStorage
-  // await SecureStorageHelper.clearAll();
-  // debugPrint("Clearing all secure & shared storage data done.");
-
-  // // مسح البيانات من SharedPreferences
-  // await SharedPreferencesHelper.clearAll();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await EasyLocalization.ensureInitialized();
-  await NotificationService().init();
+  unawaited(NotificationService().init());
   DioHelper.init(baseUrl: EndPoints.baseurl);
   const storage = FlutterSecureStorage();
-
   String? savedLang = await storage.read(
     key: SharedPreferenceKeys.selectedLanguage,
   );
-  Locale initialLocale = savedLang != null
-      ? Locale(savedLang)
-      : const Locale('en');
+  Locale initialLocale =
+      savedLang != null ? Locale(savedLang) : const Locale('en');
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
@@ -45,7 +35,9 @@ Future<void> main() async {
       fallbackLocale: const Locale('en'),
       startLocale: initialLocale,
       child: MultiBlocProvider(
-        providers: [BlocProvider(create: (_) => DriverLocationCubit())],
+        providers: [
+          BlocProvider(create: (_) => DriverLocationCubit()),
+        ],
         child: const MyApp(),
       ),
     ),
@@ -54,6 +46,7 @@ Future<void> main() async {
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }
@@ -73,10 +66,10 @@ class _MyAppState extends State<MyApp> {
       designSize: const Size(257, 557),
       builder: (context, child) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             scaffoldBackgroundColor: ColorPalette.backgroundColor,
           ),
-          debugShowCheckedModeBanner: false,
           initialRoute: AppRoutes.splashScreen,
           onGenerateRoute: AppRoutes.generateRoute,
           navigatorObservers: [routeObserver],

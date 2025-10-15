@@ -64,22 +64,22 @@ class RegisterFormFields extends StatelessWidget {
             hint: 'enter_phone'.tr(),
             controller: cubit.phoneController,
             keyboardType: TextInputType.phone,
-            // validator: (value) {
-            //   if (value == null || value.isEmpty) {
-            //     return '* ${'phone_required'.tr()}';
-            //   }
-            //   final isNumeric = RegExp(r'^[0-9]+$').hasMatch(value);
-            //   if (!isNumeric) {
-            //     return '* ${'digits_only'.tr()}';
-            //   }
-            //   if (value.length != 11) {
-            //     return '* ${'exact_11_digits'.tr()}';
-            //   }
-            //   if (!value.startsWith('01')) {
-            //     return '* ${'start_with_01'.tr()}';
-            //   }
-            //   return null;
-            // },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '* ${'phone_required'.tr()}';
+              }
+              final isNumeric = RegExp(r'^[0-9]+$').hasMatch(value);
+              if (!isNumeric) {
+                return '* ${'digits_only'.tr()}';
+              }
+              if (value.length != 11) {
+                return '* ${'exact_11_digits'.tr()}';
+              }
+              if (!value.startsWith('01')) {
+                return '* ${'start_with_01'.tr()}';
+              }
+              return null;
+            },
           ),
           verticalSpace(8),
           Text('select_gender'.tr(), style: TextStyles.font10BlackSemiBold()),
@@ -119,6 +119,9 @@ class RegisterFormFields extends StatelessWidget {
               if (!RegExp(r'[A-Z]').hasMatch(value)) {
                 return '* ${'password_uppercase'.tr()}';
               }
+              if (!RegExp(r'[a-z]').hasMatch(value)) {
+                return '* ${'password_lowercase'.tr()}';
+              }
               if (!RegExp(r'\d').hasMatch(value)) {
                 return '* ${'password_number'.tr()}';
               }
@@ -131,6 +134,7 @@ class RegisterFormFields extends StatelessWidget {
               return null;
             },
           ),
+
           verticalSpace(8),
           Text(
             'confirm_password'.tr(),

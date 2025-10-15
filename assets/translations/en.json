@@ -107,6 +107,7 @@
   "exact_11_digits": "Phone number must be exactly 11 digits",
   "start_with_01": "Phone number must start with 01",
   "password_length": "Password must be 6-20 characters",
+  "password_lowercase": "Password must contain at least one lowercase letter.",
   "password_special": "Must contain at least 1 special character",
   "confirm_password_hint": "*****************",
   "driver_sign_in": "Driver Sign In",
@@ -345,6 +346,8 @@
   "car_brand_name": "Brand Name",
   "Pink_Mode": "Pink Mode",
   "ON": "ON",
-  "OFF": "OFF"
+  "OFF": "OFF",
+  "account_not_user": "This account does not belong to a user.",
+  "account_not_driver": "This account does not belong to a driver."
 
 }

@@ -61,23 +61,24 @@ class RegisterFormFields extends StatelessWidget {
             hint: 'phone_hint'.tr(),
             controller: cubit.phoneController,
             keyboardType: TextInputType.phone,
-            // validator: (value) {
-            //   if (value == null || value.isEmpty) {
-            //     return '* ${'phone_required'.tr()}';
-            //   }
-            //   final isNumeric = RegExp(r'^[0-9]+$').hasMatch(value);
-            //   if (!isNumeric) {
-            //     return '* ${'phone_digits_only'.tr()}';
-            //   }
-            //   if (value.length != 11) {
-            //     return '* ${'phone_11_digits'.tr()}';
-            //   }
-            //   if (!value.startsWith('01')) {
-            //     return '* ${'phone_starts_01'.tr()}';
-            //   }
-            //   return null;
-            // },
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return '* ${'phone_required'.tr()}';
+              }
+              final isNumeric = RegExp(r'^[0-9]+$').hasMatch(value);
+              if (!isNumeric) {
+                return '* ${'phone_digits_only'.tr()}';
+              }
+              if (value.length != 11) {
+                return '* ${'phone_11_digits'.tr()}';
+              }
+              if (!value.startsWith('01')) {
+                return '* ${'phone_starts_01'.tr()}';
+              }
+              return null;
+            },
           ),
+
           verticalSpace(8),
           Text('select_gender'.tr(), style: TextStyles.font10BlackSemiBold()),
           verticalSpace(8),
@@ -101,7 +102,7 @@ class RegisterFormFields extends StatelessWidget {
           Text('password'.tr(), style: TextStyles.font10BlackSemiBold()),
           verticalSpace(8),
           AppTextField(
-            hint: 'password_hint'.tr(),
+            hint: 'enter_password'.tr(),
             isPassword: true,
             controller: cubit.passwordController,
             validator: (value) {
@@ -109,16 +110,19 @@ class RegisterFormFields extends StatelessWidget {
                 return '* ${'password_required'.tr()}';
               }
               if (value.length < 6 || value.length > 20) {
-                return '* ${'password_6_20'.tr()}';
+                return '* ${'password_length'.tr()}';
               }
               if (!RegExp(r'[A-Z]').hasMatch(value)) {
                 return '* ${'password_uppercase'.tr()}';
               }
+              if (!RegExp(r'[a-z]').hasMatch(value)) {
+                return '* ${'password_lowercase'.tr()}';
+              }
               if (!RegExp(r'\d').hasMatch(value)) {
                 return '* ${'password_number'.tr()}';
               }
-              if (!RegExp(r'[!@#\$%^&*(),.?":{}|<>_\-]').hasMatch(value)) {
-                return '* ${'password_special_char'.tr()}';
+              if (!RegExp(r'[!@#$%^&*(),.?":{}|<>_\-]').hasMatch(value)) {
+                return '* ${'password_special'.tr()}';
               }
               if (!RegExp(r'[a-zA-Z]').hasMatch(value)) {
                 return '* ${'password_letter'.tr()}';
@@ -128,8 +132,10 @@ class RegisterFormFields extends StatelessWidget {
           ),
           verticalSpace(8),
 
-          Text('confirm_password'.tr(),
-              style: TextStyles.font10BlackSemiBold()),
+          Text(
+            'confirm_password'.tr(),
+            style: TextStyles.font10BlackSemiBold(),
+          ),
           verticalSpace(8),
           AppTextField(
             hint: 'password_hint'.tr(),
