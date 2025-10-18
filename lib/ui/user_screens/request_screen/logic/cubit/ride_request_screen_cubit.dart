@@ -23,7 +23,7 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
             suggestedPrice: SuggestedPriceCalculator.calculate(
               tripType: "one_of_group",
               distanceKm: distanceKm,
-              carType: "taxi", // ✅ الافتراضي
+              carType: "taxi", 
             ),
             paymentWay: "cash",
             carType: "taxi",
@@ -40,7 +40,7 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
     final newSuggestedPrice = SuggestedPriceCalculator.calculate(
       tripType: value,
       distanceKm: state.distanceKm,
-      carType: state.carType, // ✅ أضفنا نوع السيارة هنا
+      carType: state.carType, 
     );
 
     emit(
@@ -72,7 +72,7 @@ class RideRequestScreenCubit extends Cubit<RideRequestScreenState> {
     final newSuggestedPrice = SuggestedPriceCalculator.calculate(
       tripType: state.tripType,
       distanceKm: state.distanceKm,
-      carType: value, // ✅ أضفناها هنا كمان
+      carType: value, 
     );
 
     emit(

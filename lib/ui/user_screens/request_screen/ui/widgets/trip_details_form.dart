@@ -70,17 +70,17 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
     return BlocBuilder<RideRequestScreenCubit, RideRequestScreenState>(
       builder: (context, state) {
         final cubit = context.read<RideRequestScreenCubit>();
-       if (state.carType == "scooter") {
-  passengersController.text = "1";
-  passengersController.selection = TextSelection.fromPosition(
-    TextPosition(offset: passengersController.text.length),
-  );
-} else if (state.tripType == "delivery") {
-  passengersController.text = "0";
-  passengersController.selection = TextSelection.fromPosition(
-    TextPosition(offset: passengersController.text.length),
-  );
-}
+        if (state.carType == "scooter") {
+          passengersController.text = "1";
+          passengersController.selection = TextSelection.fromPosition(
+            TextPosition(offset: passengersController.text.length),
+          );
+        } else if (state.tripType == "delivery") {
+          passengersController.text = "0";
+          passengersController.selection = TextSelection.fromPosition(
+            TextPosition(offset: passengersController.text.length),
+          );
+        }
 
         priceController.text = state.price;
         notesController.text = state.notes;
@@ -105,11 +105,6 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
                   } else {
                     passengersController.clear();
                     cubit.changePassengers("");
-                  }
-                  if (value == "car") {
-                    cubit.togglePinkMode(true);
-                  } else {
-                    cubit.togglePinkMode(false);
                   }
                   setState(() {});
                 },

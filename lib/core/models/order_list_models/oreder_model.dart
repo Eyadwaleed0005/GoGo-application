@@ -100,8 +100,8 @@ class GetAllOrdersModel {
       "driverid": driverId,
       "review": review,
       "paymentWay": paymentWay,
-      "carType": carType,   // ✅
-      "pinkMode": pinkMode, // ✅
+      "carType": carType,   
+      "pinkMode": pinkMode, 
     };
   }
 
@@ -127,7 +127,6 @@ class GetAllOrdersModel {
   }
 }
 
-/// ✅ متوافق مع Google Maps LatLng
 class LatLngModel {
   final double lat;
   final double lng;
