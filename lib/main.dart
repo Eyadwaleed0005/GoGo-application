@@ -69,7 +69,7 @@ class _MyAppState extends State<MyApp> {
           theme: ThemeData(
             scaffoldBackgroundColor: ColorPalette.backgroundColor,
           ),
-          initialRoute: AppRoutes.adminHomeScreen,
+          initialRoute: AppRoutes.splashScreen,
           onGenerateRoute: AppRoutes.generateRoute,
           navigatorObservers: [routeObserver],
           localizationsDelegates: context.localizationDelegates,
