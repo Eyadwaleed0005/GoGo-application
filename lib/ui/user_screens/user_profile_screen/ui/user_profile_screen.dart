@@ -44,8 +44,8 @@ class UserProfileScreen extends StatelessWidget {
               onTap: () {
                 Navigator.pop(ctx);
                 context.read<UserProfileScreenCubit>().pickImage(
-                      ImageSource.camera,
-                    );
+                  ImageSource.camera,
+                );
               },
             ),
             ListTile(
@@ -58,8 +58,8 @@ class UserProfileScreen extends StatelessWidget {
               onTap: () {
                 Navigator.pop(ctx);
                 context.read<UserProfileScreenCubit>().pickImage(
-                      ImageSource.gallery,
-                    );
+                  ImageSource.gallery,
+                );
               },
             ),
           ],
@@ -130,7 +130,7 @@ class UserProfileScreen extends StatelessWidget {
                         imageUrl: finalImage,
                         userName: user?.name ?? "loading".tr(),
                         onCameraTap: () => _showImageSourceDialog(context),
-                        onEditTap: () => _showImageSourceDialog(context),
+                        /*onEditTap: () => _showImageSourceDialog(context),*/
                       ),
                     ),
                     verticalSpace(35),
@@ -142,7 +142,7 @@ class UserProfileScreen extends StatelessWidget {
                   right: 18.w,
                   child: const UserLogoutButtom(),
                 ),
-                 Positioned(
+                Positioned(
                   top: 28.h,
                   left: 18.w,
                   child: const LanguageDropdownWidget(),

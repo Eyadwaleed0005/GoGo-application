@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/data/repo/driver_pay_repository.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/data/repo/driver_wallet_repository.dart';
 import 'package:gogo/ui/driver_screen/driver_wallet_screen/data/model/driver_pay_model.dart';
@@ -11,14 +12,21 @@ part 'driver_wallet_screen_state.dart';
 
 class DriverWalletScreenCubit extends Cubit<DriverWalletScreenState> {
   DriverWalletScreenCubit(this._payRepository, this._walletRepository)
-    : super(
-        const DriverWalletScreenState(wallet: 0, images: [null, null, null]),
-      );
+      : super(
+          const DriverWalletScreenState(wallet: 0, images: [null, null, null]),
+        );
 
   final DriverPayRepository _payRepository;
   final DriverWalletRepository _walletRepository;
   final ImagePicker _picker = ImagePicker();
   bool _isPicking = false;
+
+  Future<File> _saveImagePermanently(XFile image) async {
+    final directory = await getApplicationDocumentsDirectory();
+    final name = DateTime.now().millisecondsSinceEpoch.toString();
+    final newImage = File('${directory.path}/$name.jpg');
+    return File(image.path).copy(newImage.path);
+  }
 
   Future<void> pickImage(int index) async {
     if (_isPicking) return;
@@ -27,8 +35,10 @@ class DriverWalletScreenCubit extends Cubit<DriverWalletScreenState> {
     try {
       final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
       if (pickedFile != null) {
+        final savedFile = await _saveImagePermanently(pickedFile);
         final updatedImages = List<XFile?>.from(state.images);
-        updatedImages[index] = pickedFile;
+        updatedImages[index] = XFile(savedFile.path);
+
         if (isClosed) return;
         emit(state.copyWith(images: updatedImages, error: null));
       }
@@ -43,7 +53,7 @@ class DriverWalletScreenCubit extends Cubit<DriverWalletScreenState> {
       if (isClosed) return;
       emit(
         state.copyWith(
-          error: "wallet_select_image_first".tr(), // استدعاء الترجمة
+          error: "wallet_select_image_first".tr(),
         ),
       );
       return;

@@ -1,16 +1,18 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/material.dart';
 
-class DriverHistoryMoedl {
+class DriverHistoryModel {
   final int id;
   final int review;
   final String paymentWay;
   final String from;
   final String to;
   final DateTime date;
-  final int totalTip;
+  final double totalTip;
   final int driverId;
 
-  DriverHistoryMoedl({
+  DriverHistoryModel({
     required this.id,
     required this.review,
     required this.paymentWay,
@@ -21,15 +23,15 @@ class DriverHistoryMoedl {
     required this.driverId,
   });
 
-  factory DriverHistoryMoedl.fromJson(Map<String, dynamic> json) {
-    return DriverHistoryMoedl(
+  factory DriverHistoryModel.fromJson(Map<String, dynamic> json) {
+    return DriverHistoryModel(
       id: json['id'] ?? 0,
       review: json['review'] ?? 0,
       paymentWay: json['paymentWay'] ?? '',
       from: json['from'] ?? '',
       to: json['to'] ?? '',
       date: DateTime.tryParse(json['date'] ?? '') ?? DateTime.now(),
-      totalTip: json['totalTip'] ?? 0,
+      totalTip: (json['totalTip'] as num?)?.toDouble() ?? 0.0,
       driverId: json['driverId'] ?? 0,
     );
   }
@@ -47,32 +49,40 @@ class DriverHistoryMoedl {
     };
   }
 
-  static List<DriverHistoryMoedl> fromJsonList(dynamic json) {
+  static List<DriverHistoryModel> fromJsonList(dynamic json) {
     if (json is Map && json.containsKey("\$values") && json["\$values"] is List) {
       return (json["\$values"] as List)
-          .map((e) => DriverHistoryMoedl.fromJson(e))
+          .map((e) => DriverHistoryModel.fromJson(e))
           .toList();
     } else if (json is List) {
-      return json.map((e) => DriverHistoryMoedl.fromJson(e)).toList();
+      return json.map((e) => DriverHistoryModel.fromJson(e)).toList();
     } else {
       return [];
     }
   }
 
-  String get formattedDate {
-    return DateFormat("EEEE, dd/MM/yyyy").format(date);
+  String formattedDate(BuildContext context) {
+    final locale = context.locale.languageCode;
+
+    if (locale == "ar") {
+      return DateFormat('dd MMMM yyyy', 'ar').format(date);
+    } else {
+      return DateFormat('MMM dd, yyyy', locale).format(date);
+    }
   }
 
-  String get formattedTime {
-    return DateFormat("hh:mm a").format(date);
-  }
-  String get relativeDate {
-    final now = DateTime.now();
-    final difference = now.difference(date).inDays;
+  String formattedTime(BuildContext context) {
+    final locale = context.locale.languageCode;
 
-    if (difference == 0) return "Today";
-    if (difference == 1) return "Yesterday";
-    if (difference <= 7) return "Last week";
-    return "Older";
+    if (locale == "ar") {
+      return DateFormat('h:mm a', 'ar')
+          .format(date)
+          .replaceAll("AM", "ص")
+          .replaceAll("PM", "م");
+    } else {
+      return DateFormat('h:mm a', locale).format(date);
+    }
   }
+
+
 }

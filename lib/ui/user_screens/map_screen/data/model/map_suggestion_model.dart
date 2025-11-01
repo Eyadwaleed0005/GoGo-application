@@ -1,5 +1,3 @@
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
-
 class MapSuggestion {
   final String id;
   final String name;
@@ -15,58 +13,50 @@ class MapSuggestion {
     this.address,
   });
 
-  /// ✅ Getter يرجع Point لماب بوكس
-  mb.Point get point => mb.Point(
-        coordinates: mb.Position(longitude, latitude),
-      );
-
-  /// ✅ Factory للتحويل من JSON
+  /// 🧩 إنشاء من JSON الخاص بجوجل Places API
   factory MapSuggestion.fromJson(Map<String, dynamic> json) {
     double? lat;
     double? lng;
 
-    // 1️⃣ بعض الـ APIs بترجع geometry.coordinates = [lng, lat]
-    if (json['geometry']?['coordinates'] is List &&
-        (json['geometry']['coordinates'] as List).length >= 2) {
-      final coords = json['geometry']['coordinates'];
-      lng = (coords[0] as num).toDouble();
-      lat = (coords[1] as num).toDouble();
+    // 🔹 1. Google Places autocomplete
+    // ممكن يرجع مكانه داخل geometry.location أو داخل structured_formatting
+    if (json['geometry']?['location'] != null) {
+      lat = _toDouble(json['geometry']['location']['lat']);
+      lng = _toDouble(json['geometry']['location']['lng']);
     }
 
-    // 2️⃣ fallback لو جاية مباشرة كـ lat/lng
-    lat ??= _toDouble(json['latitude'] ?? json['lat']);
-    lng ??= _toDouble(json['longitude'] ?? json['lng']);
+    // 🔹 2. Google autocomplete suggestion (بدون geometry)
+    lat ??= _toDouble(json['lat']);
+    lng ??= _toDouble(json['lng']);
 
-    // 3️⃣ fallback لو جاية كـ center = [lng, lat]
-    if (lat == null || lng == null) {
-      final center = json['center'];
-      if (center is List && center.length >= 2) {
-        lng ??= (center[0] as num).toDouble();
-        lat ??= (center[1] as num).toDouble();
-      }
+    // 🔹 3. fallback
+    lat ??= 0.0;
+    lng ??= 0.0;
+
+    // 🧹 تنظيف الاسم من الأكواد الغريبة مثل plus_code
+    String name = (json['description'] ??
+            json['formatted_address'] ??
+            json['name'] ??
+            json['place_name'] ??
+            'غير معروف')
+        .toString()
+        .trim();
+
+    // ✅ لو العنوان فيه plus code زي "8562+M59" نستبعده
+    if (name.contains('+')) {
+      name = name.replaceAll(RegExp(r'[A-Z0-9+]+،?'), '').trim();
     }
 
     return MapSuggestion(
-      id: (json['id'] ?? json['place_id'] ?? '').toString(),
-      name: (json['place_name'] ?? json['text'] ?? 'غير معروف').toString(),
-      latitude: lat ?? 0.0,
-      longitude: lng ?? 0.0,
-      address: json['address']?.toString(),
-    );
-  }
-
-  /// ✅ Factory مخصص للإدخال اليدوي (لما يكتب أي كلام في TextField)
-  factory MapSuggestion.manual(String name) {
-    return MapSuggestion(
-      id: DateTime.now().millisecondsSinceEpoch.toString(), // ID وهمي
+      id: (json['place_id'] ?? json['id'] ?? '').toString(),
       name: name,
-      latitude: 0.0,
-      longitude: 0.0,
-      address: null,
+      latitude: lat,
+      longitude: lng,
+      address: json['formatted_address']?.toString() ?? name,
     );
   }
 
-  /// ✅ للتحويل إلى JSON
+  /// 🧩 تحويل إلى JSON (لو هتبعتها للسيرفر)
   Map<String, dynamic> toJson() => {
         'id': id,
         'name': name,
@@ -75,11 +65,25 @@ class MapSuggestion {
         'address': address,
       };
 
-  /// 🔧 Helper آمن لتحويل أي قيمة إلى double
+  /// 🧹 Helper آمن لتحويل أي قيمة إلى double
   static double? _toDouble(dynamic value) {
     if (value == null) return null;
     if (value is num) return value.toDouble();
     if (value is String) return double.tryParse(value);
     return null;
+  }
+
+  /// 🏗️ Factory يدوي (مثلاً للموقع الحالي)
+  factory MapSuggestion.manual({
+    required String name,
+    required double latitude,
+    required double longitude,
+  }) {
+    return MapSuggestion(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      name: name,
+      latitude: latitude,
+      longitude: longitude,
+    );
   }
 }

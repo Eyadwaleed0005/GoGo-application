@@ -29,17 +29,23 @@ class PaymentWayDropdown extends StatelessWidget {
         final currentValue = state.paymentWay;
 
         return DropdownButtonFormField<String>(
-          value: currentValue,
+          initialValue: currentValue.isEmpty
+              ? null
+              : currentValue, // ✅ علشان يبدأ من غير اختيار
           isExpanded: true,
           dropdownColor: Colors.white,
           menuMaxHeight: 250.h,
           decoration: InputDecoration(
+            labelText: "payment_way".tr(), // ✅ العنوان
+            labelStyle: TextStyles.font10Blackbold().copyWith(
+              color: Colors.black,
+            ),
             contentPadding: EdgeInsets.symmetric(
               horizontal: 10.w,
               vertical: 10.h,
             ),
             filled: true,
-            fillColor: ColorPalette.backgroundColor,
+            fillColor: Colors.white,
             border: _borderStyle(),
             enabledBorder: _borderStyle(),
             focusedBorder: _borderStyle(),
@@ -47,11 +53,10 @@ class PaymentWayDropdown extends StatelessWidget {
           items: items.map((item) {
             return DropdownMenuItem<String>(
               value: item["value"],
-              child: Center(
-                child: Text(
-                  item["label"]!,
-                  style: TextStyles.font10Blackbold(),
-                ),
+              child: Text(
+                item["label"]!,
+                style: TextStyles.font11Blackbold(),
+                overflow: TextOverflow.ellipsis,
               ),
             );
           }).toList(),

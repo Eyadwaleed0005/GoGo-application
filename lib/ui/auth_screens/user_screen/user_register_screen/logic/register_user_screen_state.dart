@@ -17,3 +17,8 @@ class RegisterUserFailure extends RegisterUserScreenState {
 
   const RegisterUserFailure({required this.errorMessage});
 }
+
+class RegisterUserGenderChanged extends RegisterUserScreenState {
+  final String gender;
+  const RegisterUserGenderChanged(this.gender);
+}

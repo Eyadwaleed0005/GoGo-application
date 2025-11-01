@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:gogo/core/local/secure_storage.dart';
@@ -42,7 +43,7 @@ class DriverLoginScreenCubit extends Cubit<DriverLoginScreenState> {
       final response = await _loginRepository.login(model);
 
       if (response.userType.toLowerCase() != "driver") {
-        emit(DriverLoginFailure(errorMessage: " This Account isn't  A Driver"));
+        emit(DriverLoginFailure(errorMessage: 'account_not_driver'.tr()));
         return;
       }
 
@@ -60,7 +61,7 @@ class DriverLoginScreenCubit extends Cubit<DriverLoginScreenState> {
       );
       await SecureStorageHelper.savedata(
         key: SecureStorageKeys.displayName,
-        value: response.displayName,
+        value: response.dispalyName,
       );
       await SecureStorageHelper.savedata(
         key: SecureStorageKeys.phoneNumber,

@@ -1,7 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 
 class SimpleDateHelper {
-  /// Formats a [DateTime] into a simple human-readable string
   static String format(DateTime dateTime) {
     final now = DateTime.now();
     final difference = now.difference(dateTime);

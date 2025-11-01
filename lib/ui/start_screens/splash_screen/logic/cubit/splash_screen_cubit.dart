@@ -37,7 +37,7 @@ class SplashScreenCubit extends Cubit<SplashScreenState> {
           );
 
           if (isComplete == true && driverStatus.status == 'approved') {
-            await recoverTripState(); // استرجاع مرحلة الرحلة
+            await recoverTripState(); 
           } else if (isComplete == true && driverStatus.status == 'pending') {
             emit(SplashScreenDriverPending());
           } else if (isComplete == true && driverStatus.status == 'reject') {
@@ -46,15 +46,12 @@ class SplashScreenCubit extends Cubit<SplashScreenState> {
             emit(SplashScreenUnAuthenticated());
           }
         } catch (_) {
-          // لو النت وقع → اعتمد على الكاش
           final savedStatus = await SharedPreferencesHelper.getString(
             key: SharedPreferenceKeys.statusOfAccountDriver,
           );
-
           final isComplete = await SharedPreferencesHelper.getBool(
             key: SharedPreferenceKeys.driverCompleteRegister,
           );
-
           if (isComplete == true && savedStatus == 'approved') {
             await recoverTripState();
           } else if (isComplete == true && savedStatus == 'pending') {
@@ -81,13 +78,12 @@ class SplashScreenCubit extends Cubit<SplashScreenState> {
     if (tripData != null) {
       final isOnTrip = tripData['isOnTrip'] as bool? ?? false;
       final isOnTripTwo = tripData['isOnTripTwo'] as bool? ?? false;
-
       if (isOnTripTwo) {
-        emit(SplashScreenDriverEndTrip()); // مرحلة إنهاء الرحلة
+        emit(SplashScreenDriverEndTrip()); 
       } else if (isOnTrip) {
-        emit(SplashScreenDriverStartTrip()); // مرحلة بدء الرحلة
+        emit(SplashScreenDriverStartTrip()); 
       } else {
-        emit(SplashScreenDriverApproved()); // هوم عادي
+        emit(SplashScreenDriverApproved()); 
       }
     } else {
       emit(SplashScreenDriverApproved());

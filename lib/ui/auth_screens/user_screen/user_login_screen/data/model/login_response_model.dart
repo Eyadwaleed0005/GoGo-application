@@ -5,6 +5,7 @@ class LoginResponseModel {
   final String phoneNumber;
   final String token;
   final String userType;
+  final String gender;
 
   LoginResponseModel({
     required this.userId,
@@ -13,6 +14,7 @@ class LoginResponseModel {
     required this.phoneNumber,
     required this.token,
     required this.userType,
+    required this.gender,
   });
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class LoginResponseModel {
       phoneNumber: json["phoneNumber"] ?? '',
       token: json["token"] ?? '',
       userType: json["userType"] ?? '',
+      gender: json["gender"] ?? '',
     );
   }
 }

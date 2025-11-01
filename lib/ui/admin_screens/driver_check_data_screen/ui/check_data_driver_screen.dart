@@ -101,6 +101,7 @@ class CheckDataDriverScreen extends StatelessWidget {
                           name: driver.driverFullname,
                           email: driver.email,
                           age: driver.age,
+                          phoneNumber: driver.phoneNumber,
                         ),
                         Divider(thickness: 2.h),
                         verticalSpace(1),

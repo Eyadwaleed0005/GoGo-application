@@ -12,7 +12,7 @@ class CustomImageCard extends StatelessWidget {
   final double imageHeight;
   final double spaceBetweenImageAndPhoto;
   final String assetImage;
-  final String title; // يمكن استخدام مفتاح ترجمة
+  final String title; 
   final bool isComingSoon;
   final VoidCallback? onTap;
 

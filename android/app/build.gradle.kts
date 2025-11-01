@@ -18,8 +18,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.eyad.gogo"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = 35
+    ndkVersion = "29.0.13113456"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -33,8 +33,8 @@ android {
 
     defaultConfig {
         applicationId = "com.eyad.gogo"
-        minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        minSdk = 28
+        targetSdk = 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true
@@ -58,6 +58,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+    }
+  packagingOptions {
+        jniLibs {
+            useLegacyPackaging = true
         }
     }
 }

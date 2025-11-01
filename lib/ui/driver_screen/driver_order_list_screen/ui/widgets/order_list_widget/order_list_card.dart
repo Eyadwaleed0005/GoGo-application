@@ -4,12 +4,11 @@ import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/ui/driver_screen/driver_order_list_screen/ui/widgets/order_list_widget/details_order_buttom.dart';
-import 'package:intl/intl.dart';
 
 class OrderListCard extends StatelessWidget {
   final String imageUrl;
   final String userName;
-  final String time; 
+  final String time;
   final String location;
   final VoidCallback onTap;
 
@@ -26,15 +25,6 @@ class OrderListCard extends StatelessWidget {
     return location.replaceAll(RegExp(r'[0-9]'), '');
   }
 
-  String _displayTime(String isoTime) {
-  try {
-    DateTime dt = DateTime.parse(isoTime).toLocal();
-    return DateFormat('hh:mm a').format(dt); 
-  } catch (e) {
-    return isoTime;
-  }
-}
-
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +38,6 @@ class OrderListCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // صف المعلومات العليا: صورة واسم ووقت
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -74,7 +63,7 @@ class OrderListCard extends StatelessWidget {
                   ),
                 ],
               ),
-              Text(_displayTime(time), style: TextStyles.font10wGreyDarkBold()),
+              Text(time, style: TextStyles.font10wGreyDarkBold()),
             ],
           ),
           verticalSpace(10),

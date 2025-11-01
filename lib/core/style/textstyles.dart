@@ -104,6 +104,14 @@ class TextStyles {
       color: ColorPalette.textColor1,
     );
   }
+   static TextStyle font11Blackbold() {
+    return TextStyle(
+      fontSize: 11.sp,
+      fontWeight: FontWeightHelper.bold,
+      fontFamily: plusJakartaSans,
+      color: ColorPalette.textColor1,
+    );
+  }
     static TextStyle font9Blackbold() {
     return TextStyle(
       fontSize: 9.sp,
@@ -202,6 +210,22 @@ class TextStyles {
   static TextStyle font11GrayRegular() {
     return TextStyle(
       fontSize: 11.sp,
+      fontWeight: FontWeightHelper.regular,
+      color: ColorPalette.filedInner,
+      fontFamily: plusJakartaSans,
+    );
+  }
+   static TextStyle font15GrayRegular() {
+    return TextStyle(
+      fontSize: 15.sp,
+      fontWeight: FontWeightHelper.regular,
+      color: ColorPalette.filedInner,
+      fontFamily: plusJakartaSans,
+    );
+  }
+    static TextStyle font12GrayRegular() {
+    return TextStyle(
+      fontSize: 15.sp,
       fontWeight: FontWeightHelper.regular,
       color: ColorPalette.filedInner,
       fontFamily: plusJakartaSans,
@@ -362,6 +386,15 @@ class TextStyles {
       fontSize: 8.sp,
       fontWeight: FontWeightHelper.semiBold,
       color: ColorPalette.red,
+      fontFamily: plusJakartaSans,
+    );
+  }
+
+  static TextStyle font8pinkSemiBold() {
+    return TextStyle(
+      fontSize: 8.sp,
+      fontWeight: FontWeightHelper.semiBold,
+      color: ColorPalette.pinkMode,
       fontFamily: plusJakartaSans,
     );
   }

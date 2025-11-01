@@ -31,82 +31,85 @@ class ProfileContentWidget extends StatelessWidget {
         ),
         child: Padding(
           padding: EdgeInsets.symmetric(vertical: 20.h, horizontal: 12.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    children: [
-                      CustomImageCard(
-                        width: 90,
-                        height: 100,
-                        imageWidth: 40,
-                        imageHeight: 40,
-                        assetImage: AppImage().masterCard,
-                        title: 'payments_methods'.tr(), // مفتاح الترجمة
-                        onTap: () {},
-                        spaceBetweenImageAndPhoto: 0,
-                        isComingSoon: true,
-                      ),
-                      verticalSpace(8.h),
-                      CustomImageCard(
-                        width: 90,
-                        height: 100,
-                        imageWidth: 40,
-                        imageHeight: 40,
-                        assetImage: AppImage().privacyPolicy,
-                        title: 'privacy_policy'.tr(),
-                        onTap: () {
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.privacyPolicyScreen,
-                          );
-                        },
-                        spaceBetweenImageAndPhoto: 10,
-                        isComingSoon: false,
-                      ),
-                      verticalSpace(4),
-                      Text('GoGo', style: TextStyles.font25Blackbold()),
-                    ],
-                  ),
-                  horizontalSpace(12),
-                  Column(
-                    children: [
-                      CustomImageCard(
-                        width: 100,
-                        height: 50,
-                        assetImage: AppImage().activity,
-                        title: 'activity'.tr(),
-                        onTap: () {
-                          final cubit = context.read<UserProfileScreenCubit>();
-                          final String? profilePhotoUrl =
-                              cubit.userProfileImageUrl;
-                          Navigator.pushNamed(
-                            context,
-                            AppRoutes.userHistoryScreen,
-                            arguments: profilePhotoUrl,
-                          );
-                        },
-                        imageWidth: 45,
-                        imageHeight: 25,
-                        spaceBetweenImageAndPhoto: 0,
-                        isComingSoon: false,
-                      ),
-                      verticalSpace(12),
-                      UserDataWidget(
-                        userName: user.name,
-                        userEmail: user.email,
-                        userPhone: user.phone,
-                        width: 130,
-                        height: 190,
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ],
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      children: [
+                        CustomImageCard(
+                          width: 90,
+                          height: 100,
+                          imageWidth: 40,
+                          imageHeight: 40,
+                          assetImage: AppImage().masterCard,
+                          title: 'payments_methods'.tr(), // مفتاح الترجمة
+                          onTap: () {},
+                          spaceBetweenImageAndPhoto: 0,
+                          isComingSoon: true,
+                        ),
+                        verticalSpace(8.h),
+                        CustomImageCard(
+                          width: 90,
+                          height: 100,
+                          imageWidth: 40,
+                          imageHeight: 40,
+                          assetImage: AppImage().privacyPolicy,
+                          title: 'privacy_policy'.tr(),
+                          onTap: () {
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.privacyPolicyScreen,
+                            );
+                          },
+                          spaceBetweenImageAndPhoto: 10,
+                          isComingSoon: false,
+                        ),
+                        verticalSpace(4),
+                        Text('GoGo', style: TextStyles.font25Blackbold()),
+                      ],
+                    ),
+                    horizontalSpace(12),
+                    Column(
+                      children: [
+                        CustomImageCard(
+                          width: 100,
+                          height: 50,
+                          assetImage: AppImage().activity,
+                          title: 'activity'.tr(),
+                          onTap: () {
+                            final cubit = context
+                                .read<UserProfileScreenCubit>();
+                            final String? profilePhotoUrl =
+                                cubit.userProfileImageUrl;
+                            Navigator.pushNamed(
+                              context,
+                              AppRoutes.userHistoryScreen,
+                              arguments: profilePhotoUrl,
+                            );
+                          },
+                          imageWidth: 45,
+                          imageHeight: 25,
+                          spaceBetweenImageAndPhoto: 0,
+                          isComingSoon: false,
+                        ),
+                        verticalSpace(12),
+                        UserDataWidget(
+                          userName: user.name,
+                          userEmail: user.email,
+                          userPhone: user.phone,
+                          width: 130,
+                          height: 190,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
           ),
         ),
       ),

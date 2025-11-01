@@ -5,7 +5,7 @@ import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
-import 'package:easy_localization/easy_localization.dart';
+ //import 'package:easy_localization/easy_localization.dart';
 
 class ImageUserProfile extends StatelessWidget {
   final String imageUrl;
@@ -24,7 +24,6 @@ class ImageUserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Widget _buildImage() {
-      // صورة من الأصول (assets)
       if (imageUrl.startsWith("assets/")) {
         return Image.asset(
           imageUrl,
@@ -34,7 +33,6 @@ class ImageUserProfile extends StatelessWidget {
         );
       }
 
-      // صورة من الجهاز (File)
       if (imageUrl.startsWith("/") || imageUrl.contains("file://")) {
         return Image.file(
           File(imageUrl),
@@ -95,11 +93,11 @@ class ImageUserProfile extends StatelessWidget {
             ),
           ],
         ),
-        verticalSpace(8.h),
+        verticalSpace(5.h),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            GestureDetector(
+            /*GestureDetector(
               onTap: onEditTap,
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
@@ -107,12 +105,11 @@ class ImageUserProfile extends StatelessWidget {
                   color: ColorPalette.mainColor,
                   borderRadius: BorderRadius.circular(8.r),
                 ),
-                child: Text('edit'.tr(), style: TextStyles.font8Blackbold()), // استدعاء الترجمة
+                child: Text('edit'.tr(), style: TextStyles.font8Blackbold()), 
               ),
             ),
-            horizontalSpace(8.w),
-            Text(userName, style: TextStyles.font10Blackbold()),
-            horizontalSpace(8.w),
+            horizontalSpace(8.w),*/
+            Center(child: Text(userName, style: TextStyles.font10Blackbold())),
           ],
         ),
       ],

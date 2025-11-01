@@ -7,5 +7,7 @@ class SecureStorageKeys {
   static const String phoneNumber = 'phoneNumber';
   static const String userType = 'userType';
   static const String dummy = 'dummy'; 
-  static const String driverId = "driverId"; 
+  static const String driverId = "driverId";
+  static const String gender = "gender";
+  static const String carBrand = "carBrand";  
 }

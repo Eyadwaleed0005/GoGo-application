@@ -3,10 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
-
 import 'package:gogo/ui/user_screens/map_screen/data/model/map_suggestion_model.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repo/map_repository.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit/search_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit/search_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/ui/widgets/suggestions_skeleton.dart';
 
 class SuggestionsList extends StatelessWidget {
   final TextEditingController controller;
@@ -23,12 +24,7 @@ class SuggestionsList extends StatelessWidget {
     return BlocBuilder<SearchCubit, SearchState>(
       builder: (context, state) {
         if (state is SearchLoading) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: ColorPalette.mainColor,
-              strokeWidth: 2.w,
-            ),
-          );
+          return const SuggestionsSkeleton();
         } else if (state is SearchLoaded) {
           return ListView.separated(
             itemCount: state.suggestions.length,
@@ -36,17 +32,45 @@ class SuggestionsList extends StatelessWidget {
                 const Divider(color: Colors.grey, thickness: 0.5, height: 0),
             itemBuilder: (context, index) {
               final suggestion = state.suggestions[index];
+
               return InkWell(
-                onTap: () {
-                  controller.text = _cleanSuggestionName(suggestion.name);
-                  onSelected(suggestion);
-                  Navigator.pop(context, suggestion); 
+                onTap: () async {
+                  FocusScope.of(context).unfocus();
+                  final displayName = suggestion.name;
+                  final repo = MapRepository();
+                  final details = await repo.getPlaceDetails(suggestion.id);
+                  if (!context.mounted) return;
+                  if (details != null &&
+                      details.latitude != 0 &&
+                      details.longitude != 0) {
+                    final selectedPlace = MapSuggestion(
+                      id: suggestion.id,
+                      name: displayName, 
+                      latitude: details.latitude,
+                      longitude: details.longitude,
+                      address: displayName,
+                    );
+                    controller.text = displayName;
+                    Navigator.pop(context, selectedPlace);
+                    onSelected(selectedPlace);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(
+                        content: const Text(
+                          'حدث خطأ أثناء جلب تفاصيل المكان، حاول مرة أخرى.',
+                        ),
+                        backgroundColor: Colors.red.shade700,
+                      ),
+                    );
+                  }
                 },
                 child: Padding(
                   padding: EdgeInsets.symmetric(
                     vertical: 8.h,
+                    horizontal: 4.w,
                   ),
                   child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Container(
                         width: 25.w,
@@ -64,10 +88,10 @@ class SuggestionsList extends StatelessWidget {
                       SizedBox(width: 12.w),
                       Expanded(
                         child: Text(
-                          _cleanSuggestionName(suggestion.name),
+                          suggestion.name,
                           style: TextStyles.font10BlackMedium(),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
+                          softWrap: true,
+                          overflow: TextOverflow.visible,
                         ),
                       ),
                     ],
@@ -77,12 +101,9 @@ class SuggestionsList extends StatelessWidget {
             },
           );
         }
+
         return const SizedBox();
       },
     );
-  }
-
-  String _cleanSuggestionName(String name) {
-    return name.replaceAll(RegExp(r'\d+'), '').trim();
   }
 }

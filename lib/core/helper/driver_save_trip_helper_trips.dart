@@ -103,7 +103,6 @@ class SharedPreferencesHelperTrips {
     await prefs.remove(SharedPreferenceKeys.userImage);
     await prefs.remove(SharedPreferenceKeys.fromPlace);
     await prefs.remove(SharedPreferenceKeys.toPlace);
-
     await prefs.setBool(SharedPreferenceKeys.isOnTrip, false);
     await prefs.setBool(SharedPreferenceKeys.isOnTripTwo, false);
   }

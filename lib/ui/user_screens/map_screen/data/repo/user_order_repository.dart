@@ -8,7 +8,6 @@ import 'package:gogo/ui/user_screens/map_screen/data/model/passenger_history.dar
 import 'package:shared_preferences/shared_preferences.dart';
 
 class UserOrderRepository {
-  /// 🔹 Get order by ID (من الشيرد برفرنس)
   Future<GetAllOrdersModel?> getOrderById() async {
     try {
       final prefs = await SharedPreferences.getInstance();
@@ -39,7 +38,6 @@ class UserOrderRepository {
     }
   }
 
-  /// 🔹 Convert order → PassengerHistory
   PassengerHistory mapOrderToPassengerHistory(GetAllOrdersModel order) {
     return PassengerHistory(
       userId: order.userId,
@@ -47,12 +45,11 @@ class UserOrderRepository {
       to: order.to,
       price: order.expectedPrice,
       date: order.date,
-      paymentMethod: "Cash",   // ✅ دايمًا كاش
-      rideType: order.type,    // ✅ هنا ممكن تحط نوع الرحلة
+      paymentMethod: order.paymentWay,   
+      rideType: order.type,    
     );
   }
 
-  /// 🔹 POST request to save passenger history
   Future<void> savePassengerHistory(GetAllOrdersModel order) async {
     final history = mapOrderToPassengerHistory(order);
 
@@ -66,7 +63,6 @@ class UserOrderRepository {
     }
   }
 
-  /// 🔹 Fetch current order and save as history
   Future<void> saveCurrentOrderAsHistory() async {
     final order = await getOrderById();
     if (order != null) {

@@ -7,12 +7,14 @@ import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/core/models/order_list_models/oreder_model.dart';
 import 'package:gogo/ui/user_screens/request_screen/logic/cubit/ride_request_screen_cubit.dart';
+import 'package:gogo/ui/user_screens/request_screen/ui/widgets/car_type_selector_widget.dart';
 import 'package:gogo/ui/user_screens/request_screen/ui/widgets/payment_way_dropdown.dart';
+import 'package:gogo/ui/user_screens/request_screen/ui/widgets/pink_mode_switch_widget.dart';
 import 'package:gogo/ui/user_screens/request_screen/ui/widgets/trip_type_dropdown.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class TripDetailsForm extends StatefulWidget {
-  TripDetailsForm({
+  const TripDetailsForm({
     super.key,
     required this.from,
     required this.to,
@@ -22,8 +24,8 @@ class TripDetailsForm extends StatefulWidget {
 
   final String from;
   final String to;
-  final mb.Point fromLatLng;
-  final mb.Point toLatLng;
+  final LatLng? fromLatLng;
+  final LatLng? toLatLng;
 
   @override
   State<TripDetailsForm> createState() => _TripDetailsFormState();
@@ -68,11 +70,18 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
     return BlocBuilder<RideRequestScreenCubit, RideRequestScreenState>(
       builder: (context, state) {
         final cubit = context.read<RideRequestScreenCubit>();
-        if (state.tripType == "delivery") {
+        if (state.carType == "scooter") {
+          passengersController.text = "1";
+          passengersController.selection = TextSelection.fromPosition(
+            TextPosition(offset: passengersController.text.length),
+          );
+        } else if (state.tripType == "delivery") {
           passengersController.text = "0";
-        } else if (passengersController.text == "0") {
-          passengersController.clear();
+          passengersController.selection = TextSelection.fromPosition(
+            TextPosition(offset: passengersController.text.length),
+          );
         }
+
         priceController.text = state.price;
         notesController.text = state.notes;
 
@@ -81,55 +90,29 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-               verticalSpace(30),
+              verticalSpace(20),
+              CarTypeSelectorWidget(
+                selectedValue: state.carType,
+                onChanged: (value) async {
+                  final cubit = context.read<RideRequestScreenCubit>();
+                  cubit.changeCarType(value);
+                  if (value == "scooter") {
+                    passengersController.text = "1";
+                    cubit.changePassengers("1");
+                  } else if (value == "delivery") {
+                    passengersController.text = "0";
+                    cubit.changePassengers("0");
+                  } else {
+                    passengersController.clear();
+                    cubit.changePassengers("");
+                  }
+                  setState(() {});
+                },
+              ),
+              verticalSpace(20),
               const TripCategoryDropdown(),
               verticalSpace(20),
-              const PaymentWayDropdown(), 
-              verticalSpace(20),
-              Row(
-                children: [
-                  SizedBox(
-                    width: 120.w,
-                    child: TextFormField(
-                      controller: passengersController,
-                      readOnly: state.tripType == "delivery",
-                      keyboardType: TextInputType.number,
-                      textAlign: TextAlign.center,
-                      onChanged: cubit.changePassengers,
-                      validator: (value) {
-                        final passengers = int.tryParse(value ?? "") ?? -1;
-
-                        if (state.tripType == "delivery") {
-                          if (passengers != 0) {
-                            return "passengers_zero".tr();
-                          }
-                        } else {
-                          if (passengers <= 0) {
-                            return "passengers_gt_zero".tr();
-                          }
-                          if (passengers > 4) {
-                            return "max_passengers".tr();
-                          }
-                        }
-
-                        return null;
-                      },
-                      decoration: InputDecoration(
-                        filled: true,
-                        fillColor: ColorPalette.backgroundColor,
-                        border: _borderStyle(),
-                        enabledBorder: _borderStyle(),
-                        focusedBorder: _borderStyle(),
-                        hintText: state.tripType == "delivery"
-                            ? null
-                            : "enter_passengers".tr(),
-                      ),
-                    ),
-                  ),
-                  horizontalSpace(12),
-                  Text("passengers".tr(), style: TextStyles.font15whitebold()),
-                ],
-              ),
+              const PaymentWayDropdown(),
               verticalSpace(20),
               Row(
                 children: [
@@ -190,6 +173,59 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
                   SizedBox(
                     width: 120.w,
                     child: TextFormField(
+                      controller: passengersController,
+                      readOnly:
+                          state.tripType == "delivery" ||
+                          state.carType == "scooter",
+                      keyboardType: TextInputType.number,
+                      textAlign: TextAlign.center,
+                      onChanged: cubit.changePassengers,
+                      validator: (value) {
+                        final passengers = int.tryParse(value ?? "") ?? -1;
+                        if (state.carType == "scooter") {
+                          if (passengers != 1) {
+                            return "Scooter must have exactly 1 passenger".tr();
+                          }
+                          return null;
+                        }
+                        if (state.tripType == "delivery") {
+                          if (passengers != 0) {
+                            return "passengers_zero".tr();
+                          }
+                        } else {
+                          if (passengers <= 0) {
+                            return "passengers_gt_zero".tr();
+                          }
+                          if (passengers > 4) {
+                            return "max_passengers".tr();
+                          }
+                        }
+                        return null;
+                      },
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: (state.carType == "scooter")
+                            ? Colors.grey.shade300
+                            : ColorPalette.backgroundColor,
+                        border: _borderStyle(),
+                        enabledBorder: _borderStyle(),
+                        focusedBorder: _borderStyle(),
+                        hintText: state.tripType == "delivery"
+                            ? null
+                            : "enter_passengers".tr(),
+                      ),
+                    ),
+                  ),
+                  horizontalSpace(12),
+                  Text("passengers".tr(), style: TextStyles.font15whitebold()),
+                ],
+              ),
+              verticalSpace(20),
+              Row(
+                children: [
+                  SizedBox(
+                    width: 120.w,
+                    child: TextFormField(
                       initialValue: "${state.distanceKm.toStringAsFixed(2)} km",
                       readOnly: true,
                       textAlign: TextAlign.center,
@@ -206,7 +242,17 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
                   Text("distance".tr(), style: TextStyles.font15whitebold()),
                 ],
               ),
-              verticalSpace(20),
+              verticalSpace(14),
+              if (state.carType == "car") ...[
+                PinkModeSwitchWidget(
+                  value: state.pinkMode,
+                  onChanged: (value) {
+                    cubit.togglePinkMode(value);
+                    setState(() {});
+                  },
+                ),
+                verticalSpace(14),
+              ],
               TextFormField(
                 controller: notesController,
                 maxLines: 3,
@@ -223,8 +269,6 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
                 ),
               ),
               verticalSpace(30),
-
-              /// Confirm button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -233,14 +277,8 @@ class _TripDetailsFormState extends State<TripDetailsForm> {
                       cubit.createOrder(
                         from: widget.from,
                         to: widget.to,
-                        fromLatLng: LatLngModel(
-                          lat: widget.fromLatLng.coordinates.lat.toDouble(),
-                          lng: widget.fromLatLng.coordinates.lng.toDouble(),
-                        ),
-                        toLatLng: LatLngModel(
-                          lat: widget.toLatLng.coordinates.lat.toDouble(),
-                          lng: widget.toLatLng.coordinates.lng.toDouble(),
-                        ),
+                        fromLatLng: LatLngModel.fromLatLng(widget.fromLatLng!),
+                        toLatLng: LatLngModel.fromLatLng(widget.toLatLng!),
                       );
                     }
                   },

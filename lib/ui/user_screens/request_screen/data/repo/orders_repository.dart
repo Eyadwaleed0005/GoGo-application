@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart' show TargetPlatform, defaultTargetPlatform, kIsWeb;
+import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +10,7 @@ import 'package:gogo/core/dio_helper/dio_helper.dart';
 import 'package:gogo/core/models/order_list_models/oreder_model.dart';
 
 class OrdersRepository {
-  static const String userOrderId = 'userOrderId'; // ✅ المفتاح ثابت
+  static const String userOrderId = 'userOrderId'; 
 
   Future<GetAllOrdersModel?> createOrder(GetAllOrdersModel order) async {
     try {
@@ -22,8 +24,7 @@ class OrdersRepository {
         final orderModel = GetAllOrdersModel.fromJson(data);
 
         final prefs = await SharedPreferences.getInstance();
-        await prefs.setInt(userOrderId, orderModel.id); // ✅ تخزين كـ int
-
+        await prefs.setInt(userOrderId, orderModel.id); 
         return orderModel;
       } else {
         return null;
@@ -47,25 +48,64 @@ class OrdersRepository {
       final orderId = orderModel.id;
 
       final prefs = await SharedPreferences.getInstance();
-      await prefs.setInt(userOrderId, orderId); // ✅ تخزين كـ int
+      await prefs.setInt(userOrderId, orderId); 
 
-      final fcmToken = await FirebaseMessaging.instance.getToken();
-      if (fcmToken != null) {
-        await FirebaseFirestore.instance
-            .collection('orderNotifications')
-            .doc(orderId.toString()) // Firestore بيدعم String كـ documentId
-            .set({
-          'orderId': orderId,
-          'fcmToken': fcmToken,
-          'createdAt': DateTime.now().toIso8601String(),
-        });
+      try {
+        final fcmToken = await _getFcmTokenIfAvailable();
+        if (fcmToken != null) {
+          await FirebaseFirestore.instance
+              .collection('orderNotifications')
+              .doc(orderId.toString()) 
+              .set({
+            'orderId': orderId,
+            'fcmToken': fcmToken,
+            'createdAt': DateTime.now().toIso8601String(),
+          });
+        } else {
+          // Unable to capture an FCM token (typically when the user denied notification permission on iOS).
+          print('⚠️ Skipping FCM registration for order $orderId because no token is available.');
+        }
+      } on FirebaseException catch (error) {
+        // If FCM token fetching fails, continue without blocking order creation.
+        print('⚠️ Failed to register FCM token for order $orderId: ${error.code} ${error.message}');
       }
 
       return orderModel;
     } on DioException catch (error) {
       throw DioExceptionHandler.handleDioError(error);
-    } catch (e) {
-      throw Exception("Failed to create order with FCM: $e");
+    }
+  }
+
+  Future<String?> _getFcmTokenIfAvailable() async {
+    final messaging = FirebaseMessaging.instance;
+
+    final isApplePlatform = !kIsWeb &&
+        (defaultTargetPlatform == TargetPlatform.iOS ||
+            defaultTargetPlatform == TargetPlatform.macOS);
+
+    if (isApplePlatform) {
+      // Wait for the APNS token to become available; this is required before fetching the FCM token on Apple platforms.
+      String? apnsToken = await messaging.getAPNSToken();
+      if (apnsToken == null) {
+        // Trigger the permission prompt again if the user has not responded yet.
+        await messaging.requestPermission();
+        for (var attempt = 0; attempt < 5 && apnsToken == null; attempt++) {
+          await Future.delayed(const Duration(milliseconds: 500));
+          apnsToken = await messaging.getAPNSToken();
+        }
+      }
+
+      if (apnsToken == null) {
+        return null;
+      }
+    }
+
+    try {
+      return await messaging.getToken();
+    } on FirebaseException catch (error) {
+      // `firebase_messaging/apns-token-not-set` is expected when notifications are disabled.
+      print('⚠️ Failed to fetch FCM token: ${error.code} ${error.message}');
+      return null;
     }
   }
 }

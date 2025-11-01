@@ -8,7 +8,7 @@ final class DriverHistoryScreenInitial extends DriverHistoryScreenState {}
 final class DriverHistoryScreenLoading extends DriverHistoryScreenState {}
 
 final class DriverHistoryScreenLoaded extends DriverHistoryScreenState {
-  final List<DriverHistoryMoedl> historyList;
+  final List<DriverHistoryModel> historyList;
   DriverHistoryScreenLoaded(this.historyList);
 }
 

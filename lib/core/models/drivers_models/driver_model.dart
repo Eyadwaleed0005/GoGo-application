@@ -15,8 +15,12 @@ class DriverModel {
   final DateTime licenseExpiryDate;
   final String userId;
   final String status;
-  final double review; 
+  final double review;
   final int wallet;
+  final String gender;
+  final String carBrand;
+  final String phoneNumber;
+  final String carPhoto; // 🟢 تمت إضافة صورة العربية
 
   DriverModel({
     required this.id,
@@ -37,6 +41,10 @@ class DriverModel {
     required this.status,
     required this.review,
     required this.wallet,
+    required this.gender,
+    required this.carBrand,
+    required this.phoneNumber,
+    required this.carPhoto, // 🟢 تمت إضافته هنا
   });
 
   factory DriverModel.fromJson(Map<String, dynamic> json) {
@@ -60,8 +68,12 @@ class DriverModel {
       status: json['status'] ?? '',
       review: (json['review'] is int)
           ? (json['review'] as int).toDouble()
-          : (json['review'] ?? 0.0).toDouble(), // ✅ نحوله Double
+          : (json['review'] ?? 0.0).toDouble(),
       wallet: json['wallet'] ?? 0,
+      gender: json['gender'] ?? '',
+      carBrand: json['carBrand'] ?? '',
+      phoneNumber: json['phoneNumber'] ?? '',
+      carPhoto: json['carPhoto'] ?? '', // 🟢 تمت إضافته هنا
     );
   }
 
@@ -83,8 +95,12 @@ class DriverModel {
       'licenseExpiryDate': licenseExpiryDate.toIso8601String(),
       'userId': userId,
       'status': status,
-      'review': review, 
+      'review': review,
       'wallet': wallet,
+      'gender': gender,
+      'carBrand': carBrand,
+      'phoneNumber': phoneNumber,
+      'carPhoto': carPhoto, // 🟢 تمت إضافته هنا أيضًا
     };
   }
 }

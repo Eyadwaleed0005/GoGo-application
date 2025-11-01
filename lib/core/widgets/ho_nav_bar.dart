@@ -26,7 +26,7 @@ class HoNavBar extends StatelessWidget {
           BoxShadow(
             color: Colors.black12,
             offset: Offset(0, -2),
-            blurRadius: 6,
+            blurRadius: 6.r,
           ),
         ],
       ),
@@ -35,17 +35,17 @@ class HoNavBar extends StatelessWidget {
         onTap: onTap,
         items: [
           SalomonBottomBarItem(
-            icon: Icon(Icons.home, size: 18.sp),
+            icon: Icon(Icons.home, size: 15.sp),
             title: Text("home".tr()),
             selectedColor: ColorPalette.mainColor,
           ),
           SalomonBottomBarItem(
-            icon: Icon(Icons.grid_view, size: 18.sp),
+            icon: Icon(Icons.grid_view, size: 15.sp),
             title: Text("service".tr()),
             selectedColor: ColorPalette.mainColor,
           ),
           SalomonBottomBarItem(
-            icon: Icon(Icons.person, size: 18.sp),
+            icon: Icon(Icons.person, size: 15.sp),
             title: Text("profile".tr()),
             selectedColor: ColorPalette.mainColor,
           ),

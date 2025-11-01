@@ -9,15 +9,16 @@ import 'package:gogo/ui/user_screens/request_screen/logic/cubit/ride_request_scr
 import 'package:gogo/ui/user_screens/request_screen/ui/widgets/order_app_bar.dart';
 import 'package:gogo/ui/user_screens/request_screen/ui/widgets/trip_details_form.dart';
 import 'package:gogo/ui/user_screens/waiting_order_status_screen/ui/waiting_order_status_screen.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 
 class RideRequestScreen extends StatelessWidget {
-  final String from;
-  final String to;
-  final mb.Point? fromLatLng;
-  final mb.Point? toLatLng;
-  final double? distanceKm;
-  final double? durationMin;
+final String from;
+final String to;
+final LatLng? fromLatLng;
+final LatLng? toLatLng;
+final double? distanceKm;
+final double? durationMin;
 
   const RideRequestScreen({
     super.key,

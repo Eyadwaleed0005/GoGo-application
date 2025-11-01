@@ -5,12 +5,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/model/map_suggestion_model.dart';
-import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repository.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/data/repo/map_repo/map_repository.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit/location_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit/route_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit/search_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/map_veiw.dart';
 
 class ChooseFromMapButton extends StatelessWidget {

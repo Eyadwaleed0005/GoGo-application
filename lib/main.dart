@@ -1,8 +1,10 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:gogo/core/api/end_points.dart';
 import 'package:gogo/core/local/shared_preference_keys.dart';
 import 'package:gogo/core/services/app_update_manager.dart';
@@ -12,22 +14,20 @@ import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/admin_screens/driver_wating_list_screen/ui/driver_waiting_list_screen.dart';
 import 'package:gogo/ui/driver_screen/driver_profile_screen/logic/cubit/driver_location_cubit.dart';
-import 'package:mapbox_maps_flutter/mapbox_maps_flutter.dart' as mb;
 import 'firebase_options.dart';
-import 'package:easy_localization/easy_localization.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   await EasyLocalization.ensureInitialized();
-  await NotificationService().init();
-  DioHelper.init();
-  mb.MapboxOptions.setAccessToken(EndPoints.accessToken);
+  unawaited(NotificationService().init());
+  DioHelper.init(baseUrl: EndPoints.baseurl);
   const storage = FlutterSecureStorage();
-  String? savedLang = await storage.read(key: SharedPreferenceKeys.selectedLanguage);
-  Locale initialLocale = savedLang != null ? Locale(savedLang) : const Locale('en');
-
+  String? savedLang = await storage.read(
+    key: SharedPreferenceKeys.selectedLanguage,
+  );
+  Locale initialLocale =
+      savedLang != null ? Locale(savedLang) : const Locale('en');
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
@@ -44,18 +44,18 @@ Future<void> main() async {
   );
 }
 
-
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
   @override
   State<MyApp> createState() => _MyAppState();
 }
+
 class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      AppUpdateManager.checkForUpdate(context); 
+      AppUpdateManager.checkForUpdate(context);
     });
   }
 
@@ -65,10 +65,10 @@ class _MyAppState extends State<MyApp> {
       designSize: const Size(257, 557),
       builder: (context, child) {
         return MaterialApp(
+          debugShowCheckedModeBanner: false,
           theme: ThemeData(
             scaffoldBackgroundColor: ColorPalette.backgroundColor,
           ),
-          debugShowCheckedModeBanner: false,
           initialRoute: AppRoutes.splashScreen,
           onGenerateRoute: AppRoutes.generateRoute,
           navigatorObservers: [routeObserver],

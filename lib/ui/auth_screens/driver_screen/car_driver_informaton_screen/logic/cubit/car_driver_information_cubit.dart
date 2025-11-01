@@ -3,6 +3,8 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:gogo/core/local/secure_storage.dart';
 import 'package:gogo/core/local/secure_storage_keys.dart';
 import 'package:gogo/core/models/car_models/car_model.dart';
@@ -42,41 +44,32 @@ class CarDriverInformationCubit extends Cubit<CarDriverInformationState> {
 
   final ImagePicker _picker = ImagePicker();
 
+  // ✅ التقاط صورة وتحديث الحالة بأمان
   Future<void> pickImage(ImageSource source, void Function(File) onPicked) async {
     final pickedFile = await _picker.pickImage(source: source);
     if (pickedFile != null) {
-      onPicked(File(pickedFile.path));
-      validateCarInfo();
+      final appDir = await getApplicationDocumentsDirectory();
+      final fileName = basename(pickedFile.path);
+      final savedImage =
+          await File(pickedFile.path).copy('${appDir.path}/$fileName');
+
+      onPicked(savedImage);
+      if (!isClosed) emit(CarInfoUpdated(validateCarInfo())); // ✅ تأكد قبل emit
     }
   }
 
-  void pickCarImage(ImageSource source) =>
-      pickImage(source, (file) => carImage = file);
+  // دوال الصور
+  void pickCarImage(ImageSource source) => pickImage(source, (file) => carImage = file);
+  void pickLicenseFrontImage(ImageSource source) => pickImage(source, (file) => licenseFrontImage = file);
+  void pickLicenseBackImage(ImageSource source) => pickImage(source, (file) => licenseBackImage = file);
+  void pickDriverImage(ImageSource source) => pickImage(source, (file) => driverImage = file);
+  void pickDriverWithCardImage(ImageSource source) => pickImage(source, (file) => driverWithCardImage = file);
+  void pickDriverLicenseFrontImage(ImageSource source) => pickImage(source, (file) => driverLicenseFrontImage = file);
+  void pickDriverLicenseBackImage(ImageSource source) => pickImage(source, (file) => driverLicenseBackImage = file);
+  void pickIdCardFrontImage(ImageSource source) => pickImage(source, (file) => idCardFrontImage = file);
+  void pickIdCardBackImage(ImageSource source) => pickImage(source, (file) => idCardBackImage = file);
 
-  void pickLicenseFrontImage(ImageSource source) =>
-      pickImage(source, (file) => licenseFrontImage = file);
-
-  void pickLicenseBackImage(ImageSource source) =>
-      pickImage(source, (file) => licenseBackImage = file);
-
-  void pickDriverImage(ImageSource source) =>
-      pickImage(source, (file) => driverImage = file);
-
-  void pickDriverWithCardImage(ImageSource source) =>
-      pickImage(source, (file) => driverWithCardImage = file);
-
-  void pickDriverLicenseFrontImage(ImageSource source) =>
-      pickImage(source, (file) => driverLicenseFrontImage = file);
-
-  void pickDriverLicenseBackImage(ImageSource source) =>
-      pickImage(source, (file) => driverLicenseBackImage = file);
-
-  void pickIdCardFrontImage(ImageSource source) =>
-      pickImage(source, (file) => idCardFrontImage = file);
-
-  void pickIdCardBackImage(ImageSource source) =>
-      pickImage(source, (file) => idCardBackImage = file);
-
+  // ✅ التحقق من البيانات
   List<String> validateCarInfo() {
     List<String> missing = [];
 
@@ -101,15 +94,18 @@ class CarDriverInformationCubit extends Cubit<CarDriverInformationState> {
     if (idCardFrontImage == null) missing.add("ID Card (Front)");
     if (idCardBackImage == null) missing.add("ID Card (Back)");
 
-    emit(CarInfoUpdated(missing));
     return missing;
   }
 
+  // ✅ إرسال البيانات
   Future<void> submitData() async {
     final missing = validateCarInfo();
-    if (missing.isNotEmpty) return;
+    if (missing.isNotEmpty) {
+      if (!isClosed) emit(CarInfoUpdated(missing));
+      return;
+    }
 
-    emit(CarDriverUploadingImages());
+    if (!isClosed) emit(CarDriverUploadingImages());
 
     try {
       final userId = await SecureStorageHelper.getdata(key: SecureStorageKeys.userId);
@@ -128,6 +124,7 @@ class CarDriverInformationCubit extends Cubit<CarDriverInformationState> {
         repository.uploadImage(idCardBackImage!),
       ]);
 
+      if (isClosed) return;
       emit(CarDriverSubmittingDriverData());
 
       final driverModel = DriverAuthModel(
@@ -150,6 +147,7 @@ class CarDriverInformationCubit extends Cubit<CarDriverInformationState> {
 
       final createdDriver = await repository.submitDriverData(driverModel);
 
+      if (isClosed) return;
       emit(CarDriverSubmittingCarData());
 
       final carModel = CarModel(
@@ -166,12 +164,11 @@ class CarDriverInformationCubit extends Cubit<CarDriverInformationState> {
 
       await repository.submitCarData(carModel);
 
-      emit(CarDriverSubmissionSuccess());
+      if (!isClosed) emit(CarDriverSubmissionSuccess());
     } catch (e) {
-      emit(CarDriverSubmissionFailure(e.toString()));
+      if (!isClosed) emit(CarDriverSubmissionFailure(e.toString()));
     }
   }
-
   @override
   Future<void> close() {
     brandController.dispose();

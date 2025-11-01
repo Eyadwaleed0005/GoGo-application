@@ -27,7 +27,6 @@ class DateTimeRow extends StatelessWidget {
           "|", 
           style: textStyle,
         ),
-        horizontalSpace(6), 
         Text(
           time,
           style: textStyle,

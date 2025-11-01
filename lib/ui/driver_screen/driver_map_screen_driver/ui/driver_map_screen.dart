@@ -37,6 +37,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   String? customerName;
   late TripActionCardCubit _tripCubit;
   late DriverAmountCubit _driverAmountCubit;
+  String? fromPlace;
+String? toPlace;
+
 
   @override
   void initState() {
@@ -52,26 +55,29 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
   }
 
   Future<void> _loadTripData() async {
-    final tripData = await SharedPreferencesHelperTrips.getTripData();
-    if (tripData != null) {
-      setState(() {
-        customerLat = tripData['customerLat'];
-        customerLng = tripData['customerLng'];
-        destinationLat = tripData['destinationLat'];
-        destinationLng = tripData['destinationLng'];
-        userPhone = tripData['userPhone'];
-        customerName = tripData['customerName'];
-        _isTripStarted = tripData['isOnTripTwo'] ?? false;
-      });
+  final tripData = await SharedPreferencesHelperTrips.getTripData();
+  if (tripData != null) {
+    setState(() {
+      customerLat = tripData['customerLat'];
+      customerLng = tripData['customerLng'];
+      destinationLat = tripData['destinationLat'];
+      destinationLng = tripData['destinationLng'];
+      userPhone = tripData['userPhone'];
+      customerName = tripData['customerName'];
+      fromPlace = tripData['fromPlace'];   // ⬅️ إضافة
+      toPlace = tripData['toPlace'];       // ⬅️ إضافة
+      _isTripStarted = tripData['isOnTripTwo'] ?? false;
+    });
 
-      _tripCubit.startTracking(
-        toLat: _isTripStarted ? destinationLat! : customerLat!,
-        toLng: _isTripStarted ? destinationLng! : customerLng!,
-        userPhone: userPhone!,
-        isDestination: _isTripStarted,
-      );
-    }
+    _tripCubit.startTracking(
+      toLat: _isTripStarted ? destinationLat! : customerLat!,
+      toLng: _isTripStarted ? destinationLng! : customerLng!,
+      userPhone: userPhone!,
+      isDestination: _isTripStarted,
+    );
   }
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +178,8 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
                   isTripStarted: _isTripStarted,
                   customerName: customerName!,
                   userPhone: userPhone!,
+                   fromPlace: fromPlace ?? "",   
+                   toPlace: toPlace ?? "",       
                   distance: _ride!.distanceText,
                   time: _ride!.durationText,
                   onStartTrip: () async {

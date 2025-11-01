@@ -39,6 +39,9 @@ class AppImage {
   String get carOrder => '${base}car order.png';
   String get backCar => '${base}back car.png';
   String get frontCar => '${base}front car.png';
+  String get taxi3  => '${base}taxi3.png';
+  String get taxi5  => '${base}taxi5.png';
+  String get scotter  => '${base}scotter.png';
 
   String get auth1  => '${base}auth.webp';
   String get driver => '${base}driver.jpg';

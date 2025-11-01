@@ -23,6 +23,7 @@ class ColorPalette {
   static const Color moreGreen = Color(0xFF13F43C);
   static const Color moreRed   = Color(0xFFF91F1F);
   static const Color moreBlue  = Color(0xFF3847F1);
+  static const Color pinkMode  =Color(0xFFFF4081);
 
 
 

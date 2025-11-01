@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gogo/ui/admin_screens/admin_driver_info_screen/ui/admin_driver_info_screen.dart';
+import 'package:gogo/ui/admin_screens/admin_driver_stats_screen/ui/admin_driver_stats_screen.dart';
+import 'package:gogo/ui/admin_screens/admin_home_screen.dart/ui/admin_home_screen.dart';
 import 'package:gogo/ui/admin_screens/driver_check_data_screen/ui/check_data_driver_screen.dart';
 import 'package:gogo/ui/admin_screens/driver_request_charge_screen/ui/driver_request_charge_screen.dart';
 import 'package:gogo/ui/admin_screens/driver_wating_list_screen/data/model/driver_detils_arges_model.dart';
@@ -88,6 +91,9 @@ class AppRoutes {
   static const String driverWatingListScreen = '/driverWatingListScreen';
   static const String checkDataDriverScreen = '/checkDataDriverScreen';
   static const String driverRequestChargeScreen = '/driverRequestChargeScreen';
+  static const String adminHomeScreen = '/adminHomeScreen';
+  static const String adminDriverStatsScreen = '/adminDriverStatsScreen';
+  static const String adminDriverInfoScreen = '/adminDriverInfoScreen';
   // 🔹 Route generator
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -140,6 +146,20 @@ class AppRoutes {
         );
       case driverRequestChargeScreen:
         return MaterialPageRoute(builder: (_) => DriverRequestChargeScreen());
+      case adminHomeScreen:
+        return MaterialPageRoute(builder: (_) => AdminHomeScreen());
+      case adminDriverStatsScreen:
+        return MaterialPageRoute(builder: (_) => AdminDriverStatsScreen());
+ case adminDriverInfoScreen:
+  final args = settings.arguments as Map<String, dynamic>;
+  return MaterialPageRoute(
+    builder: (_) => AdminDriverInfoScreen(
+      userId: args['userId'] as String,
+      carPhoto: args['carPhoto'] as String,
+    ),
+  );
+
+
       /////////////////////////////////////////////////////////////
       case carDriverInformationScreen:
         return MaterialPageRoute(builder: (_) => CarDriverInformationScreen());
