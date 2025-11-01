@@ -215,6 +215,22 @@ class TextStyles {
       fontFamily: plusJakartaSans,
     );
   }
+   static TextStyle font15GrayRegular() {
+    return TextStyle(
+      fontSize: 15.sp,
+      fontWeight: FontWeightHelper.regular,
+      color: ColorPalette.filedInner,
+      fontFamily: plusJakartaSans,
+    );
+  }
+    static TextStyle font12GrayRegular() {
+    return TextStyle(
+      fontSize: 15.sp,
+      fontWeight: FontWeightHelper.regular,
+      color: ColorPalette.filedInner,
+      fontFamily: plusJakartaSans,
+    );
+  }
 
   static TextStyle font10GreyDarkSemiBold() {
     return TextStyle(

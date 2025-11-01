@@ -45,9 +45,10 @@ class EndPoints {
   static const String getDriverCharges = "$baseurl/api/Driver/charges";
   static String sendDriverAction(int chargeId) =>
       "$baseurl/api/Driver/charge/$chargeId/action";
+  static const String getDriverapproved = "$baseurl/api/Driver/approved";
 
-  // ---------------- MAPBOX ----------------
-  
+
+
   // ---------------- FCM ----------------
   static String sendFcmMessage(String projectId) =>
       "https://fcm.googleapis.com/v1/projects/$projectId/messages:send";

@@ -53,6 +53,15 @@ class AdminHomeScreen extends StatelessWidget {
                 ),
               ],
             ),
+            verticalSpace(20),
+            _buildAdminButton(
+              context,
+              icon: Icons.bar_chart,
+              label: "احصائيات السواقين العاملين",
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.adminDriverStatsScreen);
+              },
+            ),
           ],
         ),
       ),
@@ -71,7 +80,7 @@ class AdminHomeScreen extends StatelessWidget {
         children: [
           Container(
             decoration: BoxDecoration(
-              color:ColorPalette.mainColor,
+              color: ColorPalette.mainColor,
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
@@ -81,14 +90,11 @@ class AdminHomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            padding:  EdgeInsets.all(20.w),
-            child: Icon(icon, size: 30.sp, color:ColorPalette.textDark),
+            padding: EdgeInsets.all(20.w),
+            child: Icon(icon, size: 30.sp, color: ColorPalette.textDark),
           ),
           verticalSpace(10),
-          Text(
-            label,
-            style: TextStyles.font12Blackbold(),
-          ),
+          Text(label, style: TextStyles.font12Blackbold()),
         ],
       ),
     );
