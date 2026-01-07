@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter/services.dart';
 import 'package:gogo/core/style/app_color.dart';
 
 class AppTextField extends StatefulWidget {
@@ -35,60 +34,71 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: widget.horizontalPadding.w),
-      child: TextFormField(
-        controller: widget.controller,
-        validator: widget.validator,
-        obscureText: widget.isPassword ? _obscure : false,
-        keyboardType: widget.keyboardType ?? TextInputType.text,
-        decoration: InputDecoration(
-          hintText: widget.hint,
-          prefixText: widget.prefixText,
-          prefixStyle: TextStyle(
-            color: Colors.black,
-            fontSize: 12.sp,
-            fontWeight: FontWeight.w400,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          textSelectionTheme:  TextSelectionThemeData(
+            cursorColor: ColorPalette.mainColor,
+            selectionColor:ColorPalette.mainColor,
+            selectionHandleColor: ColorPalette.mainColor,
           ),
-          contentPadding: EdgeInsets.symmetric(
-            horizontal: 12.w,
-            vertical: 14.h,
+        ),
+        child: TextFormField(
+          controller: widget.controller,
+          validator: widget.validator,
+          obscureText: widget.isPassword ? _obscure : false,
+          keyboardType: widget.keyboardType ?? TextInputType.text,
+          decoration: InputDecoration(
+            hintText: widget.hint,
+            prefixText: widget.prefixText,
+            prefixStyle: TextStyle(
+              color: ColorPalette.black,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w400,
+            ),
+            contentPadding: EdgeInsets.symmetric(
+              horizontal: 12.w,
+              vertical: 14.h,
+            ),
+            errorStyle: TextStyle(
+              fontSize: 9.sp,
+              height: 0.8.h,
+              color:ColorPalette.red,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide:
+                  BorderSide(color: ColorPalette.fieldStroke, width: 1.w),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide:
+                  BorderSide(color: ColorPalette.fieldStroke, width: 1.w),
+            ),
+            errorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: ColorPalette.red, width: 1.w),
+            ),
+            focusedErrorBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(8.r),
+              borderSide: BorderSide(color: ColorPalette.red, width: 1.w),
+            ),
+            suffixIcon: widget.isPassword
+                ? IconButton(
+                    icon: FaIcon(
+                      _obscure
+                          ? FontAwesomeIcons.eyeLowVision
+                          : FontAwesomeIcons.eye,
+                      color: ColorPalette.fieldStroke,
+                      size: 15.sp,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        _obscure = !_obscure;
+                      });
+                    },
+                  )
+                : null,
           ),
-          errorStyle: TextStyle(
-            fontSize: 9.sp,
-            height: 0.8.h,
-            color: Colors.red,
-          ),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: ColorPalette.fieldStroke, width: 1.w),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: ColorPalette.fieldStroke, width: 1.w),
-          ),
-          errorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: Colors.red, width: 1.w),
-          ),
-          focusedErrorBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8.r),
-            borderSide: BorderSide(color: Colors.red, width: 1.w),
-          ),
-          suffixIcon: widget.isPassword
-              ? IconButton(
-                  icon: FaIcon(
-                    _obscure
-                        ? FontAwesomeIcons.eyeLowVision
-                        : FontAwesomeIcons.eye,
-                    color: ColorPalette.fieldStroke,
-                    size: 15.sp,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscure = !_obscure;
-                    });
-                  },
-                )
-              : null,
         ),
       ),
     );

@@ -72,7 +72,7 @@ class LocationCubit extends Cubit<LocationState> {
 
     emit(LocationLoaded(
       currentLocation: LatLng(suggestion.latitude, suggestion.longitude),
-      address: suggestion.name, // الاسم بالضبط كما أتى من Google
+      address: suggestion.name, 
       latitude: suggestion.latitude,
       longitude: suggestion.longitude,
     ));

@@ -103,7 +103,7 @@ class FullScreenImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorPalette.textDark,
+      backgroundColor: ColorPalette.black,
       body: GestureDetector(
         onTap: () => Navigator.pop(context),
         child: Center(

@@ -14,7 +14,6 @@ import 'package:gogo/ui/auth_screens/user_screen/user_login_screen/logic/login_s
 import 'package:gogo/ui/auth_screens/user_screen/user_login_screen/logic/login_screen_state.dart.dart';
 import 'package:gogo/ui/auth_screens/user_screen/user_login_screen/ui/widgets/login_form_fields.dart';
 
-
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -32,23 +31,11 @@ class LoginScreen extends StatelessWidget {
               autoClose: false,
             );
           } else if (state is LoginSuccess) {
-            hideBlockingAnimation(context);
-            showBlockingAnimation(
-              context: context,
-              message: "",
-              animationAsset: AppImage().sucsses,
-              autoClose: true,
-              duration: const Duration(seconds: 3),
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.homeScreen,
+              (route) => false,
             );
-            Future.delayed(const Duration(seconds: 3), () {
-              if (context.mounted) {
-                Navigator.pushNamedAndRemoveUntil(
-                  context,
-                  AppRoutes.homeScreen,
-                  (route) => false,
-                );
-              }
-            });
           } else if (state is LoginFailure) {
             hideBlockingAnimation(context);
             showBlockingAnimation(
@@ -74,7 +61,10 @@ class LoginScreen extends StatelessWidget {
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            Text('sign_in'.tr(), style: TextStyles.font21BlackBold()),
+                            Text(
+                              'sign_in'.tr(),
+                              style: TextStyles.font21BlackBold(),
+                            ),
                             SizedBox(width: 6.w),
                             const OrangeDot(),
                           ],
@@ -84,8 +74,14 @@ class LoginScreen extends StatelessWidget {
                       Center(
                         child: Column(
                           children: [
-                            Text('login_description_line2'.tr(), style: TextStyles.font11GrayRegular()),
-                            Text('login_description_line1'.tr(), style: TextStyles.font11GrayRegular()),
+                            Text(
+                              'login_description_line2'.tr(),
+                              style: TextStyles.font11GrayRegular(),
+                            ),
+                            Text(
+                              'login_description_line1'.tr(),
+                              style: TextStyles.font11GrayRegular(),
+                            ),
                           ],
                         ),
                       ),

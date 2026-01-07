@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "gogo-app-6ef48",
+  "private_key_id": "2c80b6f0d29a41fdcf3022c1e7f4cb24c0c0211a",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDTFtlHfVUw7yj7\nxOtgd28rVEo3iiEEuVe4MRPuPx2xPgZZTkfk3jmnUju/lRz5QdcHpN3mIg/2Rgnp\nhxLqp46bvJDeSUCIbVW/rUHozziQuF+GgMURy9VhMC9V8wm2xFmxq5ChT+Rp+gkF\nj1dwDox4hLppONTXjVigypjvfIqogGT5rgsNJP+/FyF+V63hS0e/sKUE1R4J0uOs\njYW76y8mUGh4w04cyuLmeQMSh+VB8NAhvIE84xmXIuteDAIdPC75hBHiYTurZ8vT\nKmFyDFnV2P+RfJtV/yM7Akqpi0kUWvTmgBbp4+D4jKSEXK0n80NjEPZDAfJXe6UE\nTxs9GRIjAgMBAAECggEAHSN4+DFeN9RhEpVq7coO19Wu2QksPaaywS5P01d1wH27\nX/XlCWbTtpEsxj7N3RUwRacwf7q7/AGhufwh/wUE3o1NF3eCfP1QFOwpvlAR6DL1\n8hncb58fjrxEDIKcGKqfZwiJJ9C2IHBExou0ROJSlGBeCyBZNoLAdTxXmCzXnHgR\n5D+DXNN6689wTT/ypVEtQ9gkh1tCPTs3g+4O7uaUXybwxNsX3vc2f52O5TCbrEZd\nfbXvWtLcsonr+ei2JvKHwcjntIXOrehsoqWUuGQE+a12E2R9WAh6KGjJQN+qzjaz\nju7HPZYAY3AFGtRnhnKk1JSUJ1ShARyCOzmVnH8pYQKBgQDzPuAPbviJ0iqLgx63\nQuNhch3GHFLVdXzvPM12+43oG4SnM9DFfpe/ifyVxXq+0AIDErzen5pQnJRQ42lx\n21nyg8tIqr/KJINhOXv3zXq+N4FbsZvuWL/hll/YNMuB0kw8IebSY0HP2ppX8u1Y\n4ie67kGuGzc2008+zV+GhOdfvQKBgQDeKFVobCNpm5Ya2RHNYapFA88T5U7P3csM\na13guycKvOb/mwOa2+CBThv0fH4NcU8m5GrVpFpEiyQOsXAKebSLMazlgyle28Xl\nZqUcd2J7WU1sFcJlLHi7rO1oaRomxo+1jWicDMROzZHFCSXqNSHhXuyKL54gNPj0\nKdlCOE3nXwKBgQDf97monD3d8JRZ5r4GcWEZnVBK1FN01fvV7/8jGdX8rDHFHlGR\nNtGUfAIFCVLOlIn1uHAM75nPtYxeujWhrx2vzagEXau//US25Y3+icUFlefWvL9d\ng3wRwzq2wU3MWAz3pSN5/ghf0OEiL7xYhcudM7loDQkWwxQJOGJHYuIDZQKBgAVs\ndqlV+odZhRCivAyHleCZdzTFJGduwsZK2L/j0dAxTHJxFmVxeMmvXn9ZirpJSeVp\nLjKJEKsbuoWhT1ryHbZIQDBaQ2hNdUdkeiN3xq+8PmelIFnX/BqY3jLuXfUUY+3K\nxgMJTMGfwy9MSeCt62XVK3E0OGgQ4wMTAnrbZQuBAoGBAMrynyZ3SyzAMqpsmfAG\nxu4kh00XfIdM5C9OzXmRgHoUEtxfU4dqm4iFOJGPGdoK/0cQgt8IKK4RBwfoeWEz\nfmdQwb3eaSsvq8ewNXCk/UnYmQ8egkdRiPOf+sDm6vx3hjiDH0rHNPGSupYczFbF\nbor4DszTnJPxB54Y8Y0KO/cM\n-----END PRIVATE KEY-----\n",
+  "client_email": "fcm-sender@gogo-app-6ef48.iam.gserviceaccount.com",
+  "client_id": "114933634107889001375",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/fcm-sender%40gogo-app-6ef48.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

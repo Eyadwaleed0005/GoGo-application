@@ -14,7 +14,7 @@ class CustomRefreshWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RefreshIndicator(
-      color: ColorPalette.textDark, 
+      color: ColorPalette.black, 
       backgroundColor: ColorPalette.mainColor,
       displacement: 40,
       onRefresh: onReload,

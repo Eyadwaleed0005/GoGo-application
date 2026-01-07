@@ -38,7 +38,7 @@ class UserProfileScreen extends StatelessWidget {
               leading: Icon(
                 Icons.camera_alt,
                 size: 18.sp,
-                color: ColorPalette.textDark,
+                color: ColorPalette.black,
               ),
               title: Text('camera'.tr(), style: TextStyles.font12Blackbold()),
               onTap: () {
@@ -52,7 +52,7 @@ class UserProfileScreen extends StatelessWidget {
               leading: Icon(
                 Icons.photo_library,
                 size: 18.sp,
-                color: ColorPalette.textDark,
+                color: ColorPalette.black,
               ),
               title: Text('gallery'.tr(), style: TextStyles.font12Blackbold()),
               onTap: () {

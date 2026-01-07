@@ -11,28 +11,43 @@ class SendArrivalNotificationButtonCubit
   SendArrivalNotificationButtonCubit({required this.repo})
       : super(SendArrivalNotificationButtonInitial());
 
- Future<void> sendArrivalNotification() async {
-  if (isClosed) return; 
-  emit(SendArrivalNotificationButtonLoading());
+  Future<void> sendArrivalNotification() async {
+    if (isClosed) return;
+    emit(SendArrivalNotificationButtonLoading());
 
-  try {
-    final orderId = await repo.getOrderId();
-    if (orderId == null) {
-      if (!isClosed) emit(SendArrivalNotificationButtonFailure("Order ID not found"));
-      return;
+    try {
+      final orderId = await repo.getOrderId();
+      if (orderId == null) {
+        if (!isClosed) {
+          emit(SendArrivalNotificationButtonFailure("Order ID not found"));
+        }
+        return;
+      }
+
+      final fcmToken = await repo.getFcmToken(orderId);
+      if (fcmToken == null || fcmToken.isEmpty) {
+        if (!isClosed) {
+          emit(SendArrivalNotificationButtonFailure("FCM token not found"));
+        }
+        return;
+      }
+
+      final ok = await repo.sendNotification(token: fcmToken);
+
+      if (!ok) {
+        if (!isClosed) {
+          emit(SendArrivalNotificationButtonFailure("فشل إرسال الإشعار"));
+        }
+        return;
+      }
+
+      if (!isClosed) emit(SendArrivalNotificationButtonSuccess());
+    } catch (e) {
+      if (!isClosed) {
+        emit(
+          SendArrivalNotificationButtonFailure("Error sending notification: $e"),
+        );
+      }
     }
-
-    final fcmToken = await repo.getFcmToken(orderId);
-    if (fcmToken == null) {
-      if (!isClosed) emit(SendArrivalNotificationButtonFailure("FCM token not found"));
-      return;
-    }
-
-    await repo.sendNotification(token: fcmToken);
-    if (!isClosed) emit(SendArrivalNotificationButtonSuccess());
-  } catch (e) {
-    if (!isClosed) emit(SendArrivalNotificationButtonFailure("Error sending notification: $e"));
   }
-}
-
 }

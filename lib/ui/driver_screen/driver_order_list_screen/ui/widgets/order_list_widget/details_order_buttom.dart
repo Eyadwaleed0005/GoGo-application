@@ -22,7 +22,7 @@ class DetailsOrderButton extends StatelessWidget {
         child: Text(
           "details".tr(),
           style: TextStyles.font12Blackbold().copyWith(
-            color: ColorPalette.textDark,
+            color: ColorPalette.black,
           ),
         ),
       ),

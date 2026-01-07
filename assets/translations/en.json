@@ -66,7 +66,7 @@
   "connection_timeout": "Connection timeout with the server.",
   "send_timeout": "Send timeout in connection with the server.",
   "receive_timeout": "Receive timeout in connection with the server.",
-  "connection_error": "⚠️ Connection Error. Please check your internet connection.",
+  "connection_error": "Connection Error. Please check your internet connection.",
   "bad_request": "Bad request.",
   "unauthorized": "Unauthorized. Please login again.",
   "forbidden": "Forbidden request.",
@@ -292,9 +292,9 @@
   "arrived": "Arrived",
   "dismiss": "Dismiss",
   "notification_sent": "Notification sent successfully",
-  "warning_internet_location": "⚠️ Internet and location services are unavailable",
-  "warning_internet": "⚠️ Internet is not connected",
-  "warning_location": "⚠️ Location service is disabled",
+  "warning_internet_location": "Internet and location services are unavailable",
+  "warning_internet": "Internet is not connected",
+  "warning_location": "Location service is disabled",
   "cannot_open_dialer": "Cannot open the dialer app",
   "cannot_open_whatsapp": "Cannot open WhatsApp",
   "home_title": "Home",
@@ -348,6 +348,9 @@
   "ON": "ON",
   "OFF": "OFF",
   "account_not_user": "This account does not belong to a user.",
-  "account_not_driver": "This account does not belong to a driver."
+  "account_not_driver": "This account does not belong to a driver.",
+  "retry_request": "Try Again",
+  "no_driver_found_title": "No driver found",
+  "no_driver_found_message": "No driver has accepted your request yet. You can try again or return to the home screen."
 
 }

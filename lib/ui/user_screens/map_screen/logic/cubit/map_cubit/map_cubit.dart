@@ -13,12 +13,10 @@ class MapCubit extends Cubit<MapState> {
   LatLng? currentLocation;
   List<LatLng> currentRoutePoints = [];
 
-  // ✅ مجموعة ماركرات السواقين
   Set<Marker> _driverMarkers = {};
   Set<Marker> get driverMarkers => _driverMarkers;
 
   StreamSubscription<Position>? _positionStream;
-  Timer? _statusTimer;
   bool _isTracking = false;
 
   MapCubit(this.repository) : super(MapInitial());
@@ -94,26 +92,23 @@ class MapCubit extends Cubit<MapState> {
     safeEmit(MapPlaceSelected(place));
   }
 
-  // ✅ تحديث ماركرات السواقين في الخريطة
   void updateDriversMarkers(Set<Marker> driversMarkers) {
     _driverMarkers = driversMarkers;
     safeEmit(MapDriversUpdated(driversMarkers));
   }
 
-  // 🛰️ ----------- REAL-TIME TRACKING SECTION ----------- 🛰️
-
   Future<void> startLiveTracking() async {
     if (_isTracking) return;
     _isTracking = true;
 
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
       safeEmit(MapError("Location services are disabled"));
       _isTracking = false;
       return;
     }
 
-    LocationPermission permission = await Geolocator.checkPermission();
+    var permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
@@ -129,7 +124,7 @@ class MapCubit extends Cubit<MapState> {
       return;
     }
 
-    _positionStream?.cancel();
+    await _positionStream?.cancel();
 
     _positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
@@ -160,16 +155,12 @@ class MapCubit extends Cubit<MapState> {
   Future<void> stopLiveTracking() async {
     _isTracking = false;
     await _positionStream?.cancel();
-    _statusTimer?.cancel();
     safeEmit(MapTrackingStopped());
   }
-
-  bool get isTracking => _isTracking;
 
   @override
   Future<void> close() {
     _positionStream?.cancel();
-    _statusTimer?.cancel();
     return super.close();
   }
 }

@@ -19,7 +19,7 @@ class ShowTripOnMapSkeleton extends StatelessWidget {
           borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
           boxShadow: [
             BoxShadow(
-              color: ColorPalette.textDark.withOpacity(0.1),
+              color: ColorPalette.black.withOpacity(0.1),
               blurRadius: 8.r,
               offset: const Offset(0, -3),
             ),

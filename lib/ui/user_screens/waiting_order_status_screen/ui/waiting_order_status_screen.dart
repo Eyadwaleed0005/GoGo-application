@@ -2,13 +2,13 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/core/style/textstyles.dart';
 import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/ui/user_screens/waiting_order_status_screen/data/repo/get_order_by_id_repository.dart';
 import 'package:gogo/ui/user_screens/waiting_order_status_screen/logic/cubit/waiting_order_status_screen_cubit.dart';
+import 'package:gogo/ui/user_screens/waiting_order_status_screen/ui/widgets/no_driver_found_widget.dart';
 import 'package:lottie/lottie.dart';
 
 class WaitingOrderStatusScreen extends StatefulWidget {
@@ -20,6 +20,10 @@ class WaitingOrderStatusScreen extends StatefulWidget {
 }
 
 class _WaitingOrderStatusScreenState extends State<WaitingOrderStatusScreen> {
+  void _goHome(BuildContext context) {
+    Navigator.popUntil(context, (route) => route.isFirst);
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -32,24 +36,18 @@ class _WaitingOrderStatusScreenState extends State<WaitingOrderStatusScreen> {
             WaitingOrderStatusScreenState
           >(
             listener: (context, state) {
-              if (!mounted) return; // حماية لو الشاشة اتقفلت
+              if (!mounted) return;
 
-              if (state is WaitingOrderApproved) {
-                Navigator.pushReplacementNamed(context, AppRoutes.mapScreen);
-              }
-              if (state is WaitingOrderCancelled ||
-                  state is WaitingOrderCancelledManually) {
-                Navigator.pushReplacementNamed(context, AppRoutes.homeScreen);
+              if (state is WaitingOrderApproved ||
+                  state is WaitingOrderCancelledManually ||
+                  state is WaitingOrderCancelled) {
+                _goHome(context);
               }
             },
             builder: (context, state) {
               return WillPopScope(
                 onWillPop: () async {
-                  Navigator.pushNamedAndRemoveUntil(
-                    context,
-                    AppRoutes.homeScreen,
-                    (route) => false,
-                  );
+                  _goHome(context);
                   return false;
                 },
                 child: Scaffold(
@@ -71,6 +69,19 @@ class _WaitingOrderStatusScreenState extends State<WaitingOrderStatusScreen> {
     BuildContext context,
     WaitingOrderStatusScreenState state,
   ) {
+    if (state is WaitingOrderNoDriverFound) {
+      return NoDriverFoundWidget(
+        message: "no_driver_found_message".tr(),
+        onRetry: () async {
+          await context
+              .read<WaitingOrderStatusScreenCubit>()
+              .clearLocalOrderStatus();
+          if (!context.mounted) return;
+          _goHome(context);
+        },
+      );
+    }
+
     if (state is WaitingOrderStatusError) {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -93,15 +104,8 @@ class _WaitingOrderStatusScreenState extends State<WaitingOrderStatusScreen> {
               backgroundColor: ColorPalette.mainColor,
               padding: EdgeInsets.symmetric(horizontal: 32.w, vertical: 14.h),
               shape: const StadiumBorder(),
-              elevation: 2,
             ),
-            onPressed: () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.homeScreen,
-                (route) => false,
-              );
-            },
+            onPressed: () => _goHome(context),
             child: Text("back".tr(), style: TextStyles.font10Blackbold()),
           ),
         ],

@@ -29,7 +29,7 @@ class OrderAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: elevation,
       centerTitle: true,
       leading: IconButton(
-        icon:  Icon(Icons.arrow_back_ios, color: ColorPalette.textDark),
+        icon:  Icon(Icons.arrow_back_ios, color: ColorPalette.black),
         onPressed: onBack ?? () => Navigator.of(context).maybePop(),
         tooltip: MaterialLocalizations.of(context).backButtonTooltip,
       ),

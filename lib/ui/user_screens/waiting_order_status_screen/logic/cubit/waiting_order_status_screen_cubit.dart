@@ -10,9 +10,9 @@ part 'waiting_order_status_screen_state.dart';
 
 class WaitingOrderStatusScreenCubit extends Cubit<WaitingOrderStatusScreenState> {
   final GetOrderByIdRepository repository;
+
   Timer? _pollingTimer;
-  Timer? _autoCancelTimer;
-  bool _disposed = false; 
+  bool _disposed = false;
 
   WaitingOrderStatusScreenCubit(this.repository)
       : super(WaitingOrderStatusScreenInitial());
@@ -26,33 +26,18 @@ class WaitingOrderStatusScreenCubit extends Cubit<WaitingOrderStatusScreenState>
       if (_disposed) return;
 
       if (order == null) {
-        await _saveOrderStatus("cancel");
-        if (!_disposed) emit(WaitingOrderStatusError("الطلب غير موجود على السيرفر"));
+        await _saveOrderStatus("no_driver");
+        if (!_disposed) emit(WaitingOrderNoDriverFound());
+        stopTracking();
         return;
       }
 
       await _handleOrderStatus(order);
+
       _pollingTimer?.cancel();
       _pollingTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
         if (_disposed) return;
         await _checkOrderStatus();
-      });
-      _autoCancelTimer?.cancel();
-      _autoCancelTimer = Timer(const Duration(minutes: 4), () async {
-        if (_disposed) return;
-        final prefs = await SharedPreferences.getInstance();
-        final status = prefs.getString(SharedPreferenceKeys.orderStatus);
-
-        if (status == "pending") {
-          await _saveOrderStatus("cancel");
-          final response = await repository.clearOrder();
-          if (response.success) {
-            if (!_disposed) emit(WaitingOrderCancelledManually());
-          } else {
-            if (!_disposed) emit(WaitingOrderStatusError(response.message));
-          }
-          stopTracking();
-        }
       });
     } catch (e) {
       if (!_disposed) emit(WaitingOrderStatusError(e.toString()));
@@ -67,8 +52,8 @@ class WaitingOrderStatusScreenCubit extends Cubit<WaitingOrderStatusScreenState>
       if (_disposed) return;
 
       if (order == null) {
-        await _saveOrderStatus("cancel");
-        if (!_disposed) emit(WaitingOrderCancelledManually());
+        await _saveOrderStatus("no_driver");
+        if (!_disposed) emit(WaitingOrderNoDriverFound());
         stopTracking();
         return;
       }
@@ -115,26 +100,24 @@ class WaitingOrderStatusScreenCubit extends Cubit<WaitingOrderStatusScreenState>
     }
   }
 
+  Future<void> clearLocalOrderStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(SharedPreferenceKeys.orderStatus);
+  }
+
   Future<void> _saveOrderStatus(String status) async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(SharedPreferenceKeys.orderStatus, status);
   }
 
-  Future<String?> getCurrentOrderStatus() async {
-    final prefs = await SharedPreferences.getInstance();
-    return prefs.getString(SharedPreferenceKeys.orderStatus);
-  }
-
   void stopTracking() {
     _pollingTimer?.cancel();
     _pollingTimer = null;
-    _autoCancelTimer?.cancel();
-    _autoCancelTimer = null;
   }
 
   @override
   Future<void> close() {
-    _disposed = true; 
+    _disposed = true;
     stopTracking();
     return super.close();
   }

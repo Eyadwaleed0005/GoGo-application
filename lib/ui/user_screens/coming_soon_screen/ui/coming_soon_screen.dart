@@ -9,9 +9,9 @@ class ComingSoonScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: ColorPalette.textDark,
+      backgroundColor: ColorPalette.black,
       appBar: AppBar(
-        backgroundColor: ColorPalette.textDark,
+        backgroundColor: ColorPalette.black,
         elevation: 0,
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios, color:ColorPalette.mainColor),

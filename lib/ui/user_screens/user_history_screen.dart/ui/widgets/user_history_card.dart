@@ -48,7 +48,7 @@ class UserHistoryCard extends StatelessWidget {
                 Container(
                   padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 8.w),
                   decoration: BoxDecoration(
-                    color: ColorPalette.textDark,
+                    color: ColorPalette.black,
                     borderRadius: BorderRadius.circular(12.r),
                   ),
                   child: Text(paymentType, style: TextStyles.font10whitebold()),

@@ -24,7 +24,7 @@ class CustomBackButton extends StatelessWidget {
             ),
             child: Icon(
               Icons.arrow_back,
-              color: ColorPalette.textDark,
+              color: ColorPalette.black,
               size: 18.sp,
             ),
           ),

@@ -91,7 +91,7 @@ class AdminHomeScreen extends StatelessWidget {
               ],
             ),
             padding: EdgeInsets.all(20.w),
-            child: Icon(icon, size: 30.sp, color: ColorPalette.textDark),
+            child: Icon(icon, size: 30.sp, color: ColorPalette.black),
           ),
           verticalSpace(10),
           Text(label, style: TextStyles.font12Blackbold()),

@@ -24,6 +24,8 @@ final class WaitingOrderCancelled extends WaitingOrderStatusScreenState {
 
 final class WaitingOrderCancelledManually extends WaitingOrderStatusScreenState {}
 
+final class WaitingOrderNoDriverFound extends WaitingOrderStatusScreenState {}
+
 final class WaitingOrderStatusError extends WaitingOrderStatusScreenState {
   final String message;
   WaitingOrderStatusError(this.message);

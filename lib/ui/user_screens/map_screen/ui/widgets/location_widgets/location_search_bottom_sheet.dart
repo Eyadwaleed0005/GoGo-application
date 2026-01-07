@@ -46,8 +46,8 @@ class LocationSearchBottomSheet {
                       controller.text = result.recognizedWords;
                       if (controller.text.isNotEmpty) {
                         await context.read<SearchCubit>().searchPlaces(
-                          controller.text,
-                        );
+                              controller.text,
+                            );
                       }
                       setState(() {});
                     },
@@ -69,56 +69,90 @@ class LocationSearchBottomSheet {
                     children: [
                       Text(label, style: TextStyles.font10BlackMedium()),
                       SizedBox(height: 20.h),
+                      TextSelectionTheme(
+                        data: TextSelectionThemeData(
+                          cursorColor: ColorPalette.mainColor,
+                          selectionColor:
+                              ColorPalette.mainColor.withOpacity(0.25),
+                          selectionHandleColor: ColorPalette.mainColor,
+                        ),
+                        child: TextField(
+                          controller: controller,
+                          cursorColor: ColorPalette.mainColor,
+                          decoration: InputDecoration(
+                            hintText: "search_for_place".tr(),
+                            filled: true,
+                            fillColor: Colors.white,
 
-                      TextField(
-                        controller: controller,
-                        decoration: InputDecoration(
-                          hintText: "search_for_place".tr(),
-                          fillColor: ColorPalette.mainColor,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.r),
-                          ),
-                          prefixIcon: const Icon(Icons.search),
-                          suffixIcon: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              if (controller.text.isNotEmpty)
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                              borderSide: BorderSide(
+                                color: ColorPalette.filedInner,
+                                width: 1.w,
+                              ),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                              borderSide: BorderSide(
+                                color: ColorPalette.filedInner,
+                                width: 1,
+                              ),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.r),
+                              borderSide: const BorderSide(
+                                color: ColorPalette.mainColor,
+                                width: 1.2,
+                              ),
+                            ),
+
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: ColorPalette.black,
+                            ),
+                            suffixIcon: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                if (controller.text.isNotEmpty)
+                                  IconButton(
+                                    icon: const Icon(
+                                      Icons.clear,
+                                      color: ColorPalette.textColor1,
+                                    ),
+                                    onPressed: () {
+                                      controller.clear();
+                                      setState(() {});
+                                    },
+                                  ),
                                 IconButton(
-                                  icon: const Icon(
-                                    Icons.clear,
-                                    color: ColorPalette.textColor1,
+                                  icon: Icon(
+                                    isListening ? Icons.mic : Icons.mic_none,
+                                    color: isListening
+                                        ? Colors.red
+                                        : ColorPalette.textColor1,
                                   ),
                                   onPressed: () {
-                                    controller.clear();
-                                    setState(() {});
+                                    if (isListening) {
+                                      stopListening();
+                                    } else {
+                                      startListening();
+                                    }
                                   },
                                 ),
-                              IconButton(
-                                icon: Icon(
-                                  isListening ? Icons.mic : Icons.mic_none,
-                                  color: isListening ? Colors.red : Colors.grey,
-                                ),
-                                onPressed: () {
-                                  if (isListening) {
-                                    stopListening();
-                                  } else {
-                                    startListening();
-                                  }
-                                },
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
-                        ),
-                        onChanged: (pattern) async {
-                          if (pattern.trim().isEmpty) {
+                          onChanged: (pattern) async {
+                            if (pattern.trim().isEmpty) {
+                              setState(() {});
+                              return;
+                            }
+                            await context.read<SearchCubit>().searchPlaces(
+                                  pattern,
+                                );
                             setState(() {});
-                            return;
-                          }
-                          await context.read<SearchCubit>().searchPlaces(
-                            pattern,
-                          );
-                          setState(() {});
-                        },
+                          },
+                        ),
                       ),
 
                       SizedBox(height: 20.h),
@@ -158,7 +192,7 @@ class LocationSearchBottomSheet {
                             Navigator.pop(context, selected);
                           },
                           child: Text(
-                            "done".tr(), // استخدام المفتاح في ملفات الترجمة
+                            "done".tr(),
                             style: TextStyles.font11blackSemiBold(),
                           ),
                         ),

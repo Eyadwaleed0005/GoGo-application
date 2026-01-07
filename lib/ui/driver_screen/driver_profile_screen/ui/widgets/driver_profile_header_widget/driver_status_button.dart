@@ -26,13 +26,15 @@ class _DriverStatusButtonState extends State<DriverStatusButton>
   bool locationEnabled = false;
   StreamSubscription<ServiceStatus>? _locationServiceSubscription;
 
+  static const int heartbeatTimeoutMs = 120000; 
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
-    _loadStatusAndDriverId();
     _checkLocationService();
     _listenLocationChanges();
+    _loadStatusAndDriverId();
   }
 
   @override
@@ -42,23 +44,26 @@ class _DriverStatusButtonState extends State<DriverStatusButton>
     super.dispose();
   }
 
-  /// ✅ نراقب حالة التطبيق (Foreground / Background / Closed)
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) async {
     super.didChangeAppLifecycleState(state);
 
-    if (state == AppLifecycleState.detached ||
-        state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
-      // المستخدم خرج أو التطبيق بالخلفية → نغلق التتبع ونحفظ الحالة false
+    if (state == AppLifecycleState.resumed) {
+      await _checkLocationService();
+      await _loadStatusAndDriverId();
+      if (isActive && driverId != null && locationEnabled) {
+        context.read<DriverLocationCubit>().startTracking(driverId!);
+      }
+    }
+
+
+    if (state == AppLifecycleState.detached) {
       if (isActive && driverId != null) {
         context.read<DriverLocationCubit>().stopTracking();
         await _saveStatus(false);
-      }
-      if (mounted) {
-        setState(() {
-          isActive = false;
-        });
+        if (mounted) {
+          setState(() => isActive = false);
+        }
       }
     }
   }
@@ -67,12 +72,30 @@ class _DriverStatusButtonState extends State<DriverStatusButton>
     final savedStatus = await SharedPreferencesHelper.getBool(
       key: SharedPreferenceKeys.driverActive,
     );
+
+    final hb = await SharedPreferencesHelper.getInt(
+      key: SharedPreferenceKeys.driverHeartbeatMs,
+    );
+
     final id =
         await SecureStorageHelper.getdata(key: SecureStorageKeys.driverId);
 
+    bool finalStatus = savedStatus ?? false;
+
+    if (finalStatus) {
+      final nowMs = DateTime.now().millisecondsSinceEpoch;
+      final lastHb = hb ?? 0;
+      final diff = nowMs - lastHb;
+
+      if (lastHb == 0 || diff > heartbeatTimeoutMs) {
+        finalStatus = false;
+        await _saveStatus(false);
+      }
+    }
+
     if (!mounted) return;
     setState(() {
-      isActive = savedStatus ?? false;
+      isActive = finalStatus;
       driverId = id;
     });
 
@@ -129,7 +152,7 @@ class _DriverStatusButtonState extends State<DriverStatusButton>
       showCancel: true,
       onConfirm: () async {
         await Geolocator.openLocationSettings();
-        _checkLocationService();
+        await _checkLocationService();
       },
     );
   }
@@ -155,19 +178,15 @@ class _DriverStatusButtonState extends State<DriverStatusButton>
               ? (value) async {
                   if (!mounted) return;
 
-                  setState(() {
-                    isActive = value;
-                  });
+                  setState(() => isActive = value);
                   await _saveStatus(value);
 
-                  if (driverId != null) {
-                    if (value) {
-                      context
-                          .read<DriverLocationCubit>()
-                          .startTracking(driverId!);
-                    } else {
-                      context.read<DriverLocationCubit>().stopTracking();
-                    }
+                  if (driverId == null) return;
+
+                  if (value) {
+                    context.read<DriverLocationCubit>().startTracking(driverId!);
+                  } else {
+                    context.read<DriverLocationCubit>().stopTracking();
                   }
                 }
               : (_) async {

@@ -23,7 +23,7 @@ class ShowTripButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return FloatingActionButton(
       backgroundColor: ColorPalette.mainColor,
-      child:  Icon(Icons.map, color: ColorPalette.textDark),
+      child:  Icon(Icons.map, color: ColorPalette.black),
       onPressed: () {
         Navigator.push(
           context,

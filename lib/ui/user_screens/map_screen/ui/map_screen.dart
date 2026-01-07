@@ -1,4 +1,3 @@
-// map_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +22,7 @@ import 'package:gogo/ui/user_screens/map_screen/ui/widgets/network_banner.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/route_input_panel.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/map_veiw.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/rating_widgets/approved_trip_panel.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/user_drivers_socket_cubit.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -31,7 +31,7 @@ class MapScreen extends StatefulWidget {
   State<MapScreen> createState() => _MapScreenState();
 }
 
-class _MapScreenState extends State<MapScreen> {
+class _MapScreenState extends State<MapScreen> with RouteAware {
   final fromController = TextEditingController();
   final toController = TextEditingController();
 
@@ -41,6 +41,7 @@ class _MapScreenState extends State<MapScreen> {
   late final LocationCubit _locationCubit;
   late final LocationServiceCubit _locationServiceCubit;
   late final ReviewCubit _reviewCubit;
+  late final UserDriversSocketCubit _userDriversSocketCubit;
 
   String? _orderStatus;
 
@@ -53,6 +54,7 @@ class _MapScreenState extends State<MapScreen> {
     _locationCubit = LocationCubit();
     _locationServiceCubit = LocationServiceCubit()..checkLocationService();
     _reviewCubit = ReviewCubit(UserOrderRepository());
+    _userDriversSocketCubit = UserDriversSocketCubit();
 
     _checkOrderStatus();
 
@@ -61,20 +63,38 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  @override
+  void didPopNext() {
+    _checkOrderStatus();
+    super.didPopNext();
+  }
+
   Future<void> _checkOrderStatus() async {
     final prefs = await SharedPreferences.getInstance();
     final orderStatus = prefs.getString(SharedPreferenceKeys.orderStatus);
+
+    if (!mounted) return;
     setState(() {
       _orderStatus = orderStatus;
     });
 
     if (orderStatus == "pending") {
-      if (!mounted) return;
       Navigator.pushReplacementNamed(
         context,
         AppRoutes.waitingOrderStatusScreen,
       );
+      return;
     }
+
+    if (orderStatus == "approved" || orderStatus == "approve") {
+      final approvedDriverId = prefs.getInt(SharedPreferenceKeys.driverIdTrip);
+      if (approvedDriverId != null) {
+        _userDriversSocketCubit.start(followDriverId: approvedDriverId);
+      }
+      return;
+    }
+
+    _userDriversSocketCubit.start();
   }
 
   @override
@@ -87,6 +107,7 @@ class _MapScreenState extends State<MapScreen> {
     _locationCubit.close();
     _locationServiceCubit.close();
     _reviewCubit.close();
+    _userDriversSocketCubit.close();
     super.dispose();
   }
 
@@ -100,6 +121,7 @@ class _MapScreenState extends State<MapScreen> {
         BlocProvider.value(value: _searchCubit),
         BlocProvider.value(value: _locationServiceCubit),
         BlocProvider.value(value: _reviewCubit),
+        BlocProvider.value(value: _userDriversSocketCubit),
         BlocProvider(
           create: (_) => RouteInputPanelCubit(
             routeCubit: _routeCubit,
@@ -115,10 +137,8 @@ class _MapScreenState extends State<MapScreen> {
                 children: [
                   MapView(
                     fromController: fromController,
-                    isTripApproved:
-                        _orderStatus == "approved" || _orderStatus == "approve",
+                    isTripApproved: _orderStatus == "approved" || _orderStatus == "approve",
                   ),
-
                   Positioned(
                     top: 10.h,
                     left: 5.w,
@@ -127,25 +147,17 @@ class _MapScreenState extends State<MapScreen> {
                       child: Icon(
                         Icons.arrow_back_ios_new,
                         size: 18.sp,
-                        color: ColorPalette.textDark,
+                        color: ColorPalette.black,
                       ),
                     ),
                   ),
-
-                  /// ⬅️ نعرض RouteInputPanel فقط عندما لا يوجد طلب نشط
-                  if (_orderStatus == null || _orderStatus == "cancel")
+                  if (_orderStatus == null || _orderStatus == "cancel" || _orderStatus == "no_driver")
                     RouteInputPanel(
                       fromController: fromController,
                       toController: toController,
                     ),
-
-                  /// ⬅️ في حالة وجود رحلة حالية Approved
-                  if (_orderStatus == "approved" || _orderStatus == "approve")
-                    const ApprovedTripPanel(),
-
+                  if (_orderStatus == "approved" || _orderStatus == "approve") const ApprovedTripPanel(),
                   const NetworkBanner(),
-
-                  /// ⬅️ زر تحديد الموقع الحالي
                   Positioned(
                     bottom: 205.h,
                     right: 16.w,
@@ -167,8 +179,6 @@ class _MapScreenState extends State<MapScreen> {
                       ),
                     ),
                   ),
-
-                  /// ⬅️ في حال كانت خدمة الموقع مغلقة
                   BlocBuilder<LocationServiceCubit, LocationServiceState>(
                     builder: (context, state) {
                       if (state is LocationServiceDisabled) {

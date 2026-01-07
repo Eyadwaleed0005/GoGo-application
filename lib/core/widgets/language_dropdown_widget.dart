@@ -135,7 +135,7 @@ class _LanguageDropdownWidgetState extends State<LanguageDropdownWidget> {
           ),
         ),
       ],
-      child: Icon(Icons.settings, size: 22.sp, color: ColorPalette.textDark),
+      child: Icon(Icons.settings, size: 22.sp, color: ColorPalette.black),
     );
   }
 }

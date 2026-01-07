@@ -74,7 +74,7 @@ class DriverDetailsOrderSkeletonScreen extends StatelessWidget {
                     child: Container(
                       height: 45.h,
                       decoration: BoxDecoration(
-                        color: ColorPalette.textDark,
+                        color: ColorPalette.black,
                         borderRadius: BorderRadius.circular(10.r),
                       ),
                     ),

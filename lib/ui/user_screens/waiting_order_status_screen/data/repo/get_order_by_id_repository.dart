@@ -34,63 +34,101 @@ class GetOrderByIdRepository {
         final order = GetAllOrdersModel.fromJson(data);
 
         if (order.status != null) {
-          await prefs.setString(SharedPreferenceKeys.orderStatus, order.status!);
+          await prefs.setString(
+            SharedPreferenceKeys.orderStatus,
+            order.status!,
+          );
         }
         if (order.driverId != null) {
-          await prefs.setInt(SharedPreferenceKeys.driverIdTrip, order.driverId!);
+          await prefs.setInt(
+            SharedPreferenceKeys.driverIdTrip,
+            order.driverId!,
+          );
         }
 
         return order;
-      } else {
+      }
+
+      return null;
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        final prefs = await SharedPreferences.getInstance();
+        await _clearLocalOrderData(prefs);
+        await prefs.remove(SharedPreferenceKeys.savedRoutesPoints);
         return null;
       }
-    } on DioException catch (error) {
+
       throw DioExceptionHandler.handleDioError(error);
     }
   }
 
   Future<ApiResponse<void>> clearOrder() async {
-  try {
-    final prefs = await SharedPreferences.getInstance();
-    final orderId = prefs.getInt(SharedPreferenceKeys.userOrderId);
-    if (orderId == null) {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final orderId = prefs.getInt(SharedPreferenceKeys.userOrderId);
+      if (orderId == null) {
+        return ApiResponse(
+          success: false,
+          message: "لا يوجد طلب لإلغائه",
+        );
+      }
+
+      final response = await DioHelper.deleteData(
+        url: EndPoints.deleteOrder(orderId),
+      );
+
+      if (response.statusCode == 200 || response.statusCode == 204) {
+        await _clearLocalOrderData(prefs);
+        await prefs.remove(SharedPreferenceKeys.savedRoutesPoints);
+
+        final message = (response.data is Map<String, dynamic> &&
+                response.data["message"] != null)
+            ? response.data["message"]
+            : "تم إلغاء الطلب بنجاح";
+
+        return ApiResponse(
+          success: true,
+          message: message,
+        );
+      } else {
+        final message = (response.data is Map<String, dynamic> &&
+                response.data["message"] != null)
+            ? response.data["message"]
+            : (response.statusMessage ?? "فشل في إلغاء الطلب");
+
+        return ApiResponse(
+          success: false,
+          message: message,
+        );
+      }
+    } on DioException catch (error) {
+      if (error.response?.statusCode == 404) {
+        final prefs = await SharedPreferences.getInstance();
+        await _clearLocalOrderData(prefs);
+        await prefs.remove(SharedPreferenceKeys.savedRoutesPoints);
+
+        final message = (error.response?.data is Map<String, dynamic> &&
+                error.response?.data["message"] != null)
+            ? error.response?.data["message"]
+            : "Order not found";
+
+        return ApiResponse(
+          success: true,
+          message: message,
+        );
+      }
+
+      final handledError = DioExceptionHandler.handleDioError(error);
       return ApiResponse(
         success: false,
-        message: "لا يوجد طلب لإلغائه",
+        message: handledError,
       );
     }
-
-    final response = await DioHelper.deleteData(
-      url: EndPoints.deleteOrder(orderId),
-    );
-
-    if (response.statusCode == 200 || response.statusCode == 204) {
-      await prefs.remove(SharedPreferenceKeys.userOrderId);
-      await prefs.remove(SharedPreferenceKeys.orderStatus);
-      await prefs.remove(SharedPreferenceKeys.driverIdTrip);
-
-      final message = (response.data is Map<String, dynamic> &&
-              response.data["message"] != null)
-          ? response.data["message"]
-          : "تم إلغاء الطلب بنجاح";
-
-      return ApiResponse(
-        success: true,
-        message: message,
-      );
-    } else {
-      return ApiResponse(
-        success: false,
-        message: response.statusMessage ?? "فشل في إلغاء الطلب",
-      );
-    }
-  } on DioException catch (error) {
-    final handledError = DioExceptionHandler.handleDioError(error);
-    return ApiResponse(
-      success: false,
-      message: handledError,
-    );
   }
-}
 
+  Future<void> _clearLocalOrderData(SharedPreferences prefs) async {
+    await prefs.remove(SharedPreferenceKeys.userOrderId);
+    await prefs.remove(SharedPreferenceKeys.orderStatus);
+    await prefs.remove(SharedPreferenceKeys.driverIdTrip);
+  }
 }

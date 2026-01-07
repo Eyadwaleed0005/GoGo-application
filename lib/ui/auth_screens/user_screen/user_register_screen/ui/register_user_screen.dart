@@ -31,21 +31,11 @@ class RegisterUserScreen extends StatelessWidget {
               autoClose: false,
             );
           } else if (state is RegisterUserSuccess) {
-            hideBlockingAnimation(context);
-            showBlockingAnimation(
-              context: context,
-              message: "",
-              animationAsset: AppImage().sucsses,
-              autoClose: true,
-              duration: const Duration(seconds: 3),
+            Navigator.pushNamedAndRemoveUntil(
+              context,
+              AppRoutes.homeScreen,
+              (route) => false,
             );
-            Future.delayed(const Duration(seconds: 3), () {
-              Navigator.pushNamedAndRemoveUntil(
-                context,
-                AppRoutes.homeScreen,
-                (route) => false,
-              );
-            });
           } else if (state is RegisterUserFailure) {
             hideBlockingAnimation(context);
             showBlockingAnimation(

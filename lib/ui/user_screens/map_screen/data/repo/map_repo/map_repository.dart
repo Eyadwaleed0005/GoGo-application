@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'package:flutter/foundation.dart';
+import 'package:gogo/core/helper/address_sanitizer.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:gogo/core/api/end_points.dart';
 import 'package:gogo/core/dio_helper/dio_helper.dart';
@@ -10,18 +11,14 @@ class MapRepository {
   String? _lastQuery;
   List<MapSuggestion>? _lastSuggestions;
 
-  /// 🔍 جلب اقتراحات البحث من Google Places Autocomplete
   Future<List<MapSuggestion>> getPlaceSuggestions(String query) async {
     if (query.isEmpty) return [];
 
-    // ✅ لو نفس الاستعلام السابق نرجّع نفس النتيجة بدون طلب جديد
     if (_lastQuery == query && _lastSuggestions != null) {
       return _lastSuggestions!;
     }
 
-    // إلغاء أي مؤقت شغال
     _debounceTimer?.cancel();
-
     final completer = Completer<List<MapSuggestion>>();
 
     _debounceTimer = Timer(const Duration(milliseconds: 600), () async {
@@ -38,9 +35,12 @@ class MapRepository {
 
         final List predictions = response.data['predictions'] ?? [];
         final suggestions = predictions.map<MapSuggestion>((item) {
+          final raw = (item['description'] ?? '').toString();
+          final cleaned = AddressSanitizer.sanitizeGoogleAddress(raw);
+
           return MapSuggestion(
             id: item['place_id'] ?? '',
-            name: item['description'] ?? '',
+            name: cleaned,
             latitude: 0,
             longitude: 0,
           );
@@ -48,9 +48,8 @@ class MapRepository {
 
         _lastQuery = query;
         _lastSuggestions = suggestions;
-
         completer.complete(suggestions);
-      } catch (e) {
+      } catch (_) {
         completer.complete([]);
       }
     });
@@ -58,7 +57,6 @@ class MapRepository {
     return completer.future;
   }
 
-  /// 📍 جلب تفاصيل المكان من Google Place Details
   Future<MapSuggestion?> getPlaceDetails(String placeId) async {
     try {
       final response = await DioHelper.getData(
@@ -75,21 +73,13 @@ class MapRepository {
 
       final location = result['geometry']?['location'];
 
-      // ✅ استخدم الاسم أو العنوان الحقيقي فقط — وتجنب كود الـ plus
-      String placeName = result['name'] ??
-          result['formatted_address'] ??
-          result['vicinity'] ??
-          '';
+      String placeName = (result['name'] ??
+              result['formatted_address'] ??
+              result['vicinity'] ??
+              '')
+          .toString();
 
-      // ✅ تنظيف الاسم من كود Plus مثل "4RJ3+R8J"
-      placeName = placeName
-          .replaceAll(RegExp(r'^[0-9A-Z]{4,}\+?[0-9A-Z]*[,، ]*'), '')
-          .trim();
-
-      // ✅ في حالة الاسم فاضي خالص نستخدم formatted_address
-      if (placeName.isEmpty && result['formatted_address'] != null) {
-        placeName = result['formatted_address'];
-      }
+      placeName = AddressSanitizer.sanitizeGoogleAddress(placeName);
 
       return MapSuggestion(
         id: placeId,
@@ -103,49 +93,121 @@ class MapRepository {
     }
   }
 
- /// 🏙️ جلب اسم المكان أو العنوان التفصيلي (مع أقرب معلم لو موجود)
-Future<String> getPlaceName(LatLng point) async {
-  try {
-    final response = await DioHelper.getData(
-      url: EndPoints.googleGeocode,
-      query: {
-        'latlng': '${point.latitude},${point.longitude}',
-        'key': EndPoints.googleMapsKey,
-        'language': 'ar',
-      },
+  String _sanitizeForEgyptDetailed(String raw) {
+    var t = raw.trim();
+    if (t.isEmpty) return 'موقع غير معروف';
+
+    t = t.replaceAll(RegExp(r'\s+'), ' ').trim();
+
+    t = t.replaceAll(RegExp(r'\b[0-9A-Z]{3,}\+[0-9A-Z]{2,}\b'), '');
+    t = t.replaceAll(RegExp(r'^[0-9A-Z]{3,}\+?[0-9A-Z]*\s*[,، ]*\s*'), '');
+
+    t = t.replaceAll(
+      RegExp(r'(جمهورية\s*مصر\s*العربية|مصر)\s*[،,]?\s*'),
+      '',
     );
+    t = t.replaceAll(RegExp(r'محافظة\s+\S+(\s+\S+)?\s*[،,]?\s*'), '');
 
-    final results = response.data['results'];
-    if (results != null && results.isNotEmpty) {
-      String? detailedName;
+    t = t.replaceAll(RegExp(r'\bقسم\s*(أول|ثاني|ثالث|رابع|خامس)?\b'), '');
 
-      // 🔍 نحاول نلاقي أقرب معلم معروف (زي مطعم، بنك، مسجد...)
-      for (final result in results) {
-        final types = List<String>.from(result['types'] ?? []);
-        if (types.contains('point_of_interest') ||
-            types.contains('establishment') ||
-            types.contains('premise')) {
-          detailedName = result['name'] ?? result['formatted_address'];
-          break;
-        }
+    t = t.replaceAll(RegExp(r'\s*[،,]\s*'), '، ');
+    t = t.replaceAll(RegExp(r'(،\s*){2,}'), '، ');
+    t = t.replaceAll(RegExp(r'^\s*،\s*|\s*،\s*$'), '');
+    t = t.replaceAll(RegExp(r'\s+'), ' ').trim();
+
+    return t.isEmpty ? 'موقع غير معروف' : t;
+  }
+
+  String _buildDetailedAddressFromGeocodeResult(Map<String, dynamic> result) {
+    final components = (result['address_components'] as List?) ?? [];
+
+    String? streetNumber;
+    String? route;
+    String? sublocality;
+    String? locality;
+
+    for (final c in components) {
+      final comp = c as Map<String, dynamic>;
+      final types = List<String>.from(comp['types'] ?? const []);
+      final longName = (comp['long_name'] ?? '').toString().trim();
+      if (longName.isEmpty) continue;
+
+      if (types.contains('street_number')) streetNumber = longName;
+      if (types.contains('route')) route = longName;
+
+      if (types.contains('sublocality') ||
+          types.contains('sublocality_level_1')) {
+        sublocality ??= longName;
       }
 
-      // 🏠 لو مفيش معلم معروف، نستخدم أول عنوان كامل
-      detailedName ??= results.first['formatted_address'] ?? '';
-
-      // ✂️ نحذف أكواد Plus فقط (زي 4RJ3+R8J) لكن نسيب باقي التفاصيل
-      detailedName = detailedName!
-          .replaceAll(RegExp(r'^[0-9A-Z]{3,}\+?[0-9A-Z]*[,، ]*'), '')
-          .trim();
-
-      return detailedName;
+      if (types.contains('locality')) locality ??= longName;
     }
-  } catch (_) {}
 
-  return 'موقع غير معروف';
-}
+    final line1Parts = <String>[];
+    if (route != null && route.isNotEmpty) line1Parts.add(route);
+    if (streetNumber != null && streetNumber.isNotEmpty) {
+      line1Parts.add(streetNumber);
+    }
 
-  /// 🛣️ جلب المسار بين نقطتين من Google Directions
+    final line2Parts = <String>[];
+    if (sublocality != null && sublocality.isNotEmpty) {
+      line2Parts.add(sublocality);
+    }
+    if (locality != null && locality.isNotEmpty) line2Parts.add(locality);
+
+    var line1 = line1Parts.join('، ').trim();
+    var line2 = line2Parts.join('، ').trim();
+
+    if (line1.isEmpty) {
+      line1 = (result['formatted_address'] ?? '').toString();
+    }
+
+    line1 = _sanitizeForEgyptDetailed(line1);
+    line2 = _sanitizeForEgyptDetailed(line2);
+
+    if (line2 == line1) line2 = '';
+    if (line1.isEmpty) line1 = 'موقع غير معروف';
+
+    return line2.isEmpty ? line1 : '$line1، $line2';
+  }
+
+  Future<String> getPlaceName(LatLng point) async {
+    try {
+      final response = await DioHelper.getData(
+        url: EndPoints.googleGeocode,
+        query: {
+          'latlng': '${point.latitude},${point.longitude}',
+          'key': EndPoints.googleMapsKey,
+          'language': 'ar',
+        },
+      );
+
+      final results = response.data['results'];
+      if (results != null && results.isNotEmpty) {
+        Map<String, dynamic>? best;
+
+        for (final r in results) {
+          final types = List<String>.from(r['types'] ?? []);
+          if (types.contains('street_address') ||
+              types.contains('route') ||
+              types.contains('premise') ||
+              types.contains('subpremise')) {
+            best = Map<String, dynamic>.from(r);
+            break;
+          }
+        }
+
+        best ??= Map<String, dynamic>.from(results.first);
+
+        final detailed = _buildDetailedAddressFromGeocodeResult(best);
+        final cleaned = _sanitizeForEgyptDetailed(detailed);
+        return cleaned.isEmpty ? 'موقع غير معروف' : cleaned;
+      }
+    } catch (_) {}
+
+    return 'موقع غير معروف';
+  }
+
   Future<({
     List<LatLng> routePoints,
     double distanceKm,
@@ -193,7 +255,6 @@ Future<String> getPlaceName(LatLng point) async {
     }
   }
 
-  /// 🔄 فك تشفير الـ Polyline القادم من Google Directions
   static List<LatLng> _decodePolyline(String polyline) {
     final List<LatLng> points = [];
     int index = 0, lat = 0, lng = 0;

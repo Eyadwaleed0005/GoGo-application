@@ -102,7 +102,7 @@ class SendArrivalNotificationButton extends StatelessWidget {
                   verticalSpace(8),
                   Text(
                     "arrived".tr(), // ✅ قابل للترجمة
-                    style: const TextStyle(color: ColorPalette.textDark),
+                    style: const TextStyle(color: ColorPalette.black),
                   ),
                 ],
               );

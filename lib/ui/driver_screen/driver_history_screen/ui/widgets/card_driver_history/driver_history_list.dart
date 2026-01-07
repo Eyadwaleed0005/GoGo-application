@@ -53,9 +53,9 @@ class DriverHistoryList extends StatelessWidget {
                 final bool isOrange = index.isEven;
                 final containerColor = isOrange
                     ? ColorPalette.mainColor
-                    : ColorPalette.textDark;
+                    : ColorPalette.black;
                 final circleColor = isOrange
-                    ? ColorPalette.textDark
+                    ? ColorPalette.black
                     : ColorPalette.circlesBackground;
 
                 return CardDriverHistory(

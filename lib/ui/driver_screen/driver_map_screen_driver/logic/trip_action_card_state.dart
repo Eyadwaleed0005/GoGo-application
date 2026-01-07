@@ -1,41 +1,29 @@
 part of 'trip_action_card_cubit.dart';
 
 @immutable
-sealed class TripActionCardState {}
+abstract class TripActionCardState {}
 
-final class TripActionCardInitial extends TripActionCardState {}
+class TripActionCardInitial extends TripActionCardState {}
 
-final class TripActionCardLoading extends TripActionCardState {}
+class TripActionCardLoading extends TripActionCardState {}
 
-final class TripActionCardUpdated extends TripActionCardState {
+class TripActionCardUpdated extends TripActionCardState {
   final RideModel ride;
   final bool isDestination;
 
-  TripActionCardUpdated({
-    required this.ride,
-    required this.isDestination,
-  });
+  TripActionCardUpdated({required this.ride, required this.isDestination});
 }
 
-final class TripActionCardError extends TripActionCardState {
-  final String message;
-  final bool isDestination;
+class TripActionCardSuccess extends TripActionCardState {}
 
-  TripActionCardError({
-    required this.message,
-    required this.isDestination,
-  });
-}
-
-final class TripActionCardCall extends TripActionCardState {
+class TripActionCardCall extends TripActionCardState {
   final String phone;
   TripActionCardCall(this.phone);
 }
 
-final class TripActionCardWhatsApp extends TripActionCardState {
-  final String phone;
+class TripActionCardError extends TripActionCardState {
   final String message;
-  TripActionCardWhatsApp(this.phone, this.message);
-}
+  final bool isDestination;
 
-final class TripActionCardSuccess extends TripActionCardState {}
+  TripActionCardError({required this.message, required this.isDestination});
+}

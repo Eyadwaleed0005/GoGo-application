@@ -35,7 +35,6 @@ class _DriverHomeScreenState extends State<DriverHomeScreen> {
       DriverProfileScreen(),
     ];
 
-    /// ⬇️ استدعاء البيرمشن أول ما تفتح شاشة DriverHomeScreen
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _checkLocationPermission();
     });

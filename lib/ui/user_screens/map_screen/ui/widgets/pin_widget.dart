@@ -20,22 +20,20 @@ class AnimatedPinWidget extends StatefulWidget {
 
 class _AnimatedPinWidgetState extends State<AnimatedPinWidget>
     with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _drop;
+  late final AnimationController _controller;
+  late final Animation<double> _drop;
 
   @override
   void initState() {
     super.initState();
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
     );
-
-    _drop = Tween<double>(
-      begin: -35,
-      end: 0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.bounceOut));
+    _drop = Tween<double>(begin: -35, end: 0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.bounceOut),
+    );
+    if (!widget.isMoving) _controller.forward();
   }
 
   @override
@@ -44,7 +42,9 @@ class _AnimatedPinWidgetState extends State<AnimatedPinWidget>
     if (widget.isMoving) {
       _controller.reset();
     } else {
-      _controller.forward();
+      if (!_controller.isAnimating && _controller.value == 0) {
+        _controller.forward();
+      }
     }
   }
 
@@ -54,59 +54,60 @@ class _AnimatedPinWidgetState extends State<AnimatedPinWidget>
     super.dispose();
   }
 
-  /// 🔍 تحليل ذكي للعنوان: يعرض الأدق المتاح بدون رموز أو أرقام
-  String _extractAccurateArea(String input) {
-    if (input.trim().isEmpty) return "No name";
+  String _sanitizeForEgypt(String raw) {
+    var t = raw.trim();
+    if (t.isEmpty) return "";
 
-    // تنظيف النص من الرموز، الأرقام، والإنجليزي
-    String cleaned = input
-        .replaceAll(RegExp(r'[0-9A-Za-z]'), '') // إزالة الأرقام والإنجليزي
-        .replaceAll(
-          RegExp(r'[()\[\]\-+_=!@#%^&*<>?/\\|.:;]'),
-          '',
-        ) // إزالة الرموز
-        .replaceAll(RegExp(r'\s+'), ' ') // توحيد المسافات
-        .trim();
-
-    // تقسيم النص على الفواصل
-    List<String> parts = cleaned
-        .split(RegExp(r'[،,]'))
-        .map((e) => e.trim())
-        .toList();
-    parts.removeWhere(
-      (e) =>
-          e.isEmpty ||
-          e == "مصر" ||
-          e.contains("مصر") ||
-          e.contains("EG") ||
-          e.contains("الرمز") ||
-          e.length < 3,
+    t = t.replaceAll(RegExp(r'\s+'), ' ').trim();
+    t = t.replaceAll(RegExp(r'\b[0-9A-Z]{3,}\+[0-9A-Z]{2,}\b'), '');
+    t = t.replaceAll(RegExp(r'^[0-9A-Z]{3,}\+?[0-9A-Z]*\s*[,، ]*\s*'), '');
+    t = t.replaceAll(
+      RegExp(r'(جمهورية\s*مصر\s*العربية|مصر)\s*[،,]?\s*'),
+      '',
     );
+    t = t.replaceAll(RegExp(r'محافظة\s+\S+(\s+\S+)?\s*[،,]?\s*'), '');
+    t = t.replaceAll(RegExp(r'\bقسم\s*(أول|ثاني|ثالث|رابع|خامس)?\b'), '');
+    t = t.replaceAll(RegExp(r'\s*[،,]\s*'), '، ');
+    t = t.replaceAll(RegExp(r'(،\s*){2,}'), '، ');
+    t = t.replaceAll(RegExp(r'^\s*،\s*|\s*،\s*$'), '');
+    t = t.replaceAll(RegExp(r'\s+'), ' ').trim();
 
-    if (parts.isEmpty) return "No name";
+    return t;
+  }
 
-    // ترتيب منطقي: أول جزء هو الأدق (زي شارع - حي - مركز)
-    for (String part in parts) {
-      if (part.contains("شارع") ||
-          part.contains("طريق") ||
-          part.contains("منطقة") ||
-          part.contains("حي") ||
-          part.contains("مركز") ||
-          part.contains("قسم") ||
-          part.contains("قرية") ||
-          part.contains("مدينة")) {
-        return part;
-      }
-    }
+  bool _isValidGoogleName(String s) {
+    final t = _sanitizeForEgypt(s);
+    if (t.isEmpty) return false;
+    if (t == "موقع غير معروف") return false;
+    if (t.length < 4) return false;
+    return true;
+  }
 
-    // لو مفيش حاجة من دول، نرجع أول حاجة مفيدة
-    return parts.first.isNotEmpty ? parts.first : "No name";
+  List<String> _toTwoLinesDetailed(String input) {
+    final sanitized = _sanitizeForEgypt(input);
+
+    final parts = sanitized
+        .split('،')
+        .map((e) => e.trim())
+        .where((e) => e.isNotEmpty)
+        .toList();
+
+    if (parts.isEmpty) return ["", ""];
+
+    final line1 = parts.first;
+    final line2 = parts.length > 1 ? parts.sublist(1).take(2).join('، ') : "";
+
+    return [line1, line2];
   }
 
   @override
   Widget build(BuildContext context) {
-    final showLoading = widget.isMoving;
-    final areaName = _extractAccurateArea(widget.placeName);
+    final hasName = _isValidGoogleName(widget.placeName);
+    final showLoading = widget.isMoving || !hasName;
+
+    final lines = _toTwoLinesDetailed(widget.placeName);
+    final line1 = lines[0];
+    final line2 = lines[1];
 
     return AnimatedBuilder(
       animation: _drop,
@@ -114,16 +115,12 @@ class _AnimatedPinWidgetState extends State<AnimatedPinWidget>
         return Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            /// ===================== البوكس =====================
             Transform.translate(
               offset: Offset(0, _drop.value - 12),
               child: IntrinsicWidth(
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 14,
-                    vertical: 8,
-                  ),
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   margin: const EdgeInsets.only(bottom: 6),
                   decoration: BoxDecoration(
                     color: Colors.white,
@@ -149,24 +146,39 @@ class _AnimatedPinWidgetState extends State<AnimatedPinWidget>
                             size: 22,
                           )
                         : Padding(
-                            key: ValueKey(areaName),
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 6.0,
-                            ),
-                            child: Text(
-                              areaName.isNotEmpty ? areaName : "No name",
-                              style: TextStyles.font10BlackSemiBold(),
-                              textAlign: TextAlign.center,
-                              softWrap: true,
-                              overflow: TextOverflow.fade,
+                            key: ValueKey("${line1}_$line2"),
+                            padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  line1,
+                                  style: TextStyles.font10BlackSemiBold(),
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                if (line2.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 2),
+                                    child: Text(
+                                      line2,
+                                      style: TextStyles.font10BlackSemiBold().copyWith(
+                                        color: Colors.black54,
+                                        fontSize: 9,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                              ],
                             ),
                           ),
                   ),
                 ),
               ),
             ),
-
-            /// ===================== الدبوس =====================
             Stack(
               alignment: Alignment.topCenter,
               children: [

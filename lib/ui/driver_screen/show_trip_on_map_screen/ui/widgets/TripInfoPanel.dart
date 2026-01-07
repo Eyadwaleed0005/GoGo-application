@@ -33,7 +33,7 @@ class TripInfoPanel extends StatelessWidget {
             borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
             boxShadow: [
               BoxShadow(
-                color: ColorPalette.textDark,
+                color: ColorPalette.black,
                 blurRadius: 8.r,
                 offset: const Offset(0, -3),
               ),

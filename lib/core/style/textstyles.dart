@@ -167,7 +167,7 @@ class TextStyles {
       fontSize: 25.sp,
       fontWeight: FontWeightHelper.bold,
       fontFamily: plusJakartaSans,
-      color: ColorPalette.textDark,
+      color: ColorPalette.black,
     );
   }
     static TextStyle font18Blackbold() {

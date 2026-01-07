@@ -2,6 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:gogo/core/helper/app_system_ui.dart';
+import 'package:gogo/core/helper/spacer.dart';
 import 'package:gogo/core/routes/app_images_routes.dart';
 import 'package:gogo/core/routes/app_routes.dart';
 import 'package:gogo/core/style/textstyles.dart';
@@ -9,6 +11,7 @@ import 'package:gogo/core/widgets/animation_box.dart';
 import 'package:gogo/core/widgets/back_text_button.dart';
 import 'package:gogo/core/widgets/clickable_text_span.dart';
 import 'package:gogo/core/widgets/orange_dot.dart';
+import 'package:gogo/core/widgets/system_ui_wrapper.dart';
 import 'package:gogo/ui/auth_screens/driver_screen/driver_register_screen/data/repo/driver_auth_repository.dart';
 import 'package:gogo/ui/auth_screens/driver_screen/driver_register_screen/logic/driver_register_screen_cubit.dart';
 import 'package:gogo/ui/auth_screens/driver_screen/driver_register_screen/logic/driver_register_screen_state.dart';
@@ -16,7 +19,6 @@ import 'package:gogo/ui/auth_screens/driver_screen/driver_register_screen/ui/wid
 
 class DriverRegisterScreen extends StatelessWidget {
   const DriverRegisterScreen({super.key});
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -31,6 +33,7 @@ class DriverRegisterScreen extends StatelessWidget {
               autoClose: false,
             );
           } else if (state is DriverRegisterSuccess) {
+            hideBlockingAnimation(context);
             Navigator.pushNamedAndRemoveUntil(
               context,
               AppRoutes.carDriverInformationScreen,
@@ -48,12 +51,13 @@ class DriverRegisterScreen extends StatelessWidget {
           }
         },
         builder: (context, state) {
-          return Scaffold(
-            body: SafeArea(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.all(16.0.w),
-                  child: SingleChildScrollView(
+          return SystemUiWrapper(
+            style: AppSystemUi.dark(), 
+            child: Scaffold(
+              body: SafeArea(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: EdgeInsets.all(16.0.w),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -66,28 +70,21 @@ class DriverRegisterScreen extends StatelessWidget {
                                 'driver_sign_up'.tr(),
                                 style: TextStyles.font21BlackBold(),
                               ),
-                              SizedBox(width: 6.w),
-                              Transform.translate(
-                                offset: Offset(0, 12.h),
-                                child: const OrangeDot(),
-                              ),
+                              horizontalSpace(6),
+                              const OrangeDot(),
                             ],
                           ),
                         ),
-                        SizedBox(height: 10),
+                        verticalSpace(2),
                         Center(
-                          child: Column(
-                            children: [
-                              Text(
-                                'fill_driver_info'.tr(),
-                                style: TextStyles.font11GrayRegular(),
-                              ),
-                            ],
+                          child: Text(
+                            'fill_driver_info'.tr(),
+                            style: TextStyles.font11GrayRegular(),
                           ),
                         ),
-                        SizedBox(height: 20.h),
+                        verticalSpace(35),
                         const RegisterFormFields(),
-                        SizedBox(height: 18.h),
+                        verticalSpace(18), 
                         Center(
                           child: ClickableTextSpan(
                             normalText: 'already_have_account'.tr(),

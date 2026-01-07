@@ -34,7 +34,7 @@ class ConfirmationDialog extends StatelessWidget {
         if (showCancel)
           TextButton(
             style: TextButton.styleFrom(
-              foregroundColor: ColorPalette.textDark,
+              foregroundColor: ColorPalette.black,
               padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 12.h),
             ),
             onPressed: () => Navigator.pop(context, false),

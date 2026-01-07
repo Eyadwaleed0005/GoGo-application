@@ -29,17 +29,20 @@ class DriverMapScreen extends StatefulWidget {
 class _DriverMapScreenState extends State<DriverMapScreen> {
   bool _isTripStarted = false;
   RideModel? _ride;
+
   double? customerLat;
   double? customerLng;
   double? destinationLat;
   double? destinationLng;
+
   String? userPhone;
   String? customerName;
+
+  String? fromPlace;
+  String? toPlace;
+
   late TripActionCardCubit _tripCubit;
   late DriverAmountCubit _driverAmountCubit;
-  String? fromPlace;
-String? toPlace;
-
 
   @override
   void initState() {
@@ -48,45 +51,53 @@ String? toPlace;
       DriverRideRepository(),
       DriverTripSaveHistory(),
     );
+
     _driverAmountCubit = DriverAmountCubit(
       repository: DriverAmountRepository(),
     );
+
     _loadTripData();
   }
 
   Future<void> _loadTripData() async {
-  final tripData = await SharedPreferencesHelperTrips.getTripData();
-  if (tripData != null) {
-    setState(() {
-      customerLat = tripData['customerLat'];
-      customerLng = tripData['customerLng'];
-      destinationLat = tripData['destinationLat'];
-      destinationLng = tripData['destinationLng'];
-      userPhone = tripData['userPhone'];
-      customerName = tripData['customerName'];
-      fromPlace = tripData['fromPlace'];   // ⬅️ إضافة
-      toPlace = tripData['toPlace'];       // ⬅️ إضافة
-      _isTripStarted = tripData['isOnTripTwo'] ?? false;
-    });
+    final tripData = await SharedPreferencesHelperTrips.getTripData();
 
-    _tripCubit.startTracking(
-      toLat: _isTripStarted ? destinationLat! : customerLat!,
-      toLng: _isTripStarted ? destinationLng! : customerLng!,
-      userPhone: userPhone!,
-      isDestination: _isTripStarted,
-    );
+    if (!mounted) return;
+
+    if (tripData != null) {
+      setState(() {
+        customerLat = tripData['customerLat'];
+        customerLng = tripData['customerLng'];
+        destinationLat = tripData['destinationLat'];
+        destinationLng = tripData['destinationLng'];
+        userPhone = tripData['userPhone'];
+        customerName = tripData['customerName'];
+        fromPlace = tripData['fromPlace'];
+        toPlace = tripData['toPlace'];
+        _isTripStarted = tripData['isOnTripTwo'] ?? false;
+      });
+
+      _tripCubit.startTracking(
+        toLat: _isTripStarted ? destinationLat! : customerLat!,
+        toLng: _isTripStarted ? destinationLng! : customerLng!,
+        userPhone: userPhone!,
+        isDestination: _isTripStarted,
+      );
+    }
   }
-}
 
-
-  @override
-  Widget build(BuildContext context) {
-    if (customerLat == null ||
+  bool _missingTripData() {
+    return customerLat == null ||
         customerLng == null ||
         destinationLat == null ||
         destinationLng == null ||
         userPhone == null ||
-        customerName == null) {
+        customerName == null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_missingTripData()) {
       return Scaffold(
         body: Center(
           child: CircularProgressIndicator(
@@ -102,7 +113,15 @@ String? toPlace;
         BlocProvider<TripActionCardCubit>.value(value: _tripCubit),
         BlocProvider<DriverAmountCubit>.value(value: _driverAmountCubit),
       ],
-      child: BlocBuilder<TripActionCardCubit, TripActionCardState>(
+      child: BlocConsumer<TripActionCardCubit, TripActionCardState>(
+        listener: (context, state) {
+          if (state is TripActionCardUpdated) {
+            setState(() {
+              _ride = state.ride;
+              _isTripStarted = state.isDestination;
+            });
+          }
+        },
         builder: (context, state) {
           if (state is TripActionCardLoading) {
             return Scaffold(
@@ -115,6 +134,7 @@ String? toPlace;
               ),
             );
           }
+
           if (state is TripActionCardError) {
             return Scaffold(
               backgroundColor: ColorPalette.backgroundColor,
@@ -148,18 +168,16 @@ String? toPlace;
             );
           }
 
-          if (state is TripActionCardUpdated) {
-            _ride = state.ride;
-            _isTripStarted = state.isDestination;
-          }
           if (_ride == null) {
             Future.microtask(() {
+              if (!mounted) return;
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(builder: (_) => const DriverHomeScreen()),
                 (route) => false,
               );
             });
+
             return Scaffold(
               backgroundColor: ColorPalette.backgroundColor,
               body: Center(
@@ -170,18 +188,21 @@ String? toPlace;
               ),
             );
           }
+
           return Scaffold(
             body: Stack(
               children: [
                 DriverMapView(ride: _ride, isTripStarted: _isTripStarted),
+
                 TripActionCard(
                   isTripStarted: _isTripStarted,
                   customerName: customerName!,
                   userPhone: userPhone!,
-                   fromPlace: fromPlace ?? "",   
-                   toPlace: toPlace ?? "",       
+                  fromPlace: fromPlace ?? "",
+                  toPlace: toPlace ?? "",
                   distance: _ride!.distanceText,
                   time: _ride!.durationText,
+
                   onStartTrip: () async {
                     _tripCubit.startTracking(
                       toLat: destinationLat!,
@@ -189,10 +210,12 @@ String? toPlace;
                       userPhone: userPhone!,
                       isDestination: true,
                     );
+
                     await SharedPreferencesHelperTrips.updateTripStage(
                       isOnTrip: false,
                       isOnTripTwo: true,
                     );
+
                     setState(() {
                       _isTripStarted = true;
                     });
@@ -203,15 +226,20 @@ String? toPlace;
 
                     final cubit = context.read<DriverAmountCubit>();
                     await cubit.deductTripAmount();
-                    final state = cubit.state;
+                    final amountState = cubit.state;
 
-                    if (state is DriverAmountSuccess) {
+                    if (amountState is DriverAmountSuccess) {
                       try {
                         await _tripCubit.saveTripToHistory();
                         await SharedPreferencesHelperTrips.clearTripData();
+
+                        if (!mounted) return;
+
                         setState(() {
                           _isTripStarted = false;
+                          _ride = null;
                         });
+
                         Navigator.pushAndRemoveUntil(
                           context,
                           MaterialPageRoute(
@@ -220,8 +248,8 @@ String? toPlace;
                           (route) => false,
                         );
 
-                        // حوار التأكيد مع الترجمة
                         Future.delayed(const Duration(milliseconds: 300), () {
+                          if (!mounted) return;
                           ConfirmationDialog.show(
                             context: context,
                             title: tr("trip_completed_title"),
@@ -229,7 +257,7 @@ String? toPlace;
                             content: tr(
                               "trip_completed_msg",
                               namedArgs: {
-                                "amount": state.deductedAmount.toString(),
+                                "amount": amountState.deductedAmount.toString(),
                               },
                             ),
                             onConfirm: () {},
@@ -237,6 +265,7 @@ String? toPlace;
                           );
                         });
                       } catch (e) {
+                        if (!mounted) return;
                         await ConfirmationDialog.show(
                           context: context,
                           title: tr("error_title"),
@@ -247,29 +276,33 @@ String? toPlace;
                           },
                         );
                       }
-                    } else if (state is DriverAmountError) {
+                    } else if (amountState is DriverAmountError) {
+                      if (!mounted) return;
                       await ConfirmationDialog.show(
                         context: context,
                         title: tr("error_title"),
                         confirmText: tr("retry"),
-                        content: state.message,
+                        content: amountState.message,
                         onConfirm: () async {
                           await cubit.deductTripAmount();
                         },
                       );
                     }
                   },
+
                   onCall: () {
                     context.read<TripActionCardCubit>().makePhoneCall(
                       userPhone!,
                     );
                   },
+
                   onMessage: () {
                     context.read<TripActionCardCubit>().openWhatsAppChat(
                       userPhone!.replaceAll("+", ""),
                     );
                   },
                 ),
+
                 const Align(
                   alignment: Alignment.topCenter,
                   child: ConnectionStatusBar(),

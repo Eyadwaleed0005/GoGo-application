@@ -1,6 +1,5 @@
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-/// 🔹 الحالات الأساسية لإدارة حالة الخريطة
 abstract class MapState {}
 
 class MapInitial extends MapState {}
@@ -31,25 +30,18 @@ class MapPinUpdated extends MapState {
   MapPinUpdated(this.point, this.placeName);
 }
 
-/// ✅ تحديث الموقع الحالي للمستخدم
 class MapCurrentLocationUpdated extends MapState {
   final LatLng location;
   MapCurrentLocationUpdated(this.location);
 }
 
-/// ✅ تحديث ماركرات السائقين
 class MapDriversUpdated extends MapState {
   final Set<Marker> drivers;
   MapDriversUpdated(this.drivers);
 }
 
-/// 🛰️ تتبع حي بدأ
-class MapTrackingStarted extends MapState {}
-
-/// 🛰️ تتبع حي توقف
 class MapTrackingStopped extends MapState {}
 
-/// ⚠️ خطأ أثناء تشغيل التتبع أو الخريطة
 class MapError extends MapState {
   final String message;
   MapError(this.message);

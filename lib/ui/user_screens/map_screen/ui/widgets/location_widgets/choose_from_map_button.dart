@@ -11,6 +11,7 @@ import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cub
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit/route_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/search_cubit/search_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/user_drivers_socket_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/ui/widgets/map_veiw.dart';
 
 class ChooseFromMapButton extends StatelessWidget {
@@ -39,9 +40,8 @@ class ChooseFromMapButton extends StatelessWidget {
                 BlocProvider(create: (_) => RouteCubit(MapRepository())),
                 BlocProvider(create: (_) => MapCubit(MapRepository())),
                 BlocProvider(create: (_) => SearchCubit(MapRepository())),
-                BlocProvider(
-                  create: (_) => LocationServiceCubit()..checkLocationService(),
-                ),
+                BlocProvider(create: (_) => LocationServiceCubit()..checkLocationService()),
+                BlocProvider(create: (_) => UserDriversSocketCubit()..start()),
               ],
               child: MapView(fromController: controller, isSelecting: true),
             ),

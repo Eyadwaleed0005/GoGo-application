@@ -20,23 +20,28 @@ class RouteCubit extends Cubit<RouteState> {
   /// 🟢 تحديد نقطة البداية
   void setFromPoint(LatLng? point) {
     fromPoint = point;
+    if (isClosed) return;
     emit(RoutePointsSelected(fromPoint: fromPoint, toPoint: toPoint));
   }
 
   /// 🔵 تحديد نقطة النهاية
   void setToPoint(LatLng? point) {
     toPoint = point;
+    if (isClosed) return;
     emit(RoutePointsSelected(fromPoint: fromPoint, toPoint: toPoint));
   }
 
   /// 🚗 تحميل المسار الحالي بين النقطتين
   Future<void> loadRoute() async {
     if (fromPoint == null || toPoint == null) return;
+    if (isClosed) return;
 
     emit(RouteLoading());
 
     try {
       final result = await repository.getRoute(fromPoint!, toPoint!);
+
+      if (isClosed) return;
 
       if (result != null) {
         routePoints = result.routePoints;
@@ -44,6 +49,8 @@ class RouteCubit extends Cubit<RouteState> {
         durationMin = result.durationMin;
 
         await _saveRouteToPrefs(fromPoint!, toPoint!);
+
+        if (isClosed) return;
 
         emit(RouteLoaded(
           result.routePoints,
@@ -54,11 +61,11 @@ class RouteCubit extends Cubit<RouteState> {
         emit(RouteError("لم يتم العثور على مسار"));
       }
     } catch (e) {
+      if (isClosed) return;
       emit(RouteError("فشل تحميل المسار: $e"));
     }
   }
 
-  /// 🧹 مسح المسار الحالي
   Future<void> clearRoute({bool removeSaved = false}) async {
     fromPoint = null;
     toPoint = null;
@@ -71,6 +78,7 @@ class RouteCubit extends Cubit<RouteState> {
       await prefs.remove(SharedPreferenceKeys.savedRoutesPoints);
     }
 
+    if (isClosed) return;
     emit(RouteInitial());
   }
 
@@ -96,25 +104,30 @@ class RouteCubit extends Cubit<RouteState> {
     if (routes.isEmpty) return;
 
     final parts = routes.first.split("|");
-    if (parts.length == 2) {
-      final fromParts = parts[0].split(",");
-      final toParts = parts[1].split(",");
+    if (parts.length != 2) return;
 
-      if (fromParts.length == 2 && toParts.length == 2) {
-        final from = LatLng(
-          double.parse(fromParts[0]),
-          double.parse(fromParts[1]),
-        );
-        final to = LatLng(
-          double.parse(toParts[0]),
-          double.parse(toParts[1]),
-        );
+    final fromParts = parts[0].split(",");
+    final toParts = parts[1].split(",");
+    if (fromParts.length != 2 || toParts.length != 2) return;
 
-        fromPoint = from;
-        toPoint = to;
+    try {
+      final from = LatLng(
+        double.parse(fromParts[0]),
+        double.parse(fromParts[1]),
+      );
+      final to = LatLng(
+        double.parse(toParts[0]),
+        double.parse(toParts[1]),
+      );
 
-        await loadRoute();
-      }
+      fromPoint = from;
+      toPoint = to;
+
+      // loadRoute فيه emit فمهم نكون لسه مش مقفولين
+      if (isClosed) return;
+      await loadRoute();
+    } catch (_) {
+      // لو parsing فشل، تجاهل
     }
   }
 }

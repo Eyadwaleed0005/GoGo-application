@@ -47,7 +47,7 @@ class DriverWaitingCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.person, color: ColorPalette.textDark, size: 18.sp),
+                      Icon(Icons.person, color: ColorPalette.black, size: 18.sp),
                       horizontalSpace(8),
                       Expanded(
                         child: Text(
@@ -68,7 +68,7 @@ class DriverWaitingCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.email, color: ColorPalette.textDark, size: 18.sp),
+                      Icon(Icons.email, color: ColorPalette.black, size: 18.sp),
                       horizontalSpace(8),
                       Expanded(
                         child: Text(
@@ -89,7 +89,7 @@ class DriverWaitingCard extends StatelessWidget {
                   ),
                   child: Row(
                     children: [
-                      Icon(Icons.access_time, color: ColorPalette.textDark, size: 18.sp),
+                      Icon(Icons.access_time, color: ColorPalette.black, size: 18.sp),
                       horizontalSpace(8),
                       Expanded(
                         child: Text(
@@ -107,7 +107,7 @@ class DriverWaitingCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: IconButton(
-              icon: Icon(Icons.arrow_forward_ios, color: ColorPalette.textDark, size: 18.sp),
+              icon: Icon(Icons.arrow_forward_ios, color: ColorPalette.black, size: 18.sp),
               onPressed: () {
                 Navigator.pushNamed(
                   context,

@@ -1,4 +1,3 @@
-// driver_place_model.dart
 class DriverPlace {
   final int driverId;
   final String driverName;
@@ -18,12 +17,34 @@ class DriverPlace {
 
   factory DriverPlace.fromJson(Map<String, dynamic> json) {
     return DriverPlace(
-      driverId: json['driverId'] as int,
-      driverName: json['driverName'] as String,
+      driverId: (json['driverId'] as num).toInt(),
+      driverName: (json['driverName'] ?? '').toString(),
       lat: (json['lat'] as num).toDouble(),
       lng: (json['lng'] as num).toDouble(),
-      lastUpdate: DateTime.parse(json['lastUpdate'] as String),
-      isOnline: json['isOnline'] as bool,
+      lastUpdate: DateTime.parse((json['lastUpdate'] ?? DateTime.now().toUtc().toIso8601String()).toString()),
+      isOnline: (json['isOnline'] ?? true) as bool,
+    );
+  }
+
+  factory DriverPlace.fromWs(Map<String, dynamic> json) {
+    return DriverPlace.fromJson(json);
+  }
+
+  DriverPlace copyWith({
+    int? driverId,
+    String? driverName,
+    double? lat,
+    double? lng,
+    DateTime? lastUpdate,
+    bool? isOnline,
+  }) {
+    return DriverPlace(
+      driverId: driverId ?? this.driverId,
+      driverName: driverName ?? this.driverName,
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
+      lastUpdate: lastUpdate ?? this.lastUpdate,
+      isOnline: isOnline ?? this.isOnline,
     );
   }
 
@@ -33,7 +54,7 @@ class DriverPlace {
       'driverName': driverName,
       'lat': lat,
       'lng': lng,
-      'lastUpdate': lastUpdate.toIso8601String(),
+      'lastUpdate': lastUpdate.toUtc().toIso8601String(),
       'isOnline': isOnline,
     };
   }
@@ -47,7 +68,7 @@ class DriverPlacesResponse {
   factory DriverPlacesResponse.fromJson(Map<String, dynamic> json) {
     final values = json['\$values'] as List<dynamic>? ?? [];
     return DriverPlacesResponse(
-      drivers: values.map((e) => DriverPlace.fromJson(e)).toList(),
+      drivers: values.whereType<Map<String, dynamic>>().map((e) => DriverPlace.fromJson(e)).toList(),
     );
   }
 

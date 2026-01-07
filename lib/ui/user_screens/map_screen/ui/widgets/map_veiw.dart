@@ -4,13 +4,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_state.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/user_drivers_socket_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/user_drivers_socket_state.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:gogo/core/style/app_color.dart';
 import 'package:gogo/ui/user_screens/map_screen/data/model/map_suggestion_model.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit/location_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_cubit/location_state.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_cubit.dart';
+import 'package:gogo/ui/user_screens/map_screen/logic/cubit/location_service_cubit/location_service_state.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_cubit.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/map_cubit/map_state.dart';
 import 'package:gogo/ui/user_screens/map_screen/logic/cubit/route_cubit/route_cubit.dart';
@@ -43,6 +45,9 @@ class _MapViewState extends State<MapView> {
   bool isMapMoving = false;
   String placeName = "";
   Map<String, dynamic>? routeSummary;
+
+  DateTime _lastCameraMove = DateTime.fromMillisecondsSinceEpoch(0);
+  LatLng? _lastFollowPos;
 
   @override
   void dispose() {
@@ -80,10 +85,8 @@ class _MapViewState extends State<MapView> {
             ),
             BlocListener<RouteCubit, RouteState>(
               listener: (context, state) async {
-                final mapCubit = context.read<MapCubit>();
                 final routeCubit = context.read<RouteCubit>();
 
-                // تحميل المسار من التخزين
                 if (routeCubit.routePoints != null &&
                     routeCubit.routePoints!.isNotEmpty) {
                   await mapCubit.drawRoute(routeCubit.routePoints!);
@@ -97,18 +100,20 @@ class _MapViewState extends State<MapView> {
                       "distance": routeCubit.distanceKm ?? 0.0,
                       "timeText": routeCubit.durationMin != null
                           ? (routeCubit.durationMin! >= 60
-                                ? "${(routeCubit.durationMin! / 60).toStringAsFixed(1)} h"
-                                : "${routeCubit.durationMin!.toStringAsFixed(0)} min")
+                              ? "${(routeCubit.durationMin! / 60).toStringAsFixed(1)} h"
+                              : "${routeCubit.durationMin!.toStringAsFixed(0)} min")
                           : "0 min",
                     };
                   });
                 }
+
                 if (state is RouteLoaded) {
                   await mapCubit.drawRoute(state.routePoints);
                   await mapCubit.fitCameraToBounds(
                     state.routePoints.first,
                     state.routePoints.last,
                   );
+
                   _safeSetState(() {
                     routeSummary = {
                       "distance": state.distanceKm,
@@ -143,6 +148,37 @@ class _MapViewState extends State<MapView> {
                     context.read<LocationCubit>().getCurrentLocation();
                   } catch (_) {}
                 }
+              },
+            ),
+            BlocListener<UserDriversSocketCubit, UserDriversSocketState>(
+              listener: (context, s) async {
+                if (widget.isSelecting) return;
+                if (!widget.isTripApproved) return;
+                if (s is! UserDriversSocketDriversUpdated) return;
+                if (s.followDriverId == null) return;
+                if (s.drivers.isEmpty) return;
+
+                final d = s.drivers.first;
+                final pos = LatLng(d.lat, d.lng);
+
+                final now = DateTime.now();
+                if (now.difference(_lastCameraMove).inMilliseconds < 350) return;
+
+                if (_lastFollowPos != null) {
+                  final dx = (pos.latitude - _lastFollowPos!.latitude).abs();
+                  final dy = (pos.longitude - _lastFollowPos!.longitude).abs();
+                  if (dx < 0.00003 && dy < 0.00003) return;
+                }
+
+                _lastCameraMove = now;
+                _lastFollowPos = pos;
+
+                await mapCubit.moveCamera(
+                  pos,
+                  zoom: 17.5,
+                  tilt: 45,
+                  bearing: 0,
+                );
               },
             ),
           ],
@@ -193,10 +229,8 @@ class _MapViewState extends State<MapView> {
                   final state = c.state;
                   final markers = <Marker>{};
 
-                  // ✅ أضف ماركرات السواقين
                   markers.addAll(c.driverMarkers);
 
-                  // ✅ أضف الماركر الخاص بالمستخدم لو تم اختياره
                   if (state is MapPinUpdated) {
                     markers.add(
                       Marker(
@@ -209,8 +243,6 @@ class _MapViewState extends State<MapView> {
 
                   return markers;
                 }),
-
-                /// ✅ المسار
                 polylines: {
                   if (mapCubit.currentRoutePoints.isNotEmpty)
                     Polyline(
@@ -221,8 +253,7 @@ class _MapViewState extends State<MapView> {
                     ),
                 },
               ),
-
-              DriverMarkersOverlay(),
+              if (!widget.isSelecting) const DriverMarkersOverlay(),
               if (!widget.isTripApproved)
                 AnimatedPinWidget(placeName: placeName, isMoving: isMapMoving),
               if (widget.isSelecting)
@@ -243,6 +274,7 @@ class _MapViewState extends State<MapView> {
                           y: (screenSize.height / 2).round(),
                         ),
                       );
+
                       if (center != null) {
                         final picked = MapSuggestion(
                           id: "manual_pick",
@@ -252,6 +284,7 @@ class _MapViewState extends State<MapView> {
                           latitude: center.latitude,
                           longitude: center.longitude,
                         );
+                        widget.onPlacePicked?.call(picked);
                         Navigator.pop(context, picked);
                       }
                     },

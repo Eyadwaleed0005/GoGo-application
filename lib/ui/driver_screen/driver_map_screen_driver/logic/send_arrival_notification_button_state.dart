@@ -1,15 +1,19 @@
 part of 'send_arrival_notification_button_cubit.dart';
 
 @immutable
-sealed class SendArrivalNotificationButtonState {}
+abstract class SendArrivalNotificationButtonState {}
 
-final class SendArrivalNotificationButtonInitial extends SendArrivalNotificationButtonState {}
+class SendArrivalNotificationButtonInitial
+    extends SendArrivalNotificationButtonState {}
 
-final class SendArrivalNotificationButtonLoading extends SendArrivalNotificationButtonState {}
+class SendArrivalNotificationButtonLoading
+    extends SendArrivalNotificationButtonState {}
 
-final class SendArrivalNotificationButtonSuccess extends SendArrivalNotificationButtonState {}
+class SendArrivalNotificationButtonSuccess
+    extends SendArrivalNotificationButtonState {}
 
-final class SendArrivalNotificationButtonFailure extends SendArrivalNotificationButtonState {
+class SendArrivalNotificationButtonFailure
+    extends SendArrivalNotificationButtonState {
   final String message;
   SendArrivalNotificationButtonFailure(this.message);
 }

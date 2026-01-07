@@ -24,6 +24,8 @@ class AppImage {
   String get sucsses               => '${baseAnimation}sucsses.json';
   String get error                 => '${baseAnimation}Error.json';
   String get searching             => '${baseAnimation}searching.json';
+  String get noResult             => '${baseAnimation}No_Result.json';
+
 
   String get onboard1 => '${base}onboard1.jpg';
   String get business => '${base}business-man-car.png';
@@ -67,5 +69,5 @@ class AppImage {
   String get activity => '${baseIcons}Activity.png';
   String get notifications => '${base}notifications.png';
   // keys
-  String get notificationKey => '${baseKeys}serviceAccountKey.json';
+  String get notificationKey => '${baseKeys}gogo-app-6ef48-2c80b6f0d29a.json';
 }

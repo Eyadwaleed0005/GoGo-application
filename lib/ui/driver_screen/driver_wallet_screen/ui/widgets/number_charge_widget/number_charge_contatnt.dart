@@ -14,7 +14,7 @@ class NumberChargeContatnt extends StatelessWidget {
     Clipboard.setData(ClipboardData(text: text));
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: ColorPalette.textDark,
+        backgroundColor: ColorPalette.black,
         content: Text("Copied: $text", style: TextStyles.font10whitebold()),
         duration: const Duration(seconds: 1),
       ),

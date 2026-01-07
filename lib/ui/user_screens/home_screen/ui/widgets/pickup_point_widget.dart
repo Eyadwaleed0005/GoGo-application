@@ -21,7 +21,7 @@ class PickupPointWidget extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(Icons.search, color: ColorPalette.textDark, size: 28.sp),
+            Icon(Icons.search, color: ColorPalette.black, size: 28.sp),
             SizedBox(width: 20.w),
             Text(
               "Enter pickup point".tr(),

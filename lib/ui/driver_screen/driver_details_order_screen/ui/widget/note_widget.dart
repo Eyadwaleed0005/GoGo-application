@@ -32,7 +32,7 @@ class NoteWidget extends StatelessWidget {
             Container(
               padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 12.w),
               decoration: ShapeDecoration(
-                color: ColorPalette.textDark,
+                color: ColorPalette.black,
                 shape: const StadiumBorder(),
               ),
               child: Text("note".tr(), style: TextStyles.font10whitebold()),

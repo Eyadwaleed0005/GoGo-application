@@ -147,7 +147,7 @@ class TripActionCard extends StatelessWidget {
                         verticalSpace(8),
                         Text(
                           "call".tr(),
-                          style: const TextStyle(color: ColorPalette.textDark),
+                          style: const TextStyle(color: ColorPalette.black),
                         ),
                       ],
                     ),
@@ -172,7 +172,7 @@ class TripActionCard extends StatelessWidget {
                         verticalSpace(10),
                         Text(
                           "whatsapp".tr(),
-                          style: const TextStyle(color: ColorPalette.textDark),
+                          style: const TextStyle(color: ColorPalette.black),
                         ),
                       ],
                     ),

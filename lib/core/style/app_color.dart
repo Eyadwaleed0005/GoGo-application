@@ -28,7 +28,7 @@ class ColorPalette {
 
 
   // 🎨 النصوص
-  static const Color textDark  = Color(0xFF000000); 
+  static const Color black  = Color(0xFF000000); 
   static const Color textLight = Color(0xFFFFFFFF); 
   static final Color circlesBackground = Colors.grey.withOpacity(0.2);
 

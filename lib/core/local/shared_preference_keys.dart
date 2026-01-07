@@ -4,6 +4,9 @@ class SharedPreferenceKeys {
   static const String statusOfAccountDriver = 'statusOfAccountDriver';
   static const String driverCompleteRegister = 'driverCompleteRegister';
 
+  // heartbeat timestamp (millisecondsSinceEpoch)
+  static const String driverHeartbeatMs = 'driverHeartbeatMs';
+
   // ---------------- Trip ----------------
   static const String customerLat = 'customerLat';
   static const String customerLng = 'customerLng';
@@ -34,10 +37,9 @@ class SharedPreferenceKeys {
   static const String driverIdTrip = 'driverIdTrip';
 
   // ---------------- Routes ----------------
-  static const String savedRoutes = 'saved_routes'; // أسماء المسارات
-  static const String savedRoutesPoints = 'saved_routes_points'; // إحداثيات المسارات
+  static const String savedRoutes = 'saved_routes';
+  static const String savedRoutesPoints = 'saved_routes_points';
 
-  // ---------------- languge ----------------
-    static const String selectedLanguage = 'selectedLanguage'; // إحداثيات المسارات
-
+  // ---------------- Language ----------------
+  static const String selectedLanguage = 'selectedLanguage';
 }
