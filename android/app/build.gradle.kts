@@ -21,6 +21,9 @@ android {
     compileSdk = 36
     ndkVersion = "29.0.14206865"
 
+    // Needed for Google Maps on some devices/Play services builds.
+    useLibrary("org.apache.http.legacy")
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
