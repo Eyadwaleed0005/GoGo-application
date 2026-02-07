@@ -1,5 +1,5 @@
 class EndPoints {
-  static const String baseurl = "http://38.242.129.50:5000";
+  static const String baseurl = "https://gogos.site";
 
   // ---------------- AUTH ----------------
   static const String registerUser = "$baseurl/api/UsersIdentity/Register";
@@ -47,7 +47,7 @@ class EndPoints {
       "$baseurl/api/Driver/charge/$chargeId/action";
 
   // ---------------- MAPBOX ----------------
-  
+
   // ---------------- FCM ----------------
   static String sendFcmMessage(String projectId) =>
       "https://fcm.googleapis.com/v1/projects/$projectId/messages:send";

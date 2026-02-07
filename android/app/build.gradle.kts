@@ -18,8 +18,8 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.eyad.gogo"
-    compileSdk = 35
-    ndkVersion = "29.0.13113456"
+    compileSdk = 36
+    ndkVersion = "29.0.14206865"
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -34,7 +34,7 @@ android {
     defaultConfig {
         applicationId = "com.eyad.gogo"
         minSdk = 28
-        targetSdk = 35
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         multiDexEnabled = true

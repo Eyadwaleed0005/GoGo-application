@@ -88,7 +88,7 @@ class RegisterFormFields extends StatelessWidget {
                 current is RegisterUserInitial,
             builder: (context, state) {
               return AppDropdownGenderField(
-                hint: 'select_gender'.tr(),
+                hint: 'select_gender',
                 value: cubit.selectedGender,
                 onChanged: (value) {
                   if (value != null) {

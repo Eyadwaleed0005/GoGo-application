@@ -26,8 +26,9 @@ Future<void> main() async {
   String? savedLang = await storage.read(
     key: SharedPreferenceKeys.selectedLanguage,
   );
-  Locale initialLocale =
-      savedLang != null ? Locale(savedLang) : const Locale('en');
+  Locale initialLocale = savedLang != null
+      ? Locale(savedLang)
+      : const Locale('en');
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
@@ -35,9 +36,7 @@ Future<void> main() async {
       fallbackLocale: const Locale('en'),
       startLocale: initialLocale,
       child: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => DriverLocationCubit()),
-        ],
+        providers: [BlocProvider(create: (_) => DriverLocationCubit())],
         child: const MyApp(),
       ),
     ),
